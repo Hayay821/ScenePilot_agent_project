@@ -1,0 +1,29 @@
+# Core dependencies
+opencv-python-headless==4.8.1.78
+pydantic==2.13.5
+pydantic-settings==2.15.0
+click==8.1.7
+loguru==0.7.2
+
+# AI/ML
+openai==2.18.0
+httpx==0.28.1
+tenacity==8.2.3
+diskcache==5.6.3
+
+# Image processing
+imagehash==4.3.1
+Pillow==10.1.0
+numpy==1.26.2
+
+# Video processing
+av>=12.0.0
+ffmpeg-python==0.2.0
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+
+# --- 间接依赖，显式钉住以避免版本冲突 ---
+protobuf>=5.26.1,<7        # streamlit 要 >=5.26.1；googleapis-common-protos 要 <7
+opentelemetry-proto>=1.27.0 # 旧版 1.26.0 要求 protobuf<5，与新 protobuf 冲突

@@ -1,0 +1,361 @@
+# ================================
+# ScenePilot - Git Ignore
+# ================================
+
+# ================================
+# Python
+# ================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# pyenv
+.python-version
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# ================================
+# C/C++
+# ================================
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# Build directories
+build/
+build-*/
+cmake-build-*/
+out/
+
+# Visual Studio
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+
+# ================================
+# IDEs and Editors
+# ================================
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ================================
+# Operating System
+# ================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ================================
+# Project Specific
+# ================================
+
+# Logs
+logs/
+*.log
+*.txt.log
+*.out.log
+
+# Cache directories
+cache/
+.cache/
+*.cache
+
+# Data directories (large files)
+data/
+!data/.gitkeep
+algorithm_validation/data/input/*.mp4
+algorithm_validation/data/input/*.avi
+algorithm_validation/data/input/*.mov
+algorithm_validation/data/input/*.insv
+algorithm_validation/data/output/
+algorithm_validation/data/keyframes/
+
+# Large archives
+*.rar
+*.zip
+*.tar.gz
+*.7z
+*.bz2
+*.xz
+
+# Media files (videos, images, audio)
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.flv
+*.wmv
+*.insv
+*.insp
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.wav
+*.mp3
+*.flac
+*.ogg
+
+# Keep example/demo files (if small)
+!*demo*.mp4
+!*example*.jpg
+!*sample*.png
+
+# Model files and weights
+*.pth
+*.pt
+*.ckpt
+*.h5
+*.hdf5
+*.pb
+*.onnx
+*.tflite
+*.pkl
+*.pickle
+
+# SDK and third-party libraries
+Link-SDK/
+Desktop-Camera-SDK/
+Desktop-Media-SDK/
+third_party/
+vendor/
+
+# Hardware platform specific
+hardware_platform/bridges/*/build/
+hardware_platform/bridges/*/cmake-build-*/
+hardware_platform/bridges/*/*.exe
+hardware_platform/bridges/*/*.dll
+hardware_platform/bridges/*/*.so
+
+# Outbox queue (offline data)
+outbox/
+*.outbox
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# ================================
+# Secrets and Credentials
+# ================================
+
+# Environment variables (even though anonymized, keep pattern)
+.env
+.env.local
+.env.*.local
+*.env
+
+# API keys and credentials
+secrets/
+credentials/
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# ================================
+# Database
+# ================================
+
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# ================================
+# Documentation (generated)
+# ================================
+
+# Keep source docs, ignore generated
+docs/_build/
+docs/.doctrees/
+site/
+
+# ================================
+# Misc
+# ================================
+
+# Ignore all in these directories
+node_modules/
+.npm/
+.yarn/
+bower_components/
+
+# Lock files (optional, uncomment if needed)
+# package-lock.json
+# yarn.lock
+# poetry.lock
+
+# ================================
+# Whitelist Important Files
+# ================================
+
+# Keep example environment file
+!.env.example
+
+# Keep README and documentation
+!README.md
+!**/README.md
+!*.md
+
+# Keep requirements
+!requirements.txt
+!**/requirements.txt
+!package.json
+
+# Keep configuration examples
+!*example*
+!*sample*
+!*.example.*
+
+# Keep small test assets (if any)
+!tests/fixtures/*.jpg
+!tests/fixtures/*.png
+
+# Keep gitkeep files
+!.gitkeep
+!**/.gitkeep
