@@ -34,7 +34,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-
+*.xlsx
+*.xls
 # PyInstaller
 *.manifest
 *.spec
@@ -133,7 +134,6 @@ out/
 # ================================
 # IDEs and Editors
 # ================================
-
 # VS Code
 .vscode/
 *.code-workspace
@@ -185,11 +185,6 @@ $RECYCLE.BIN/
 # Project Specific
 # ================================
 
-# Logs
-logs/
-*.log
-*.txt.log
-*.out.log
 
 # Cache directories
 cache/
@@ -257,7 +252,8 @@ Desktop-Camera-SDK/
 Desktop-Media-SDK/
 third_party/
 vendor/
-
+# test data
+test/
 # Hardware platform specific
 hardware_platform/bridges/*/build/
 hardware_platform/bridges/*/cmake-build-*/

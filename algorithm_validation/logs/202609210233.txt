@@ -1,0 +1,241 @@
+(base) PS F:\BoldMaker\project00\algorithm_validation> python -m app.cli analyze -i data/input/validation_2min.mp4 --intent "跟拍骑马" -o data/output/e3_real
+2026-09-21 02:32:31.064 | INFO     | __main__:analyze_video:77 - ============================================================
+2026-09-21 02:32:32.024 | INFO     | __main__:analyze_video:78 - ScenePilot 视频分析
+2026-09-21 02:32:32.028 | INFO     | __main__:analyze_video:79 - ============================================================
+2026-09-21 02:32:32.031 | INFO     | __main__:analyze_video:80 - 输入视频: data\input\validation_2min.mp4
+2026-09-21 02:32:32.031 | INFO     | __main__:analyze_video:81 - 用户意图: 跟拍骑马
+2026-09-21 02:32:32.032 | INFO     | __main__:analyze_video:82 - 输出目录: data\output\e3_real
+2026-09-21 02:32:32.033 | INFO     | __main__:analyze_video:83 - 模式: Real API
+2026-09-21 02:32:32.034 | INFO     | __main__:analyze_video:84 - ============================================================
+2026-09-21 02:32:32.034 | INFO     | __main__:analyze_video:89 - 📦 初始化模块...
+2026-09-21 02:32:32.035 | INFO     | app.stc.heuristic:__init__:72 - HeuristicSTC initialized: frame_diff=0.15, hist_diff=0.2, phash=5, max_gap=3s, window=4s (1-4 frames)
+2026-09-21 02:32:32.122 | INFO     | app.semantic.dashscope_vl:__init__:73 - Semantic cache enabled: cache\semantic
+2026-09-21 02:32:32.122 | INFO     | app.semantic.dashscope_vl:__init__:77 - DashScopeVLSemanticProvider initialized: model=qwen3-vl-flash, batch_size=3, timeout=30s, retries=2
+2026-09-21 02:32:32.123 | INFO     | app.director.state_machine:__init__:59 - DirectorStateMachine initialized: idle_timeout=10000ms, search_timeout=10000ms, recover_timeout=5000ms
+2026-09-21 02:32:32.124 | INFO     | app.devices.mock_adapter:__init__:32 - MockDeviceAdapter initialized: data\output\e3_real\commands.jsonl
+2026-09-21 02:32:32.124 | INFO     | __main__:analyze_video:104 - 🎥 开始流式读取视频...
+2026-09-21 02:32:32.130 | INFO     | app.ingest.video_source:__init__:89 - VideoSource initialized: validation_2min.mp4 (320x240, 30.0fps, 2984 frames, 99466ms) -> sample at 2fps, realtime=False
+2026-09-21 02:32:32.318 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 1 帧: index=0, time=0ms, score=1.000
+2026-09-21 02:32:32.333 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 2 帧: index=30, time=1000ms, score=0.167
+2026-09-21 02:32:32.343 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 3 帧: index=45, time=1500ms, score=0.183
+2026-09-21 02:32:32.354 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 4 帧: index=60, time=2000ms, score=0.116
+2026-09-21 02:32:32.394 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:32.398 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 5 帧: index=120, time=4000ms, score=0.106
+2026-09-21 02:32:32.413 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 6 帧: index=135, time=4500ms, score=0.195
+2026-09-21 02:32:32.429 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 7 帧: index=150, time=5000ms, score=0.224
+2026-09-21 02:32:32.447 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 8 帧: index=165, time=5500ms, score=0.210
+2026-09-21 02:32:32.482 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 9 帧: index=195, time=6500ms, score=0.386
+2026-09-21 02:32:32.500 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 5 frames selected (1-4 target)
+2026-09-21 02:32:32.504 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 10 帧: index=240, time=8000ms, score=0.090
+2026-09-21 02:32:32.543 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 11 帧: index=300, time=10000ms, score=0.4072026-09-21 02:32:32.551 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 12 帧: index=315, time=10500ms, score=0.0812026-09-21 02:32:32.559 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 13 帧: index=330, time=11000ms, score=0.1062026-09-21 02:32:32.572 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:32.613 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 14 帧: index=420, time=14000ms, score=0.4462026-09-21 02:32:32.629 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 15 帧: index=450, time=15000ms, score=0.0992026-09-21 02:32:32.639 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 16 帧: index=465, time=15500ms, score=0.0762026-09-21 02:32:32.647 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 3 frames selected (1-4 target)
+2026-09-21 02:32:32.661 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 17 帧: index=495, time=16500ms, score=0.1102026-09-21 02:32:32.675 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 18 帧: index=510, time=17000ms, score=0.2982026-09-21 02:32:32.700 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 19 帧: index=525, time=17500ms, score=0.1312026-09-21 02:32:32.716 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 20 帧: index=540, time=18000ms, score=0.2022026-09-21 02:32:32.789 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:32.793 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 21 帧: index=600, time=20000ms, score=0.5772026-09-21 02:32:32.800 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 22 帧: index=615, time=20500ms, score=0.2792026-09-21 02:32:32.808 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 23 帧: index=630, time=21000ms, score=0.1182026-09-21 02:32:32.817 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 24 帧: index=645, time=21500ms, score=0.1122026-09-21 02:32:32.858 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:32.862 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 25 帧: index=720, time=24000ms, score=0.1332026-09-21 02:32:32.875 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 26 帧: index=735, time=24500ms, score=0.1122026-09-21 02:32:32.889 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 27 帧: index=750, time=25000ms, score=0.1102026-09-21 02:32:32.904 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 28 帧: index=765, time=25500ms, score=0.1532026-09-21 02:32:32.947 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 29 帧: index=810, time=27000ms, score=0.2522026-09-21 02:32:32.978 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 5 frames selected (1-4 target)
+2026-09-21 02:32:32.982 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 30 帧: index=840, time=28000ms, score=0.1622026-09-21 02:32:33.001 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 31 帧: index=855, time=28500ms, score=0.1102026-09-21 02:32:33.020 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 32 帧: index=900, time=30000ms, score=0.5012026-09-21 02:32:33.028 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 33 帧: index=915, time=30500ms, score=0.1822026-09-21 02:32:33.043 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 34 帧: index=945, time=31500ms, score=0.2512026-09-21 02:32:33.050 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 5 frames selected (1-4 target)
+2026-09-21 02:32:33.054 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 35 帧: index=960, time=32000ms, score=0.2332026-09-21 02:32:33.064 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 36 帧: index=975, time=32500ms, score=0.2002026-09-21 02:32:33.076 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 37 帧: index=990, time=33000ms, score=0.2252026-09-21 02:32:33.088 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 38 帧: index=1005, time=33500ms, score=0.160
+2026-09-21 02:32:33.150 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:33.154 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 39 帧: index=1080, time=36000ms, score=0.166
+2026-09-21 02:32:33.171 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 40 帧: index=1095, time=36500ms, score=0.459
+2026-09-21 02:32:33.178 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 41 帧: index=1110, time=37000ms, score=0.289
+2026-09-21 02:32:33.186 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 42 帧: index=1125, time=37500ms, score=0.139
+2026-09-21 02:32:33.218 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 43 帧: index=1185, time=39500ms, score=0.592
+2026-09-21 02:32:33.227 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 5 frames selected (1-4 target)
+2026-09-21 02:32:33.230 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 44 帧: index=1200, time=40000ms, score=0.190
+2026-09-21 02:32:33.238 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 45 帧: index=1215, time=40500ms, score=0.169
+2026-09-21 02:32:33.247 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 46 帧: index=1230, time=41000ms, score=0.159
+2026-09-21 02:32:33.257 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 47 帧: index=1245, time=41500ms, score=0.206
+2026-09-21 02:32:33.305 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:33.309 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 48 帧: index=1320, time=44000ms, score=0.190
+2026-09-21 02:32:33.324 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 49 帧: index=1335, time=44500ms, score=0.168
+2026-09-21 02:32:33.339 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 50 帧: index=1350, time=45000ms, score=0.176
+2026-09-21 02:32:33.355 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 51 帧: index=1365, time=45500ms, score=0.204
+2026-09-21 02:32:33.419 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 52 帧: index=1425, time=47500ms, score=0.249
+2026-09-21 02:32:33.435 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 5 frames selected (1-4 target)
+2026-09-21 02:32:33.439 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 53 帧: index=1440, time=48000ms, score=0.248
+2026-09-21 02:32:33.487 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 1 frames selected (1-4 target)
+2026-09-21 02:32:33.525 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 54 帧: index=1620, time=54000ms, score=0.488
+2026-09-21 02:32:33.541 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 55 帧: index=1635, time=54500ms, score=0.290
+2026-09-21 02:32:33.550 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 56 帧: index=1650, time=55000ms, score=0.225
+2026-09-21 02:32:33.561 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 57 帧: index=1665, time=55500ms, score=0.188
+2026-09-21 02:32:33.569 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:33.573 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 58 帧: index=1680, time=56000ms, score=0.164
+2026-09-21 02:32:33.587 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 59 帧: index=1695, time=56500ms, score=0.167
+2026-09-21 02:32:33.600 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 60 帧: index=1710, time=57000ms, score=0.141
+2026-09-21 02:32:33.616 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 61 帧: index=1725, time=57500ms, score=0.160
+2026-09-21 02:32:33.632 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 62 帧: index=1740, time=58000ms, score=0.263
+2026-09-21 02:32:33.660 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 5 frames selected (1-4 target)
+2026-09-21 02:32:33.664 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 63 帧: index=1800, time=60000ms, score=0.223
+2026-09-21 02:32:33.676 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 64 帧: index=1815, time=60500ms, score=0.208
+2026-09-21 02:32:33.690 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 65 帧: index=1830, time=61000ms, score=0.226
+2026-09-21 02:32:33.704 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 66 帧: index=1845, time=61500ms, score=0.295
+2026-09-21 02:32:33.736 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 67 帧: index=1875, time=62500ms, score=0.395
+2026-09-21 02:32:33.755 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 5 frames selected (1-4 target)
+2026-09-21 02:32:33.785 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 68 帧: index=1965, time=65500ms, score=0.522
+2026-09-21 02:32:33.792 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 69 帧: index=1980, time=66000ms, score=0.104
+2026-09-21 02:32:33.800 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 70 帧: index=1995, time=66500ms, score=0.150
+2026-09-21 02:32:33.808 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 71 帧: index=2010, time=67000ms, score=0.139
+2026-09-21 02:32:33.822 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:33.828 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 72 帧: index=2040, time=68000ms, score=0.141
+2026-09-21 02:32:33.838 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 73 帧: index=2055, time=68500ms, score=0.118
+2026-09-21 02:32:33.851 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 74 帧: index=2070, time=69000ms, score=0.105
+2026-09-21 02:32:33.864 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 75 帧: index=2085, time=69500ms, score=0.103
+2026-09-21 02:32:33.925 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:33.929 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 76 帧: index=2160, time=72000ms, score=0.105
+2026-09-21 02:32:33.945 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 77 帧: index=2175, time=72500ms, score=0.094
+2026-09-21 02:32:33.962 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 78 帧: index=2190, time=73000ms, score=0.091
+2026-09-21 02:32:33.979 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 79 帧: index=2205, time=73500ms, score=0.089
+2026-09-21 02:32:34.016 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:34.043 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 80 帧: index=2325, time=77500ms, score=0.547
+2026-09-21 02:32:34.052 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 81 帧: index=2340, time=78000ms, score=0.308
+2026-09-21 02:32:34.062 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 82 帧: index=2355, time=78500ms, score=0.289
+2026-09-21 02:32:34.074 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 83 帧: index=2370, time=79000ms, score=0.324
+2026-09-21 02:32:34.085 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 84 帧: index=2385, time=79500ms, score=0.261
+2026-09-21 02:32:34.094 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 5 frames selected (1-4 target)
+2026-09-21 02:32:34.099 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 85 帧: index=2400, time=80000ms, score=0.482
+2026-09-21 02:32:34.107 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 86 帧: index=2415, time=80500ms, score=0.136
+2026-09-21 02:32:34.115 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 87 帧: index=2430, time=81000ms, score=0.161
+2026-09-21 02:32:34.124 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 88 帧: index=2445, time=81500ms, score=0.155
+2026-09-21 02:32:34.160 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 89 帧: index=2505, time=83500ms, score=0.541
+2026-09-21 02:32:34.164 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 5 frames selected (1-4 target)
+2026-09-21 02:32:34.168 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 90 帧: index=2520, time=84000ms, score=0.255
+2026-09-21 02:32:34.177 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 91 帧: index=2535, time=84500ms, score=0.231
+2026-09-21 02:32:34.186 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 92 帧: index=2550, time=85000ms, score=0.202
+2026-09-21 02:32:34.196 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 93 帧: index=2565, time=85500ms, score=0.100
+2026-09-21 02:32:34.247 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:34.251 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 94 帧: index=2640, time=88000ms, score=0.096
+2026-09-21 02:32:34.280 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 95 帧: index=2670, time=89000ms, score=0.099
+2026-09-21 02:32:34.298 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 96 帧: index=2685, time=89500ms, score=0.120
+2026-09-21 02:32:34.316 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 97 帧: index=2700, time=90000ms, score=0.114
+2026-09-21 02:32:34.387 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 4 frames selected (1-4 target)
+2026-09-21 02:32:34.391 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 98 帧: index=2760, time=92000ms, score=0.099
+2026-09-21 02:32:34.429 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 99 帧: index=2850, time=95000ms, score=0.459
+2026-09-21 02:32:34.436 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 100 帧: index=2865, time=95500ms, score=0.211
+2026-09-21 02:32:34.441 | DEBUG    | app.stc.heuristic:_process_window_end:275 - Window closed: 3 frames selected (1-4 target)
+2026-09-21 02:32:34.444 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 101 帧: index=2880, time=96000ms, score=0.159
+2026-09-21 02:32:34.453 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 102 帧: index=2895, time=96500ms, score=0.239
+2026-09-21 02:32:34.463 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 103 帧: index=2910, time=97000ms, score=0.260
+2026-09-21 02:32:34.473 | INFO     | __main__:analyze_video:136 -   ✓ 选中第 104 帧: index=2925, time=97500ms, score=0.192
+2026-09-21 02:32:34.503 | INFO     | app.ingest.video_source:__iter__:105 - 视频读取完毕: 2984 帧
+2026-09-21 02:32:34.509 | INFO     | app.ingest.video_source:release:164 - VideoSource released: validation_2min.mp4
+2026-09-21 02:32:34.509 | INFO     | __main__:analyze_video:147 - 🎯 STC 压缩完成:
+2026-09-21 02:32:34.510 | INFO     | __main__:analyze_video:148 -   总帧数: 199
+2026-09-21 02:32:34.510 | INFO     | __main__:analyze_video:149 -   选中帧数: 104
+2026-09-21 02:32:34.510 | INFO     | __main__:analyze_video:150 -   压缩率: 47.74%
+2026-09-21 02:32:34.510 | INFO     | __main__:analyze_video:153 - 🧠 开始语义分析...
+2026-09-21 02:32:34.511 | INFO     | app.semantic.dashscope_vl:analyze:93 - Analyzing 104 frames with intent: '跟拍骑马'2026-09-21 02:32:36.814 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:32:39.834 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 2 events
+2026-09-21 02:32:41.638 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:32:44.575 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 2 events
+2026-09-21 02:32:48.180 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 2 events
+2026-09-21 02:32:50.329 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:32:52.055 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:32:53.628 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:32:55.919 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:32:58.229 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:01.145 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 2 events
+2026-09-21 02:33:02.987 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:04.726 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:06.302 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:08.381 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:09.928 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:11.715 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:14.573 | ERROR    | app.semantic.dashscope_vl:_parse_events:287 - Failed to parse event 1: 'end_ms'
+2026-09-21 02:33:14.574 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:16.075 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:17.641 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:19.554 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:21.223 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:24.659 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 2 events
+2026-09-21 02:33:26.597 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:28.547 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:30.004 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:32.637 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 2 events
+2026-09-21 02:33:34.417 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:36.144 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:39.306 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 2 events
+2026-09-21 02:33:40.819 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:42.299 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:43.954 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:45.470 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:46.961 | INFO     | app.semantic.dashscope_vl:_analyze_batch:160 - Batch analysis complete: 1 events
+2026-09-21 02:33:46.964 | INFO     | app.semantic.dashscope_vl:analyze:117 - Total events detected: 42
+2026-09-21 02:33:46.970 | INFO     | __main__:analyze_video:160 - ✓ 检测到 42 个事件:
+2026-09-21 02:33:46.973 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与马匹跃过前景倒木障碍的动态瞬间，马蹄腾空、身体舒展，动 作强度高且具有视觉冲击力。 (1000-1500ms, score=0.92)
+2026-09-21 02:33:46.975 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马匹从画面左侧进入镜头，开始穿越前景的倒木区域，构成 跟拍的起始主体。 (2000-4500ms, score=0.85)
+2026-09-21 02:33:46.978 | INFO     | __main__:analyze_video:162 -   - action_peak: 马匹腾跃过前景倒木障碍，动作幅度最大、最具视觉冲击力，是本序 列的高潮瞬间。 (4500-4500ms, score=0.95)
+2026-09-21 02:33:46.980 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与马匹正在跃过前景中的倒木障碍，马匹腾空、四肢伸展，动作 幅度大且具有视觉冲击力，是典型的高光动作 (5000-6500ms, score=0.88)
+2026-09-21 02:33:46.981 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马匹从画面右侧进入视野，沿土路向左前方移动，开始形成 清晰的跟拍主体。 (8000-10500ms, score=0.85)
+2026-09-21 02:33:46.982 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手策马加速奔跑，马蹄扬起尘土，动作幅度显著增大，是序列中最 具动态张力的瞬间。 (10000-10500ms, score=0.91)
+2026-09-21 02:33:46.983 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马匹从画面左侧进入视野，开始沿草地小径向右奔跑，构成 跟拍的起始主体。 (11000-14000ms, score=0.85)
+2026-09-21 02:33:46.983 | INFO     | __main__:analyze_video:162 -   - subject_exit: 骑手与马匹在14000ms时短暂被树木遮挡/移出主视觉焦点，随后在15000ms重新出现于画面左侧， (14000-15000ms, score=0.78)
+2026-09-21 02:33:46.984 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手骑着马匹沿林间小路持续行进，马匹步伐稳定，画面中烟雾飘散 ，形成动态背景；变化分数从0.076上升 (15500-17000ms, score=0.85)
+2026-09-21 02:33:46.985 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与马匹在林间草地上快速骑行，马匹呈奔跑/快步姿态，画面出现明显运动模糊，显示高动态强度。 (17500-20000ms, score=0.88)
+2026-09-21 02:33:46.985 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马匹从画面中后方进入前景区域，成为视觉焦点，开始稳定 骑行，符合跟拍起始阶段特征。 (20500-21500ms, score=0.75)
+2026-09-21 02:33:46.986 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与马匹正以稳定步态（如快步）向前行进，马匹四蹄腾空动作明 显，属于马术表演中的典型高光动作段落。 (24000-25000ms, score=0.88)
+2026-09-21 02:33:46.986 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与马匹在室内马场中进行动态骑行，背景中另一对骑手从左侧快 速掠过，形成前后景层次和运动张力；前景骑 (25500-28000ms, score=0.88)
+2026-09-21 02:33:46.987 | INFO     | __main__:analyze_video:162 -   - subject_entry: 棕色马匹与骑手从画面中后方进入前景区域，开始成为视觉焦点， 为后续跟拍做准备。 (28500-30000ms, score=0.75)
+2026-09-21 02:33:46.987 | INFO     | __main__:analyze_video:162 -   - action_peak: 黑色马匹与骑手进入画面中心并完成转向动作，身体姿态明显，是典 型的动态高光时刻；变化分数显著升高（0. (30000-30500ms, score=0.90)
+2026-09-21 02:33:46.988 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与黑马在室内马场中沿直线稳定骑行，马匹四蹄交替迈步，动作 连贯有力，呈现标准盛装舞步或训练中的匀速 (31500-32500ms, score=0.85)
+2026-09-21 02:33:47.031 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与黑马在室内马场中持续进行动态骑行，马匹呈快步（Trot）姿 态，四蹄腾空，动作连贯有力，是典型的 (33000-36000ms, score=0.88)
+2026-09-21 02:33:47.032 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马匹从画面左侧进入并持续向右移动，完成入场动作，进入 稳定骑行状态。 (36500-37500ms, score=0.85)
+2026-09-21 02:33:47.033 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手身着红色上衣驾驭白马在室内场地进行盛装舞步或障碍赛，马匹 呈腾跃/快步姿态，四蹄离地，动态感强烈； (39500-40500ms, score=0.88)
+2026-09-21 02:33:47.034 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手驾驭白马完成高难度跳跃动作，马匹腾空跃过障碍物，是整段视 频的高潮动作。 (41000-44000ms, score=0.92)
+2026-09-21 02:33:47.034 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手身着红色上衣，驾驭白马在室内马术场地中高速奔跑，马匹呈腾 跃姿态，动作幅度大，为比赛中的高光冲刺或 (44500-45500ms, score=0.88)
+2026-09-21 02:33:47.036 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手身着红色上衣，驾驭白马正在飞跃障碍栏，处于腾空最高点，动 作幅度大、视觉冲击强。 (47500-48000ms, score=0.95)
+2026-09-21 02:33:47.036 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手驾驭白马在户外场地中持续奔跑，马匹四蹄腾空、姿态矫健，构 成画面核心动态焦点。 (54500-55500ms, score=0.88)
+2026-09-21 02:33:47.037 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手驾驭白马在户外场地中快速奔跑，马匹四蹄腾空，动作幅度大， 呈现典型的动态骑行高潮场景。 (56000-57000ms, score=0.88)
+2026-09-21 02:33:47.037 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与白马在开阔场地中持续策马奔行，马匹呈动态奔跑姿态（前腿 抬起、尾巴扬起），画面呈现流畅的运动感， (57500-60000ms, score=0.88)
+2026-09-21 02:33:47.038 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑马者在开阔野外环境中策马前行，马匹呈动态奔跑/快步姿态，画面呈现明显的运动模糊，体现持续的动态过程 (60500-61500ms, score=0.85)
+2026-09-21 02:33:47.039 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与白马进入画面，伴随动态模糊和飘动的头发，呈现典型的跟 拍起始帧；画面中出现文字“This is  (62500-65500ms, score=0.88)
+2026-09-21 02:33:47.041 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手在室内马场中驾驭棕色马匹进行稳定而优雅的步态运动（如快步 或慢跑），马匹四蹄腾空、姿态舒展，是典型 (65500-66000ms, score=0.93)
+2026-09-21 02:33:47.041 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与马匹在室内马场中进行稳定而优雅的马术动作（如快步或慢步 ），马匹四蹄交替运动，骑手保持良好平衡姿 (66500-68000ms, score=0.85)
+2026-09-21 02:33:47.042 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与马匹在室内马场中进行稳定而有力的骑行，马匹呈动态奔跑/快步姿态，四蹄腾空，尾巴扬起，展现出良好 (68500-69500ms, score=0.85)
+2026-09-21 02:33:47.042 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马匹从画面左侧进入中景区域，开始稳定骑行，构成核心主 体。 (72000-73000ms, score=0.85)
+2026-09-21 02:33:47.043 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马匹进入室内马术场地，开始平稳骑行，为后续障碍赛做准 备。 (73500-77500ms, score=0.65)
+2026-09-21 02:33:47.043 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与马匹腾空跃过黄黑相间的障碍栏，动作流畅有力，是本序列的 高潮点。 (77500-78000ms, score=0.95)
+2026-09-21 02:33:47.044 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与马匹完成障碍跳跃动作，马匹腾空越过障碍，落地后进入加速 奔跑阶段，是整个序列的最高强度动作点。 (78500-79500ms, score=0.95)
+2026-09-21 02:33:47.044 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与黑马在室内马场沿墙边持续进行盛装舞步骑行，马匹呈现清晰 的步态（如快步或慢步），动作连贯且稳定， (80000-81000ms, score=0.85)
+2026-09-21 02:33:47.045 | INFO     | __main__:analyze_video:162 -   - scene_transition: 从室内马场（近景跟拍）切换到室外场地（远景背影），骑手与马匹从室内走向室外开阔场地，场景发生明显转换 (81500-83500ms, score=0.85)
+2026-09-21 02:33:47.046 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马进入室外开阔场地，背影视角展现其在泥地上的稳定骑行 姿态，画面中出现背景建筑与树木，形成自然环 (83500-84000ms, score=0.78)
+2026-09-21 02:33:47.046 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马匹从画面中后方进入并持续向远处行进，形成稳定的跟拍 主体。 (84500-85500ms, score=0.75)
+2026-09-21 02:33:47.047 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马匹从画面右侧进入场地，开始沿场地边缘向远处移动，形 成稳定的跟拍主体。 (88000-89500ms, score=0.75)
+2026-09-21 02:33:47.047 | INFO     | __main__:analyze_video:162 -   - action_peak: 马匹完成转向动作，进入正面侧视的清晰跟拍视角，骑手姿态稳定， 马步态明显，是画面中最动态和视觉焦点的瞬 (95000-95000ms, score=0.88)
+2026-09-21 02:33:47.047 | INFO     | __main__:analyze_video:162 -   - action_peak: 骑手与马匹在场地中持续进行稳定骑行，马匹呈标准步态（如快步） ，是典型的跟拍核心动作段落。 (95500-96500ms, score=0.85)
+2026-09-21 02:33:47.048 | INFO     | __main__:analyze_video:162 -   - subject_entry: 骑手与马匹从画面左侧进入镜头，开始在场地中行进，形成稳定的 跟拍主体。 (97000-97500ms, score=0.85)
+2026-09-21 02:33:47.050 | INFO     | __main__:analyze_video:172 - 💾 事件已保存: data\output\e3_real\events.jsonl
+2026-09-21 02:33:47.064 | INFO     | __main__:analyze_video:175 - 🎬 生成导演决策...
+2026-09-21 02:33:47.064 | INFO     | app.director.state_machine:_handle_idle_state:170 - IDLE → SEARCH: event detected but no subject
+2026-09-21 02:33:47.066 | INFO     | app.director.state_machine:_handle_search_state:190 - SEARCH → TRACK: subject found
+2026-09-21 02:33:47.067 | INFO     | app.director.state_machine:_handle_track_state:206 - TRACK → RECORD: action peak detected
+2026-09-21 02:33:47.068 | INFO     | app.director.state_machine:_handle_record_state:238 - RECORD → HIGHLIGHT: super highlight detected
+2026-09-21 02:33:47.068 | INFO     | __main__:analyze_video:186 - ✓ 生成 4 条设备命令:
+2026-09-21 02:33:47.069 | INFO     | __main__:analyze_video:188 -   - search_subject @ 1000ms
+2026-09-21 02:33:47.069 | INFO     | __main__:analyze_video:188 -   - start_tracking @ 2000ms
+2026-09-21 02:33:47.070 | INFO     | __main__:analyze_video:188 -   - start_recording @ 4500ms
+2026-09-21 02:33:47.070 | INFO     | __main__:analyze_video:188 -   - mark_highlight @ 5000ms
+2026-09-21 02:33:47.072 | DEBUG    | app.devices.mock_adapter:execute:59 - Mock executed: search_subject at 1000ms
+2026-09-21 02:33:47.073 | DEBUG    | app.devices.mock_adapter:execute:59 - Mock executed: start_tracking at 2000ms
+2026-09-21 02:33:47.075 | DEBUG    | app.devices.mock_adapter:execute:59 - Mock executed: start_recording at 4500ms
+2026-09-21 02:33:47.075 | DEBUG    | app.devices.mock_adapter:execute:59 - Mock executed: mark_highlight at 5000ms
+2026-09-21 02:33:47.076 | INFO     | __main__:analyze_video:194 - 💾 命令已保存: data\output\e3_real\commands.jsonl
+2026-09-21 02:33:47.076 | INFO     | __main__:analyze_video:197 - ✂️  提取高光片段...
+2026-09-21 02:33:47.077 | INFO     | app.editing.highlight_editor:__init__:26 - HighlightEditor initialized: ffmpeg=ffmpeg
+2026-09-21 02:33:47.077 | INFO     | app.editing.highlight_editor:extract_highlights:57 - Extracting 1 highlight segments from validation_2min.mp4
+2026-09-21 02:33:47.078 | INFO     | app.editing.highlight_editor:_extract_single_segment:107 - Extracting segment: 5.00s - 6.50s
+2026-09-21 02:33:47.276 | INFO     | app.editing.highlight_editor:_extract_single_segment:134 - Segment extracted: highlights.mp4
+2026-09-21 02:33:47.276 | INFO     | __main__:analyze_video:210 - ✓ 高光视频已生成: data\output\e3_real\highlights.mp4
+2026-09-21 02:33:47.282 | INFO     | __main__:analyze_video:235 - ============================================================
+2026-09-21 02:33:47.282 | INFO     | __main__:analyze_video:236 - 📊 运行指标:
+2026-09-21 02:33:47.283 | INFO     | __main__:analyze_video:237 -   处理时长: 75.25s
+2026-09-21 02:33:47.283 | INFO     | __main__:analyze_video:238 -   处理速度: 2.6 fps
+2026-09-21 02:33:47.284 | INFO     | __main__:analyze_video:239 -   总帧数: 199
+2026-09-21 02:33:47.284 | INFO     | __main__:analyze_video:240 -   关键帧: 104
+2026-09-21 02:33:47.285 | INFO     | __main__:analyze_video:241 -   压缩率: 47.74%
+2026-09-21 02:33:47.286 | INFO     | __main__:analyze_video:242 -   事件数: 42
+2026-09-21 02:33:47.286 | INFO     | __main__:analyze_video:243 -   命令数: 4
+2026-09-21 02:33:47.287 | INFO     | __main__:analyze_video:244 -   高光片段: 1
+2026-09-21 02:33:47.290 | INFO     | __main__:analyze_video:245 - ============================================================
+2026-09-21 02:33:47.291 | INFO     | __main__:analyze_video:246 - ✅ 分析完成！输出目录: data\output\e3_real
+2026-09-21 02:33:47.292 | INFO     | __main__:analyze_video:247 - ============================================================
+2026-09-21 02:33:47.292 | INFO     | app.ingest.video_source:release:164 - VideoSource released: validation_2min.mp4

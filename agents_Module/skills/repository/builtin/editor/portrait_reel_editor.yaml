@@ -1,0 +1,154 @@
+schema_version: "1.0"
+skill_id: portrait_reel_editor
+version: "0.1.0"
+name: 人像短片剪辑
+name_en: Portrait Reel Editor
+description: >-
+  将人像图片或视频组织成有明确人物关系、情绪变化和节奏的成片计划。
+  支持 Link 2 人物近景与 X4 Air 环境/全景素材协作。
+author:
+  type: system_sample
+  id: open_vision_team
+license: CC-BY-4.0
+status: draft
+visibility: local
+agent_binding:
+  - editor
+supported_devices:
+  - insta360_x4_air
+  - insta360_link2
+supported_media:
+  - image
+  - video
+  - panorama
+
+teaching:
+  audience: beginner
+  principles:
+    - name: 人像故事弧线
+      explanation: "推荐使用环境/建立、人物状态、互动或动作、情绪结果四类镜头。"
+    - name: 不连续使用相同景别
+      explanation: "连续相同大小的脸部画面容易单调，可用环境或反应镜头打断。"
+    - name: 对话不要剪掉呼吸
+      explanation: "采访和人物表达需要保留自然停顿，不能只追求快节奏。"
+    - name: 反应镜头完成叙事
+      explanation: "人物做完动作后的表情和周围人的反应，往往决定观众是否感受到结果。"
+
+inputs:
+  required:
+    - event_timeline
+    - media_evidence
+    - selected_skills
+    - output_requirements
+  optional:
+    - director_plan
+    - cinematographer_recommendations
+
+outputs:
+  type: edit_plan
+  required_fields:
+    - timeline
+    - panorama_tracks
+    - subtitles
+    - render
+    - explanations
+
+rules:
+  - id: establish_context
+    when:
+      first_scene: true
+    select:
+      preferred_role: environment_context
+      preferred_camera: x4air
+      duration_ms: [1500, 4000]
+    priority: 80
+    explanation: "先用环境镜头说明人物在哪里，观众更容易理解后续人像画面。"
+
+  - id: portrait_anchor
+    when:
+      event: subject_stable
+      face_quality_gte: 0.70
+    select:
+      preferred_role: portrait_anchor
+      preferred_camera: link2
+      composition: half_body_or_head
+      duration_ms: [2000, 5000]
+    priority: 85
+    explanation: "稳定的人物近景作为情绪锚点，保持观众与人物建立联系。"
+
+  - id: interaction_cut
+    when:
+      event: interaction
+      participants_gte: 2
+    select:
+      preferred_role: relationship_context
+      preferred_camera: x4air
+      composition: group_or_environment
+      duration_ms: [1500, 4000]
+    priority: 90
+    explanation: "多人互动使用更宽视角，避免只剪一个人的表情而丢失关系。"
+
+  - id: emotional_result
+    when:
+      event: celebration_or_reaction
+    select:
+      preferred_role: emotional_result
+      keep_post_roll_ms: 3000
+      mark_highlight: true
+    priority: 100
+    explanation: "情绪结果是人像短片的收束节点，应保留反应而不是马上切走。"
+
+  - id: avoid_repetition
+    when:
+      previous_shot_same_role_count_gte: 2
+    select:
+      insert_role: environment_or_reaction
+      avoid_same_framing: true
+    priority: 75
+    explanation: "连续相同景别会使节奏单调，插入环境或反应镜头恢复层次。"
+
+  - id: vertical_reframe
+    when:
+      output_ratio: "9:16"
+    select:
+      reframe: keep_face_and_upper_body
+      safe_margin_percent: 12
+      use_panorama_track: true
+    priority: 80
+    explanation: "竖屏裁切要保留脸部和上半身安全区，优先使用全景轨迹避免主体出框。"
+
+timeline_schema:
+  shot_fields:
+    - source_id
+    - start_ms
+    - end_ms
+    - role
+    - camera
+    - reason
+    - evidence_refs
+  allowed_roles:
+    - environment_context
+    - portrait_anchor
+    - relationship_context
+    - action
+    - emotional_result
+    - transition
+
+safety:
+  allowed_actions: [select_clip, suggest_reframe, create_subtitle_plan, mark_highlight]
+  forbidden_actions: [delete_original_media, publish_without_approval, direct_device_control]
+  requires_human_approval: [final_render, publish, face_blur_policy]
+
+test_cases:
+  - id: editor_single_portrait
+    events: [environment_start, subject_stable, smile]
+    expect_roles: [environment_context, portrait_anchor, emotional_result]
+  - id: editor_group_interaction
+    events: [environment_start, interaction, celebration_or_reaction]
+    expect_roles: [environment_context, relationship_context, emotional_result]
+  - id: editor_vertical
+    output_ratio: "9:16"
+    expect:
+      use_panorama_track: true
+      safe_margin_percent: 12
+      no_original_delete: true

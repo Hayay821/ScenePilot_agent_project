@@ -1,0 +1,143 @@
+schema_version: "1.0"
+skill_id: portrait_story_director
+version: "0.1.0"
+name: 人像故事导演
+name_en: Portrait Story Director
+description: >-
+  在拍摄前将用户的人像创作目标转成可执行的导演计划。
+  重点判断主体关系、人物状态、环境价值、情绪变化和输出用途。
+author:
+  type: system_sample
+  id: open_vision_team
+license: CC-BY-4.0
+status: draft
+visibility: local
+agent_binding:
+  - director
+  - skills_manager
+supported_devices:
+  - insta360_x4_air
+  - insta360_link2
+supported_media:
+  - image
+  - video
+  - panorama
+
+teaching:
+  audience: beginner
+  principles:
+    - name: 先确定人物关系
+      explanation: >-
+        人像不是只拍脸。先判断是个人肖像、朋友合影、采访还是环境人像，
+        才能决定景别、背景和设备位置。
+    - name: 保留情绪变化
+      explanation: >-
+        需要讲故事时，不要只保留最好看的一帧，应保留准备、互动、高潮和结果反应。
+    - name: 景别服务于表达
+      explanation: >-
+        近景强调表情，中景强调人物关系，全身或广角强调人物与环境的关系。
+  user_parameters:
+    subject_type: [single_portrait, group_portrait, interview, environmental_portrait]
+    mood: [自然, 专业, 温暖, 活泼, 纪实, 电影感]
+    output_goal: [头像, 采访, 社交短片, 活动记录, 旅行记录]
+    output_ratio: ["16:9", "9:16", "1:1"]
+
+inputs:
+  required:
+    - normalized_intent
+    - available_devices
+  optional:
+    - existing_event_timeline
+    - user_style_preferences
+
+outputs:
+  type: director_plan
+  required_fields:
+    - creative_goal
+    - priorities
+    - shot_intentions
+    - fallback_strategy
+    - teaching_notes
+
+rules:
+  - id: single_portrait_default
+    when:
+      subject_type: single_portrait
+    plan:
+      primary_camera: link2
+      recommended_shots: [medium_close_up, medium_shot, environmental_wide]
+      keep_environment_context: false
+    priority: 70
+    explanation: >-
+      单人肖像优先保证人物表情和眼神清晰，再用少量环境镜头补充人物背景。
+
+  - id: environmental_portrait
+    when:
+      subject_type: environmental_portrait
+    plan:
+      primary_camera: x4air
+      recommended_shots: [environmental_wide, medium_shot, subject_detail]
+      keep_environment_context: true
+      panorama_reframe: subject_and_environment
+    priority: 90
+    explanation: >-
+      环境人像的重点是人物和地点的关系，不能只输出紧脸特写。
+
+  - id: interview_story
+    when:
+      subject_type: interview
+    plan:
+      primary_camera: link2
+      supporting_camera: x4air
+      recommended_shots: [medium_close_up, reaction_shot, environment_cutaway]
+      preserve_speech: true
+      reserve_silence_before_answer_ms: 800
+    priority: 100
+    explanation: >-
+      采访需要清晰人声、稳定半身构图和适量环境切镜，不能用快速转场破坏表达。
+
+  - id: natural_mood
+    when:
+      mood: 自然
+    plan:
+      camera_behavior: slow_reframe
+      avoid: [rapid_zoom, frequent_cut, forced_pose]
+    priority: 80
+    explanation: "自然风格减少设备打扰，保留人物真实状态。"
+
+  - id: vertical_social
+    when:
+      output_ratio: "9:16"
+    plan:
+      composition: headroom_and_body_safe
+      avoid_edge_cropping: true
+    priority: 75
+    explanation: "竖屏需要预留头顶和身体运动空间，避免导出后裁掉人物。"
+
+conflict_policy:
+  - conflict: [natural_mood, rapid_highlight_edit]
+    resolution: keep_natural_mood
+    reason: "用户指定的风格优先于默认节奏模板。"
+  - conflict: [single_portrait, group_subject_detected]
+    resolution: ask_user_or_keep_primary_subject
+    reason: "不擅自改变用户指定主体。"
+
+safety:
+  allowed_actions: [suggest_camera_role, suggest_shot_sequence, suggest_subject_priority]
+  forbidden_actions: [direct_device_control, delete_media, publish_without_approval]
+  requires_human_approval: [change_primary_subject, publish_plan]
+
+test_cases:
+  - id: director_single_natural
+    intent: "我想拍一个自然的个人肖像，用于社交头像，不要太摆拍。"
+    expect:
+      subject_type: single_portrait
+      mood: 自然
+      output_goal: 头像
+      avoid_contains: [forced_pose, rapid_zoom]
+  - id: director_environment
+    intent: "记录一个人在 Club Med 户外环境中的旅行肖像，突出人与地点的关系。"
+    expect:
+      subject_type: environmental_portrait
+      primary_camera: x4air
+      keep_environment_context: true

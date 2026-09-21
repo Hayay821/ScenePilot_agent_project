@@ -1,0 +1,20 @@
+{
+  "_comment": "百炼模型配置示例 - 复制为 bailian_config.json 并填入真实值",
+  "api_url": "https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation",
+  "api_key": "sk-your-api-key-here",
+  "model": "qwen-plus",
+  "timeout": 30,
+  "max_retries": 3,
+  "_available_models": [
+    "qwen-max",
+    "qwen-plus",
+    "qwen-turbo"
+  ],
+  "_notes": {
+    "api_url": "百炼 API endpoint URL",
+    "api_key": "从百炼控制台获取的 API Key",
+    "model": "使用的模型名称，推荐 qwen-plus 平衡性能和成本",
+    "timeout": "API 请求超时时间（秒）",
+    "max_retries": "失败重试次数"
+  }
+}

@@ -1,0 +1,155 @@
+schema_version: "1.0"
+skill_id: portrait_composition_coach
+version: "0.1.0"
+name: 人像摄影指导
+name_en: Portrait Composition Coach
+description: >-
+  在拍摄过程中，根据主体状态、画面质量、光线和导演计划，
+  给出人像构图、景别、跟踪和设备动作建议。
+author:
+  type: system_sample
+  id: open_vision_team
+license: CC-BY-4.0
+status: draft
+visibility: local
+agent_binding:
+  - cinematographer
+supported_devices:
+  - insta360_x4_air
+  - insta360_link2
+
+teaching:
+  audience: beginner
+  principles:
+    - name: 先保证主体可用
+      explanation: "比复杂构图更重要的是人物没有被遮挡、脸部清晰、画面不严重过曝。"
+    - name: 眼神方向留空间
+      explanation: "人物看向哪一侧，通常就在那一侧保留适量空间，画面会更自然。"
+    - name: 运动方向留空间
+      explanation: "人物正在向前移动时，前方应比身后保留更多空间。"
+    - name: 景别逐级变化
+      explanation: "从环境到人物再到表情逐级靠近，不要无理由频繁变焦。"
+
+inputs:
+  required:
+    - director_plan
+    - device_capabilities
+    - realtime_subject_state
+  optional:
+    - current_frame_quality
+    - audio_state
+
+realtime_subject_state_schema:
+  subject_id: string
+  bbox_normalized: [number, number, number, number]
+  face_visible: boolean
+  gaze_direction: [left, right, camera, unknown]
+  motion_direction: [left, right, toward_camera, away_camera, still, unknown]
+  occlusion_ratio: number
+  tracking_confidence: number
+
+outputs:
+  type: cinematographer_recommendation
+  constraints:
+    - suggestions_only: true
+    - no_sdk_commands: true
+    - no_arbitrary_code: true
+
+rules:
+  - id: subject_lost
+    when:
+      tracking_confidence_lt: 0.45
+    suggest:
+      camera: x4air
+      action: recover_subject_from_panorama
+      composition: environmental_wide
+    priority: 100
+    explanation: "主体跟踪不可靠时，先用全景记录保证不漏掉事件，不让云台盲目追踪。"
+
+  - id: face_obscured
+    when:
+      face_visible: false
+      occlusion_ratio_gte: 0.35
+    suggest:
+      camera: link2
+      composition: medium_shot
+      action: wait_for_clear_face
+    priority: 90
+    explanation: "脸部被遮挡时不要继续强行拍特写，先退到中景或等待遮挡消失。"
+
+  - id: gaze_left
+    when:
+      gaze_direction: left
+    suggest:
+      composition: preserve_left_negative_space
+      pan_bias: left
+    priority: 65
+    explanation: "人物视线朝左时，在左侧保留空间可以强化注意力方向。"
+
+  - id: motion_right
+    when:
+      motion_direction: right
+    suggest:
+      composition: preserve_right_motion_space
+      tracking_speed: normal
+    priority: 75
+    explanation: "人物向右移动时，右侧空间用于承接运动方向。"
+
+  - id: portrait_closeup
+    when:
+      tracking_confidence_gte: 0.80
+      face_visible: true
+      occlusion_ratio_lt: 0.15
+    suggest:
+      camera: link2
+      composition: half_body_or_head
+      focus_priority: face
+    priority: 80
+    explanation: "主体稳定且面部清晰时才进入人像近景，避免在跟踪不稳定时快速推近。"
+
+  - id: backlight_risk
+    when:
+      exposure_status: strong_backlight
+    suggest:
+      action: suggest_exposure_check
+      do_not_execute: true
+      fallback: move_subject_or_use_fill_light
+    priority: 85
+    explanation: "逆光应先提出曝光或位置调整建议，不能让 Agent 直接修改相机曝光。"
+
+device_advice:
+  link2:
+    preferred_for: [face_detail, half_body, live_tracking]
+    allowed_suggestions: [head, half_body, full_body, tracking_speed, pan_tilt_target]
+  x4air:
+    preferred_for: [environment, subject_recovery, group_context]
+    allowed_suggestions: [wide_context, panorama_reframe, subject_direction]
+
+safety:
+  allowed_actions: [suggest_composition, suggest_tracking, suggest_reframe, suggest_exposure_check]
+  forbidden_actions: [direct_device_control, firmware_upgrade, delete_media, format_storage]
+  min_confidence_for_tracking_suggestion: 0.70
+  requires_human_approval: [change_primary_subject, exposure_override]
+
+test_cases:
+  - id: coach_gaze_space
+    subject_state:
+      face_visible: true
+      gaze_direction: left
+      motion_direction: still
+      occlusion_ratio: 0.05
+      tracking_confidence: 0.92
+    expect:
+      suggest_contains: [preserve_left_negative_space]
+      device_command_count: 0
+  - id: coach_lost_subject
+    subject_state:
+      face_visible: false
+      gaze_direction: unknown
+      motion_direction: unknown
+      occlusion_ratio: 0.70
+      tracking_confidence: 0.30
+    expect:
+      camera: x4air
+      action: recover_subject_from_panorama
+      device_command_count: 0

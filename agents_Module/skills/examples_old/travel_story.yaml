@@ -1,0 +1,133 @@
+schema_version: "1.0"
+skill_id: travel_story
+version: "0.1.0"
+name: 旅行故事叙事
+name_en: Travel Story Director
+description: >-
+  记录旅行探索故事，强调环境建立、人物探索和情绪反应的叙事节奏。
+  帮助用户理解如何用镜头语言讲述旅行故事。
+
+author:
+  type: expert
+  id: expert_demo
+  display_name: 示例摄影师
+  verified: false
+
+license: CC-BY-4.0
+visibility: local
+status: draft
+parent_skill: null
+
+teaching:
+  audience: beginner
+  principles:
+    - "旅行视频需要建立环境，让观众知道'这是哪里'"
+    - "人物与环境的互动比单纯的风景更有故事性"
+    - "使用广角建立环境，中景展示探索，特写捕捉情绪反应"
+    - "场景转换需要过渡镜头，避免跳跃感"
+  explain_template: >-
+    检测到新场景时，先使用全景建立环境；
+    人物开始探索时使用中景跟随；
+    捕捉到情绪反应时切换到特写。
+
+inputs:
+  intent:
+    type: object
+    properties:
+      subject:
+        type: string
+      location_type:
+        type: string
+        enum: [城市, 自然, 室内, 文化场所]
+      mood:
+        type: string
+        enum: [探索, 放松, 兴奋, 沉思]
+      output_ratio:
+        type: string
+        enum: ["16:9", "9:16", "1:1"]
+  media_types:
+    - video
+    - panorama
+  required_capabilities:
+    - scene_detection
+    - subject_tracking
+
+agent_bindings:
+  director: true
+  cinematographer: true
+  editor: true
+  skills_manager: true
+
+rules:
+  - id: establish_environment
+    when:
+      event: scene_change
+      confidence_gte: 0.70
+    advice:
+      composition: wide
+      camera_preference: x4air
+      keep_pre_roll_ms: 5000
+    priority: 90
+    explanation: "新场景开始时使用全景建立环境，让观众理解空间和氛围。"
+
+  - id: follow_exploration
+    when:
+      event: motion_start
+      subject_type: person
+      confidence_gte: 0.75
+    advice:
+      composition: full_body
+      camera_preference: link2
+      tracking_speed: normal
+    priority: 85
+    explanation: "人物开始移动探索时，使用中景跟随，保持人物与环境的关系。"
+
+  - id: capture_reaction
+    when:
+      event: excitement
+      confidence_gte: 0.65
+    advice:
+      composition: half_body
+      camera_preference: link2
+      mark_highlight: true
+    priority: 80
+    explanation: "捕捉情绪反应时使用半身或特写，强调人物表情和情感。"
+
+  - id: panorama_context
+    when:
+      event: scene_change
+      confidence_gte: 0.60
+    advice:
+      panorama_reframe: wide_angle
+      keep_post_roll_ms: 3000
+    priority: 75
+    explanation: "场景转换时使用全景过渡，提供视觉连贯性。"
+
+safety:
+  allowed_actions:
+    - suggest_composition
+    - suggest_tracking
+    - mark_highlight
+    - suggest_reframe
+    - mark_segment
+  requires_human_approval:
+    - publish
+    - upload
+    - overwrite_skill
+  forbidden_actions:
+    - delete_media
+    - format_storage
+    - firmware_upgrade
+  min_confidence_for_device_suggestion: 0.70
+
+evidence:
+  examples: []
+  expert_notes: []
+
+tags:
+  - 旅行摄影
+  - 环境建立
+  - 叙事节奏
+  - 场景转换
+  - 全景拍摄
+  - 初学者友好
