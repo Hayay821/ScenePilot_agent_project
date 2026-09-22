@@ -112,6 +112,93 @@
         gap: 18px;
       }
 
+      .material-card {
+        position: relative;
+        display: grid;
+        min-width: 0;
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+        border: 1px solid var(--home-line);
+        border-radius: 3px;
+        background: #ffffff;
+      }
+
+      .material-preview {
+        display: grid;
+        min-height: 0;
+        place-items: center;
+        color: var(--home-muted);
+        background: #e9ece9;
+      }
+
+      .material-preview img,
+      .material-preview video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .material-video-placeholder {
+        font-size: 32px;
+      }
+
+      .material-name {
+        width: 100%;
+        min-height: 34px;
+        padding: 7px 34px 7px 9px;
+        overflow: hidden;
+        border: 0;
+        border-top: 1px solid var(--home-line);
+        outline: none;
+        color: var(--home-ink);
+        background: #ffffff;
+        font-family: inherit;
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .material-name:focus {
+        box-shadow: inset 0 0 0 2px var(--home-accent);
+      }
+
+      .delete-material,
+      .cloud-material {
+        position: absolute;
+        z-index: 1;
+        border: 0;
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      .delete-material {
+        top: 7px;
+        right: 7px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        color: #ffffff;
+        background: rgba(32, 37, 43, 0.72);
+        font-size: 17px;
+        line-height: 20px;
+      }
+
+      .cloud-material {
+        right: 7px;
+        bottom: 7px;
+        padding: 5px 7px;
+        color: #ffffff;
+        background: rgba(32, 37, 43, 0.72);
+        font-size: 10px;
+      }
+
+      .material-error {
+        grid-column: 1 / -1;
+        padding: 12px;
+        color: #bd5132;
+        font-size: 13px;
+      }
+
       .add-material {
         min-width: 0;
         aspect-ratio: 4 / 3;
@@ -288,14 +375,189 @@
             </div>
             <button class="close-dialog" type="button" aria-label="关闭上传窗口" onclick="document.getElementById('upload-dialog').close()">&times;</button>
           </div>
-          <div class="drop-zone">
-            <div>
-              拖拽文件到这里
-              <span>支持图片与视频素材</span>
-            </div>
-          </div>
+           <label class="drop-zone" for="material-file">
+             <div>
+               拖拽文件到这里
+               <span>支持图片与视频素材</span>
+             </div>
+           </label>
+           <input id="material-file" type="file" accept="image/*,video/*" hidden />
         </div>
       </dialog>
     </main>
+
+    <script>
+      const apiBase = window.location.protocol === 'file:' ? 'http://127.0.0.1:8010' : '';
+      const currentUid = localStorage.getItem('boldmaker_uid') || localStorage.getItem('boldmaker_account') || 'test';
+      const materialGrid = document.querySelector('.material-grid');
+      const uploadDialog = document.getElementById('upload-dialog');
+      const materialFile = document.getElementById('material-file');
+
+      function apiHeaders(extra = {}) {
+        return { 'X-User-Id': currentUid, ...extra };
+      }
+
+      function showError(message) {
+        const oldError = materialGrid.querySelector('.material-error');
+        if (oldError) oldError.remove();
+        const error = document.createElement('div');
+        error.className = 'material-error';
+        error.textContent = message;
+        materialGrid.prepend(error);
+      }
+
+      async function responseError(response) {
+        let message = `操作失败（${response.status}）`;
+        try {
+          const body = await response.json();
+          if (body.detail) message = body.detail;
+        } catch (_) {
+          // Keep the status message when the server response is not JSON.
+        }
+        return message;
+      }
+
+      async function loadPreview(item, preview) {
+        const response = await fetch(`${apiBase}/api/resources/${item.id}/content`, { headers: apiHeaders() });
+        if (!response.ok) throw new Error(await responseError(response));
+        const objectUrl = URL.createObjectURL(await response.blob());
+        const media = document.createElement(item.kind === 'video' ? 'video' : 'img');
+        media.src = objectUrl;
+        if (item.kind === 'video') {
+          media.controls = true;
+          media.preload = 'metadata';
+        }
+        media.alt = item.original_name;
+        preview.replaceChildren(media);
+      }
+
+      function createMaterialCard(item) {
+        const card = document.createElement('article');
+        card.className = 'material-card';
+        card.dataset.id = item.id;
+
+        const preview = document.createElement('div');
+        preview.className = 'material-preview';
+        if (item.kind === 'video') {
+          const mark = document.createElement('span');
+          mark.className = 'material-video-placeholder';
+          mark.textContent = '▶';
+          preview.append(mark);
+        }
+
+        const name = document.createElement('input');
+        name.className = 'material-name';
+        name.type = 'text';
+        name.value = item.original_name;
+        name.title = '点击编辑文件名，按 Enter 或移开输入框保存';
+        let originalName = item.original_name;
+        async function rename() {
+          const nextName = name.value.trim();
+          if (!nextName || nextName === originalName) {
+            name.value = originalName;
+            return;
+          }
+          const response = await fetch(`${apiBase}/api/resources/${item.id}`, {
+            method: 'PUT',
+            headers: apiHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ original_name: nextName }),
+          });
+          if (!response.ok) {
+            name.value = originalName;
+            showError(await responseError(response));
+            return;
+          }
+          const updated = await response.json();
+          originalName = updated.original_name;
+          item.original_name = originalName;
+          name.value = originalName;
+        }
+        name.addEventListener('blur', rename);
+        name.addEventListener('keydown', event => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            name.blur();
+          }
+        });
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-material';
+        deleteButton.type = 'button';
+        deleteButton.textContent = '×';
+        deleteButton.title = '删除本地文件';
+        deleteButton.addEventListener('click', async () => {
+          if (!window.confirm(`确定删除“${originalName}”吗？`)) return;
+          const response = await fetch(`${apiBase}/api/resources/${item.id}`, { method: 'DELETE', headers: apiHeaders() });
+          if (!response.ok) {
+            showError(await responseError(response));
+            return;
+          }
+          card.remove();
+        });
+
+        const cloudButton = document.createElement('button');
+        cloudButton.className = 'cloud-material';
+        cloudButton.type = 'button';
+        cloudButton.textContent = '上传到云端';
+        cloudButton.title = '云端服务尚未开放';
+        cloudButton.addEventListener('click', () => showError('云端服务尚未开放，暂不能上传。'));
+
+        card.append(preview, name, deleteButton, cloudButton);
+        loadPreview(item, preview).catch(error => showError(error.message));
+        return card;
+      }
+
+      async function loadMaterials() {
+        const response = await fetch(`${apiBase}/api/resources`, { headers: apiHeaders() });
+        if (!response.ok) {
+          showError(await responseError(response));
+          return;
+        }
+        materialGrid.querySelectorAll('.material-card, .material-error').forEach(element => element.remove());
+        const items = (await response.json()).items;
+        items.forEach(item => materialGrid.append(createMaterialCard(item)));
+      }
+
+      materialFile.addEventListener('change', async () => {
+        const file = materialFile.files[0];
+        if (!file) return;
+        const kind = file.type.startsWith('video/') ? 'video' : file.type.startsWith('image/') ? 'image' : '';
+        if (!kind) {
+          showError('只支持图片或视频文件。');
+          materialFile.value = '';
+          return;
+        }
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await fetch(`${apiBase}/api/resources?kind=${kind}`, {
+          method: 'POST',
+          headers: apiHeaders(),
+          body: formData,
+        });
+        if (!response.ok) showError(await responseError(response));
+        else {
+          uploadDialog.close();
+          await loadMaterials();
+        }
+        materialFile.value = '';
+      });
+
+      const dropZone = document.querySelector('.drop-zone');
+      dropZone.addEventListener('dragover', event => {
+        event.preventDefault();
+        dropZone.style.borderColor = 'var(--home-accent)';
+      });
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.style.borderColor = '';
+      });
+      dropZone.addEventListener('drop', event => {
+        event.preventDefault();
+        dropZone.style.borderColor = '';
+        materialFile.files = event.dataTransfer.files;
+        materialFile.dispatchEvent(new Event('change'));
+      });
+
+      loadMaterials().catch(error => showError(error.message));
+    </script>
   </body>
 </html>
