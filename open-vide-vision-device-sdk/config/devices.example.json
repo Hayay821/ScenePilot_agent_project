@@ -1,0 +1,13 @@
+{
+  "devices": [
+    {"id": "x5-main", "adapter": "insta360_x5", "serial": ""},
+    {"id": "link2-main", "adapter": "insta360_link2", "friendly_name": "Insta360 Link 2"}
+  ],
+  "media": {
+    "adapter": "insta360_media_sdk",
+    "default_output_size": "3840x1920",
+    "default_stitch_algorithm": "optflow",
+    "flow_state": true
+  }
+}
+
