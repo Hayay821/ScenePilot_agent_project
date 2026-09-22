@@ -1,0 +1,26 @@
+{
+  "goal": "我想拍自然的人像短片",
+  "skills": [
+    "portrait_story_director"
+  ],
+  "shot_plan": [
+    {
+      "stage": "establish",
+      "shot": "wide_context",
+      "reason": "Set up environment and context"
+    },
+    {
+      "stage": "subject",
+      "shot": "medium_portrait",
+      "reason": "Focus on subject with clear framing"
+    },
+    {
+      "stage": "result",
+      "shot": "reaction",
+      "reason": "Capture emotional response or result"
+    }
+  ],
+  "reference_analysis": [],
+  "confidence": 0.75,
+  "user_summary_zh": "已生成导演拍摄计划。"
+}
