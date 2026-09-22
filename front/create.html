@@ -149,6 +149,176 @@
         font-size: 9px;
       }
 
+      .asset-item {
+        position: relative;
+      }
+
+      .asset-item.active {
+        color: var(--home-ink);
+        background: #eef0ed;
+      }
+
+      .asset-label {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .asset-thumb {
+        display: grid;
+        width: 30px;
+        height: 24px;
+        flex: 0 0 auto;
+        place-items: center;
+        overflow: hidden;
+        border: 1px solid #c2c9c6;
+        border-radius: 2px;
+        color: #8a9391;
+        background: #e9ece9;
+        font-size: 10px;
+      }
+
+      .asset-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .asset-remove {
+        position: absolute;
+        top: 4px;
+        right: 6px;
+        padding: 0 4px;
+        color: #a1a8a7;
+        font-size: 13px;
+        line-height: 1;
+      }
+
+      .asset-remove:hover {
+        color: #bd5132;
+      }
+
+      .asset-picker {
+        width: min(92vw, 640px);
+        padding: 0;
+        border: 0;
+        border-radius: 4px;
+        color: var(--home-ink);
+        background: var(--home-paper);
+        box-shadow: 0 18px 60px rgba(32, 37, 43, 0.22);
+      }
+
+      .asset-picker::backdrop {
+        background: rgba(32, 37, 43, 0.42);
+      }
+
+      .asset-picker-content {
+        padding: 24px;
+      }
+
+      .asset-picker-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 18px;
+      }
+
+      .asset-picker-title {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 600;
+      }
+
+      .asset-picker-caption {
+        margin: 6px 0 0;
+        color: #7b8284;
+        font-size: 12px;
+      }
+
+      .asset-picker-close {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 1px solid var(--home-line);
+        border-radius: 50%;
+        color: #7b8284;
+        background: transparent;
+        cursor: pointer;
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .asset-picker-grid {
+        display: grid;
+        max-height: 60vh;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+        overflow: auto;
+      }
+
+      .asset-picker-item {
+        display: grid;
+        gap: 6px;
+        padding: 8px;
+        border: 1px solid var(--home-line);
+        border-radius: 3px;
+        color: #596365;
+        background: #ffffff;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 11px;
+        text-align: left;
+      }
+
+      .asset-picker-item:hover {
+        border-color: var(--home-ink);
+      }
+
+      .asset-picker-item.selected {
+        border-color: var(--home-accent);
+        box-shadow: inset 0 0 0 1px var(--home-accent);
+      }
+
+      .asset-picker-thumb {
+        display: grid;
+        aspect-ratio: 4 / 3;
+        place-items: center;
+        overflow: hidden;
+        border-radius: 2px;
+        color: #8a9391;
+        background: #e9ece9;
+        font-size: 20px;
+      }
+
+      .asset-picker-thumb img,
+      .asset-picker-thumb video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .asset-picker-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .asset-picker-empty,
+      .asset-picker-error {
+        grid-column: 1 / -1;
+        padding: 20px;
+        color: #7b8284;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .asset-picker-error {
+        color: #bd5132;
+      }
+
       .asset-splitter {
         position: relative;
         z-index: 2;
@@ -181,6 +351,12 @@
         display: grid;
         place-items: center;
         background: #edf0ec;
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .preview-panel.is-dragging {
+        cursor: grabbing;
       }
 
       .preview-placeholder {
@@ -193,12 +369,79 @@
       }
 
       .preview-frame {
+        position: relative;
         display: grid;
         width: min(78%, 700px);
         aspect-ratio: 16 / 9;
         place-items: center;
+        overflow: hidden;
         border: 1px solid #3f494b;
         background: #2d3539;
+      }
+
+      .preview-media {
+        display: grid;
+        width: 100%;
+        height: 100%;
+        place-items: center;
+        overflow: hidden;
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .preview-panel.is-dragging,
+      .preview-panel.is-dragging .preview-media {
+        cursor: grabbing;
+      }
+
+      .preview-media-element {
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        user-select: none;
+        -webkit-user-drag: none;
+        transform-origin: center center;
+        transition: transform 120ms ease;
+      }
+
+      .preview-media.is-dragging .preview-media-element {
+        transition: none;
+      }
+
+      .preview-toolbar {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 6px;
+        border-radius: 3px;
+        background: rgba(32, 37, 43, 0.72);
+      }
+
+      .preview-toolbar button {
+        width: 26px;
+        height: 26px;
+        padding: 0;
+        border: 0;
+        border-radius: 2px;
+        color: #ffffff;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+      }
+
+      .preview-toolbar button:hover {
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .preview-zoom-value {
+        min-width: 38px;
+        color: #ffffff;
+        font-size: 11px;
+        text-align: center;
       }
 
       .play-mark {
@@ -490,11 +733,11 @@
       <aside class="asset-panel" aria-label="素材库面板">
         <header class="asset-header">
           <h1 class="asset-title">素材库</h1>
-          <button class="asset-add-button" type="button" aria-label="添加素材">+</button>
+          <button id="asset-add-button" class="asset-add-button" type="button" aria-label="添加素材">+</button>
         </header>
         <div class="asset-content">
           <p class="asset-group-title">本地素材</p>
-          <p class="asset-empty">暂无素材<br />可从仓库页面添加图片或视频。</p>
+          <div id="asset-local-list"></div>
           <p class="asset-group-title">项目文件</p>
           <button class="asset-item" type="button">
             <span class="asset-symbol">DIR</span>
@@ -506,10 +749,18 @@
       <div class="asset-splitter" aria-label="调整素材库宽度"></div>
       <section class="create-empty-area" aria-label="中间创作区域">
         <section class="preview-panel" aria-label="视频和图片播放展示面板">
-          <div class="preview-frame">
-            <div class="preview-placeholder">
-              <span class="play-mark">▶</span>
-              <span>等待视频或图片素材</span>
+          <div id="preview-frame" class="preview-frame">
+            <div id="preview-media" class="preview-media">
+              <div class="preview-placeholder">
+                <span class="play-mark">▶</span>
+                <span>等待视频或图片素材</span>
+              </div>
+            </div>
+            <div id="preview-toolbar" class="preview-toolbar" hidden>
+              <button id="preview-zoom-out" type="button" aria-label="缩小">−</button>
+              <span id="preview-zoom-value" class="preview-zoom-value">100%</span>
+              <button id="preview-zoom-in" type="button" aria-label="放大">+</button>
+              <button id="preview-close" type="button" aria-label="退出展示">×</button>
             </div>
           </div>
         </section>
@@ -579,6 +830,19 @@
         </div>
       </aside>
     </main>
+
+    <dialog id="asset-picker" class="asset-picker" aria-labelledby="asset-picker-title">
+      <div class="asset-picker-content">
+        <div class="asset-picker-header">
+          <div>
+            <h2 id="asset-picker-title" class="asset-picker-title">从本地仓库选择素材</h2>
+            <p class="asset-picker-caption">点击图片或视频，将其导入左侧素材库</p>
+          </div>
+          <button id="asset-picker-close" class="asset-picker-close" type="button" aria-label="关闭素材选择">&times;</button>
+        </div>
+        <div id="asset-picker-grid" class="asset-picker-grid"></div>
+      </div>
+    </dialog>
 
     <script>
       const createWorkspace = document.querySelector('.create-workspace');
@@ -665,6 +929,305 @@
       document.querySelector('.conversation-list').addEventListener('click', event => {
         const conversation = event.target.closest('[data-conversation]');
         if (conversation) openConversation(conversation.dataset.conversation, conversation.dataset.conversationKey);
+      });
+    </script>
+
+    <script>
+      const assetApiBase = window.location.protocol === 'file:' ? 'http://127.0.0.1:8010' : '';
+      const assetUid = localStorage.getItem('boldmaker_uid') || localStorage.getItem('boldmaker_account') || 'test';
+      const assetStorageKey = `boldmaker_create_assets_${assetUid}`;
+      const assetGrid = document.getElementById('asset-local-list');
+      const assetPicker = document.getElementById('asset-picker');
+      const assetPickerGrid = document.getElementById('asset-picker-grid');
+      const previewPanel = document.querySelector('.preview-panel');
+      const previewMedia = document.getElementById('preview-media');
+      const previewToolbar = document.getElementById('preview-toolbar');
+      const previewZoomValue = document.getElementById('preview-zoom-value');
+      const contentUrlCache = new Map();
+      let localResources = [];
+      let selectedAssetIds = loadSelectedAssets();
+      let previewZoom = 1;
+      let previewMediaElement = null;
+      let previewPanX = 0;
+      let previewPanY = 0;
+      let previewDragState = null;
+
+      function assetHeaders(extra = {}) {
+        return { 'X-User-Id': assetUid, ...extra };
+      }
+
+      function loadSelectedAssets() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(assetStorageKey) || '[]');
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (_) {
+          return [];
+        }
+      }
+
+      function saveSelectedAssets() {
+        localStorage.setItem(assetStorageKey, JSON.stringify(selectedAssetIds));
+      }
+
+      async function assetResponseError(response) {
+        let message = `操作失败（${response.status}）`;
+        try {
+          const body = await response.json();
+          if (body.detail) message = body.detail;
+        } catch (_) {
+          // Keep the status message when the server response is not JSON.
+        }
+        return message;
+      }
+
+      async function getContentUrl(item) {
+        if (contentUrlCache.has(item.id)) return contentUrlCache.get(item.id);
+        const response = await fetch(`${assetApiBase}/api/resources/${item.id}/content`, { headers: assetHeaders() });
+        if (!response.ok) throw new Error(await assetResponseError(response));
+        const url = URL.createObjectURL(await response.blob());
+        contentUrlCache.set(item.id, url);
+        return url;
+      }
+
+      function placeholderElement(text) {
+        const box = document.createElement('div');
+        box.className = 'preview-placeholder';
+        if (text) {
+          box.textContent = text;
+          return box;
+        }
+        const mark = document.createElement('span');
+        mark.className = 'play-mark';
+        mark.textContent = '▶';
+        const label = document.createElement('span');
+        label.textContent = '等待视频或图片素材';
+        box.append(mark, label);
+        return box;
+      }
+
+      function renderAssetList() {
+        assetGrid.replaceChildren();
+        const items = selectedAssetIds
+          .map(id => localResources.find(resource => resource.id === id))
+          .filter(Boolean);
+        if (items.length === 0) {
+          const empty = document.createElement('p');
+          empty.className = 'asset-empty';
+          empty.innerHTML = '暂无素材<br />点击右上角 + 从本地仓库导入。';
+          assetGrid.append(empty);
+          return;
+        }
+        items.forEach(item => assetGrid.append(createAssetItem(item)));
+      }
+
+      function createAssetThumb(item) {
+        const thumb = document.createElement('span');
+        thumb.className = 'asset-thumb';
+        if (item.kind === 'video') {
+          thumb.classList.add('asset-thumb-video');
+          thumb.textContent = '▶';
+          return thumb;
+        }
+        const image = document.createElement('img');
+        image.alt = item.original_name;
+        thumb.append(image);
+        getContentUrl(item).then(url => { image.src = url; }).catch(() => {});
+        return thumb;
+      }
+
+      function createAssetItem(item) {
+        const button = document.createElement('button');
+        button.className = 'asset-item';
+        button.type = 'button';
+        button.dataset.id = item.id;
+        button.title = item.original_name;
+
+        const label = document.createElement('span');
+        label.className = 'asset-label';
+        label.textContent = item.original_name;
+
+        const remove = document.createElement('span');
+        remove.className = 'asset-remove';
+        remove.textContent = '×';
+        remove.title = '从素材库移除';
+        remove.addEventListener('click', event => {
+          event.stopPropagation();
+          selectedAssetIds = selectedAssetIds.filter(id => id !== item.id);
+          saveSelectedAssets();
+          renderAssetList();
+        });
+
+        button.append(createAssetThumb(item), label, remove);
+        button.addEventListener('click', () => showAssetPreview(item));
+        return button;
+      }
+
+      async function showAssetPreview(item) {
+        previewMedia.replaceChildren(placeholderElement('正在加载素材…'));
+        assetGrid.querySelectorAll('.asset-item').forEach(element => {
+          element.classList.toggle('active', element.dataset.id === item.id);
+        });
+        try {
+          const url = await getContentUrl(item);
+          const media = document.createElement(item.kind === 'video' ? 'video' : 'img');
+          media.className = 'preview-media-element';
+          media.src = url;
+          if (item.kind === 'video') {
+            media.controls = true;
+            media.autoplay = true;
+            media.playsInline = true;
+          } else {
+            media.alt = item.original_name;
+            media.draggable = false;
+          }
+          previewMediaElement = media;
+          previewZoom = 1;
+          previewPanX = 0;
+          previewPanY = 0;
+          applyPreviewZoom();
+          previewMedia.replaceChildren(media);
+          previewToolbar.hidden = false;
+        } catch (error) {
+          previewMedia.replaceChildren(placeholderElement(error.message));
+          previewToolbar.hidden = true;
+        }
+      }
+
+      function applyPreviewZoom() {
+        if (previewMediaElement) {
+          previewMediaElement.style.transform = `translate(${previewPanX}px, ${previewPanY}px) scale(${previewZoom})`;
+        }
+        previewZoomValue.textContent = `${Math.round(previewZoom * 100)}%`;
+      }
+
+      function closePreview() {
+        previewMediaElement = null;
+        previewZoom = 1;
+        previewPanX = 0;
+        previewPanY = 0;
+        previewDragState = null;
+        previewPanel.classList.remove('is-dragging');
+        previewToolbar.hidden = true;
+        previewMedia.replaceChildren(placeholderElement());
+        assetGrid.querySelectorAll('.asset-item').forEach(element => element.classList.remove('active'));
+      }
+
+      async function loadLocalResources() {
+        const response = await fetch(`${assetApiBase}/api/resources`, { headers: assetHeaders() });
+        if (!response.ok) throw new Error(await assetResponseError(response));
+        localResources = (await response.json()).items;
+        selectedAssetIds = selectedAssetIds.filter(id => localResources.some(resource => resource.id === id));
+        saveSelectedAssets();
+        renderAssetList();
+      }
+
+      async function openAssetPicker() {
+        if (!assetPicker.open) assetPicker.showModal();
+        const loading = document.createElement('p');
+        loading.className = 'asset-picker-empty';
+        loading.textContent = '正在加载本地素材…';
+        assetPickerGrid.replaceChildren(loading);
+        try {
+          await loadLocalResources();
+          renderAssetPicker();
+        } catch (error) {
+          loading.textContent = error.message;
+          loading.className = 'asset-picker-error';
+        }
+      }
+
+      function renderAssetPicker() {
+        assetPickerGrid.replaceChildren();
+        if (localResources.length === 0) {
+          const empty = document.createElement('p');
+          empty.className = 'asset-picker-empty';
+          empty.textContent = '本地仓库暂无图片或视频，请先在仓库页面上传。';
+          assetPickerGrid.append(empty);
+          return;
+        }
+        localResources.forEach(item => assetPickerGrid.append(createPickerItem(item)));
+      }
+
+      function createPickerItem(item) {
+        const button = document.createElement('button');
+        button.className = 'asset-picker-item';
+        button.type = 'button';
+        button.dataset.id = item.id;
+        if (selectedAssetIds.includes(item.id)) button.classList.add('selected');
+
+        const thumb = document.createElement('div');
+        thumb.className = 'asset-picker-thumb';
+        if (item.kind === 'video') {
+          thumb.textContent = '▶';
+        } else {
+          const image = document.createElement('img');
+          image.alt = item.original_name;
+          thumb.append(image);
+          getContentUrl(item).then(url => { image.src = url; }).catch(() => {});
+        }
+
+        const name = document.createElement('span');
+        name.className = 'asset-picker-name';
+        name.textContent = item.original_name;
+
+        button.append(thumb, name);
+        button.addEventListener('click', () => {
+          if (selectedAssetIds.includes(item.id)) {
+            selectedAssetIds = selectedAssetIds.filter(id => id !== item.id);
+            button.classList.remove('selected');
+          } else {
+            selectedAssetIds.push(item.id);
+            button.classList.add('selected');
+          }
+          saveSelectedAssets();
+          renderAssetList();
+        });
+        return button;
+      }
+
+      document.getElementById('asset-add-button').addEventListener('click', openAssetPicker);
+      document.getElementById('asset-picker-close').addEventListener('click', () => assetPicker.close());
+      document.getElementById('preview-zoom-in').addEventListener('click', () => {
+        previewZoom = Math.min(4, previewZoom + 0.25);
+        applyPreviewZoom();
+      });
+      document.getElementById('preview-zoom-out').addEventListener('click', () => {
+        previewZoom = Math.max(0.25, previewZoom - 0.25);
+        applyPreviewZoom();
+      });
+      document.getElementById('preview-close').addEventListener('click', closePreview);
+
+      previewPanel.addEventListener('pointerdown', event => {
+        if (!previewMediaElement || event.button !== 0) return;
+        if (event.target.closest('.preview-toolbar')) return;
+        if (previewMediaElement.tagName === 'VIDEO' && event.target === previewMediaElement) {
+          if (event.offsetY > previewMediaElement.offsetHeight - 44) return;
+        } else {
+          event.preventDefault();
+        }
+        previewDragState = { x: event.clientX, y: event.clientY, panX: previewPanX, panY: previewPanY };
+        previewPanel.classList.add('is-dragging');
+      });
+
+      window.addEventListener('pointermove', event => {
+        if (!previewDragState) return;
+        previewPanX = previewDragState.panX + (event.clientX - previewDragState.x);
+        previewPanY = previewDragState.panY + (event.clientY - previewDragState.y);
+        applyPreviewZoom();
+      });
+
+      window.addEventListener('pointerup', () => {
+        if (!previewDragState) return;
+        previewDragState = null;
+        previewPanel.classList.remove('is-dragging');
+      });
+
+      renderAssetList();
+      loadLocalResources().catch(error => {
+        const failure = document.createElement('p');
+        failure.className = 'asset-empty';
+        failure.textContent = error.message;
+        assetGrid.replaceChildren(failure);
       });
     </script>
   </body>
