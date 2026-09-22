@@ -27,7 +27,8 @@ int main() {
     assert(executor.Execute(valid).success);
     assert(audit_count == 3);
 
-    std::cout << "device executor tests passed\n";
+    std::cout << "设备执行器测试通过\n";
     return 0;
 }
+
 

@@ -37,23 +37,23 @@ std::vector<DeviceInfo> DeviceExecutor::ListDevices() const {
 
 ActionResult DeviceExecutor::Validate(const DeviceAction& action, const IDeviceAdapter& adapter) const {
     if (action.request_id.empty() || action.device_id.empty())
-        return {false, ErrorCode::invalid_request, "request_id and device_id are required", {}};
+        return {false, ErrorCode::invalid_request, "必须提供 request_id 和 device_id", {}};
     if (!action.approved)
-        return {false, ErrorCode::approval_required, "PlanValidator approval is required", {}};
+        return {false, ErrorCode::approval_required, "动作必须先通过 PlanValidator 审批", {}};
     if (!adapter.IsConnected())
-        return {false, ErrorCode::not_connected, "device is not connected", {}};
+        return {false, ErrorCode::not_connected, "设备尚未连接", {}};
     if (!adapter.Supports(action.type))
-        return {false, ErrorCode::unsupported, "action is not supported by this device", {}};
+        return {false, ErrorCode::unsupported, "该设备不支持此动作", {}};
     if (action.type == ActionType::set_ptz &&
         (action.pan_degrees < -180.0 || action.pan_degrees > 180.0 ||
          action.tilt_degrees < -90.0 || action.tilt_degrees > 90.0))
-        return {false, ErrorCode::invalid_request, "PTZ angle is outside the safety envelope", {}};
+        return {false, ErrorCode::invalid_request, "PTZ角度超出安全范围", {}};
     if (action.type == ActionType::set_zoom && (action.zoom < 1.0 || action.zoom > 4.0))
-        return {false, ErrorCode::invalid_request, "zoom must be in [1.0, 4.0]", {}};
+        return {false, ErrorCode::invalid_request, "变焦值必须位于 [1.0, 4.0] 范围内", {}};
     if (action.type == ActionType::download_media &&
         (action.source_path.empty() || action.destination_path.empty()))
-        return {false, ErrorCode::invalid_request, "download source and destination are required", {}};
-    return {true, ErrorCode::ok, "validated", {}};
+        return {false, ErrorCode::invalid_request, "下载操作必须提供来源路径和目标路径", {}};
+    return {true, ErrorCode::ok, "校验通过", {}};
 }
 
 ActionResult DeviceExecutor::Execute(const DeviceAction& action) {
@@ -64,7 +64,7 @@ ActionResult DeviceExecutor::Execute(const DeviceAction& action) {
         if (it != devices_.end()) adapter = it->second;
     }
     if (!adapter) {
-        ActionResult result{false, ErrorCode::device_not_found, "device is not registered", {}};
+        ActionResult result{false, ErrorCode::device_not_found, "设备尚未注册", {}};
         Audit(action, result);
         return result;
     }
@@ -81,6 +81,8 @@ void DeviceExecutor::Audit(const DeviceAction& action, const ActionResult& resul
 }
 
 }  // namespace ovv
+
+
 
 
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://open-vide-vision.local/schemas/device_action.schema.json",
-  "title": "Validated device action",
+  "title": "经过校验的设备动作",
   "type": "object",
   "additionalProperties": false,
   "required": ["request_id", "device_id", "action", "approved", "rule_id", "evidence_id", "parameters"],
@@ -17,4 +17,5 @@
     "parameters": {"type": "object"}
   }
 }
+
 

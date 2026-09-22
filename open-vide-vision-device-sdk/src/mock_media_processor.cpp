@@ -14,7 +14,7 @@ public:
         job.output = request.output;
         if (request.inputs.empty() || request.output.empty()) {
             job.state = MediaJobState::failed;
-            job.error = "inputs and output are required";
+            job.error = "必须提供输入和输出路径";
         } else {
             job.state = MediaJobState::succeeded;
             job.progress = 100;
@@ -26,7 +26,7 @@ public:
     MediaJob Get(const std::string& job_id) const override {
         std::lock_guard<std::mutex> lock(mutex_);
         const auto it = jobs_.find(job_id);
-        return it == jobs_.end() ? MediaJob{job_id, MediaJobState::failed, 0, {}, "job not found"} : it->second;
+        return it == jobs_.end() ? MediaJob{job_id, MediaJobState::failed, 0, {}, "未找到任务"} : it->second;
     }
     bool Cancel(const std::string& job_id) override {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -47,4 +47,5 @@ std::shared_ptr<IMediaProcessor> MakeMockMediaProcessor() {
 }
 
 }  // namespace ovv
+
 

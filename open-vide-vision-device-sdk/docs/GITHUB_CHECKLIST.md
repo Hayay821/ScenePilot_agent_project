@@ -1,12 +1,13 @@
-# GitHub submission checklist
+# GitHub 提交检查清单
 
-- [ ] Commit only this integration package and your own project code.
-- [ ] Confirm `git status` contains no `.dll`, `.lib`, models, JSON capability files or SDK archives.
-- [ ] Add the repository remote and push the source tree.
-- [ ] Configure all three SDK roots with CMake cache variables.
-- [ ] Build with MSVC x64.
-- [ ] Run the Mock test before connecting hardware.
-- [ ] Run X5 discovery/capture/download smoke tests.
-- [ ] Run Link 2 tracking/composition/PTZ smoke tests.
-- [ ] Run `.insp` and `.insv` MediaSDK smoke tests.
-- [ ] Record SDK, firmware and driver versions in the release notes.
+- [ ] 只提交本集成包和团队自己编写的项目代码。
+- [ ] 确认 `git status` 中没有 `.dll`、`.lib`、模型、相机能力JSON、SDK压缩包或真实拍摄素材。
+- [ ] 设置远程仓库并提交源码目录。
+- [ ] 每位队友通过允许的渠道单独取得三套官方SDK。
+- [ ] 使用CMake变量配置三个SDK根目录。
+- [ ] 使用MSVC x64构建。
+- [ ] 连接硬件前先运行模拟测试。
+- [ ] 运行X5发现、连接、拍照和下载冒烟测试。
+- [ ] 运行Link 2跟踪、构图和PTZ冒烟测试。
+- [ ] 分别使用一份 `.insp` 和 `.insv` 运行MediaSDK测试。
+- [ ] 在版本说明中记录SDK、相机固件和驱动版本。

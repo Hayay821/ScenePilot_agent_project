@@ -11,7 +11,7 @@ public:
     explicit MockDeviceAdapter(DeviceInfo info) : info_(std::move(info)) {}
     ActionResult Connect() override {
         connected_ = true;
-        return {true, ErrorCode::ok, "mock device connected", {}};
+        return {true, ErrorCode::ok, "模拟设备已连接", {}};
     }
     void Disconnect() noexcept override { connected_ = false; }
     bool IsConnected() const noexcept override { return connected_; }
@@ -23,7 +23,7 @@ public:
         std::string output;
         if (action.type == ActionType::capture_photo) output = "mock://media/photo.insp";
         if (action.type == ActionType::stop_recording) output = "mock://media/video.insv";
-        return {true, ErrorCode::ok, "mock action executed", output};
+        return {true, ErrorCode::ok, "模拟动作执行成功", output};
     }
 private:
     DeviceInfo info_;
@@ -37,4 +37,5 @@ std::shared_ptr<IDeviceAdapter> MakeMockDeviceAdapter(DeviceInfo info) {
 }
 
 }  // namespace ovv
+
 

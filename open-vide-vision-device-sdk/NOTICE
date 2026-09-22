@@ -1,6 +1,7 @@
-This repository contains original integration code only.
+第三方组件声明
 
-Insta360 CameraSDK, MediaSDK, UVCCamera SDK, their headers, import libraries,
-DLLs, models, JSON files and documentation are third-party proprietary assets.
-They are not covered by this repository's MIT License and are not redistributed
-here. Users must obtain them from Insta360 and comply with the applicable terms.
+本仓库只包含项目团队自行编写的集成代码。
+
+Insta360 CameraSDK、MediaSDK、UVCCamera SDK及其头文件、导入库、DLL、模型、JSON文件和文档属于第三方专有资产，不在本仓库MIT许可证的授权范围内，本仓库也不对其进行再次分发。
+
+使用者必须从影石官方或其他获准渠道取得这些SDK，并遵守对应的授权与使用协议。
