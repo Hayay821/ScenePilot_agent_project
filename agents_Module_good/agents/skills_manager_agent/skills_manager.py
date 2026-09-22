@@ -152,11 +152,8 @@ class SkillManager:
         for skill in stage_skills:
             tags = " ".join(skill.get("tags", [])).lower()
             stages = skill.get("stages", []) or ([skill["stage"]] if skill.get("stage") else [])
-            score = sum(1 for word in tags.split() if word in text)
-            if stage in stages:
-                score += 3
-            if not score and stage in stages:
-                score = 1
+            tag_score = sum(1 for word in tags.split() if word in text)
+            score = tag_score + (3 if stage in stages and tag_score else 0)
             scores.append((score, skill))
         scores.sort(key=lambda item: item[0], reverse=True)
         fallback = []
@@ -164,7 +161,8 @@ class SkillManager:
             stages = skill.get("stages", []) or ([skill["stage"]] if skill.get("stage") else [])
             if stage in stages:
                 fallback.append(skill)
-        return [skill for score, skill in scores if score > 0][:3] or fallback[:3]
+        matched = [skill for score, skill in scores if score > 0][:3]
+        return matched or fallback[:3]
 
     def explain(self, skills: list[dict]) -> str:
         return "\n".join(f"- {s['name']}: {s['description']}" for s in skills)

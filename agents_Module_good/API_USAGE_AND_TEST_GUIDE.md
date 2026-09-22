@@ -867,6 +867,39 @@ python fast.py serve --mode bailian
 
 API Key 只从 `.env` 或环境变量读取，不由前端发送。
 
+### 13.1 真实百炼响应缓存
+
+真实视觉请求成功后会缓存到：
+
+```text
+F:\BoldMaker\models\scenepilot_cache
+```
+
+缓存键包含：
+
+- Agent 使用的模型。
+- Base URL。
+- Prompt。
+- 输入图片路径、文件大小和修改时间。
+
+这使得相同的真实素材和相同提示词可以在现场快速回放，不必重复调用百炼。缓存不包含 API Key。
+
+强制真实重新调用：
+
+```powershell
+$env:SCENEPILOT_DISABLE_CACHE="1"
+```
+
+建议比赛前执行：
+
+```powershell
+# 第一次：确认百炼真实调用和输出
+python fast.py run --mode bailian --text "自然人像" --media data
+
+# 第二次：确认缓存回放速度
+python fast.py run --mode bailian --text "自然人像" --media data
+```
+
 ## 14. 常见问题
 
 ### 14.1 返回 404

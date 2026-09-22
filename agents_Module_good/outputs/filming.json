@@ -64,20 +64,21 @@
   "analysis": {
     "subject_visible": true,
     "face_visible": true,
-    "tracking_confidence": 0.87,
-    "composition_quality": 0.8,
-    "summary": "画面为多人舞台合影，人物姿态自然、表情生动，背景‘BOLD MAKER 2026’字样清晰，环境氛围浓厚；但整体构图偏满，部分人物被遮挡（如中间后方人员），且右侧边缘人物有轻微出画趋势，影响主体完整性与空间层次感。",
-    "confidence": 0.85
+    "tracking_confidence": 0.75,
+    "composition_quality": 0.7,
+    "summary": "Mock analysis: a person is visible; keep the subject clear and leave directional space.",
+    "confidence": 0.75
   },
   "suggestion": {
     "action": "capture_frame",
-    "composition": "wide_shot",
-    "reason": "当前画面已捕捉到群体互动的自然瞬间，人物面部清晰、情绪饱满，背景信息完整，符合‘突出人物与环境关系’的核心目标；虽有轻微构图优化空间，但时机成熟，宜立即定格以保留真实生动的现场感，避免因等待导致气氛散失。"
+    "composition": "medium_portrait",
+    "reason": "Frame is suitable for capture"
   },
   "captured_frame": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\captures\\frame_000000.jpg",
   "matched_skills": [
-    "portrait_composition_coach"
+    "portrait_composition_coach",
+    "action_sports_cinematographer"
   ],
-  "skills_guidance": "依据人像摄影指导规范，我综合评估了主体状态（多人自然互动、表情真实）、画面质量（光线均匀、焦点清晰、无明显噪点/模糊）、以及导演计划中对‘环境关系’的强调——背景文字与舞台空间构成叙事语境。因此选择在动态稳定、情绪高点时执行拍摄动作（capture_frame），并推荐广角（wide_shot）构图以强化人与场景的共生关系，而非强行压缩为中景或特写而牺牲环境信息。",
+  "skills_guidance": "",
   "user_summary_zh": "已分析当前画面并标记拍摄建议。"
 }

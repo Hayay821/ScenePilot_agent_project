@@ -512,7 +512,11 @@ class ScenePilotFast:
         images, videos = MediaTools.images(media_dir), MediaTools.videos(media_dir)
 
         # Select skills
-        selected = self.skills.select(user_text)
+        selected = []
+        for stage in ("director", "cinematographer", "editor"):
+            for skill in self.skills.select(user_text, stage):
+                if skill.get("id") not in {item.get("id") for item in selected}:
+                    selected.append(skill)
         if not selected:
             selected = self.skills.list()[:3]
 
@@ -585,8 +589,11 @@ class ScenePilotFast:
             rule_items = []
             for rule in rules[:8]:
                 if isinstance(rule, dict):
+                    rule_id = rule.get("id")
+                    if not rule_id:
+                        continue
                     rule_items.append({
-                        "rule_id": rule.get("id", "unnamed_rule"),
+                        "rule_id": rule_id,
                         "condition": rule.get("when", {}),
                         "advice": rule.get("advice", rule.get("action", {})),
                         "explanation": rule.get("explanation", ""),
@@ -621,6 +628,11 @@ class ScenePilotFast:
                     "output": editing.get("rendered_preview"),
                 },
             ],
+            "matched_rule_ids": {
+                "director": [r.get("id") for s in skills if s.get("stage") == "director" for r in s.get("rules", [])[:3] if r.get("id")],
+                "cinematographer": [r.get("id") for s in skills if s.get("stage") == "cinematographer" for r in s.get("rules", [])[:3] if r.get("id")],
+                "editor": [r.get("id") for s in skills if s.get("stage") == "editor" for r in s.get("rules", [])[:3] if r.get("id")],
+            },
             "editable_controls": [
                 "selected_skills",
                 "shot_plan",

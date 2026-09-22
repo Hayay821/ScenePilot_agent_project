@@ -2,310 +2,6 @@
   "skills": [
     {
       "schema_version": "1.0",
-      "skill_id": "portrait_composition_coach",
-      "version": "0.1.0",
-      "name": "人像摄影指导",
-      "name_en": "Portrait Composition Coach",
-      "description": "在拍摄过程中，根据主体状态、画面质量、光线和导演计划， 给出人像构图、景别、跟踪和设备动作建议。",
-      "purpose": "Analyze current frames and suggest the next safe and useful portrait capture.",
-      "author": {
-        "type": "expert",
-        "id": "open_vision_team",
-        "display_name": "OpenVision 团队",
-        "verified": false
-      },
-      "license": "CC-BY-4.0",
-      "visibility": "local",
-      "status": "draft",
-      "parent_skill": null,
-      "teaching": {
-        "audience": "beginner",
-        "principles": [
-          "比复杂构图更重要的是人物没有被遮挡、脸部清晰、画面不严重过曝",
-          "人物看向哪一侧，通常就在那一侧保留适量空间，画面会更自然",
-          "人物正在向前移动时，前方应比身后保留更多空间",
-          "从环境到人物再到表情逐级靠近，不要无理由频繁变焦"
-        ],
-        "explain_template": "根据主体跟踪置信度、面部可见性和运动方向，建议构图和设备动作； 跟踪不稳定时先用全景记录，稳定后再进入人像近景。"
-      },
-      "inputs": {
-        "intent": {
-          "type": "object",
-          "properties": {
-            "subject_id": {
-              "type": "string"
-            },
-            "bbox_normalized": {
-              "type": "array"
-            },
-            "face_visible": {
-              "type": "boolean"
-            },
-            "gaze_direction": {
-              "type": "string",
-              "enum": [
-                "left",
-                "right",
-                "camera",
-                "unknown"
-              ]
-            },
-            "motion_direction": {
-              "type": "string",
-              "enum": [
-                "left",
-                "right",
-                "toward_camera",
-                "away_camera",
-                "still",
-                "unknown"
-              ]
-            },
-            "occlusion_ratio": {
-              "type": "number"
-            },
-            "tracking_confidence": {
-              "type": "number"
-            }
-          }
-        },
-        "media_types": [
-          "image",
-          "video",
-          "panorama"
-        ],
-        "required_capabilities": [
-          "subject_tracking",
-          "face_detection"
-        ]
-      },
-      "agent_bindings": {
-        "director": false,
-        "cinematographer": true,
-        "editor": false,
-        "skills_manager": true
-      },
-      "supported_devices": [
-        "insta360_x4_air",
-        "insta360_link2"
-      ],
-      "tags": [
-        "人像摄影",
-        "构图指导",
-        "全身构图",
-        "动作摄影",
-        "portrait",
-        "cinematography",
-        "framing",
-        "realtime",
-        "subject_tracking"
-      ],
-      "prompt_context": {
-        "system_role": "You are a real-time portrait cinematographer. Analyze frames, then suggest one next action.",
-        "required_analysis": [
-          "subject_visibility",
-          "face_visibility",
-          "occlusion",
-          "framing_quality",
-          "gaze_and_motion_direction",
-          "exposure_risk"
-        ],
-        "output_language": "Chinese explanation; English action values."
-      },
-      "output_contract": {
-        "required": [
-          "analysis",
-          "suggestion",
-          "confidence",
-          "evidence_frames",
-          "user_summary_zh"
-        ],
-        "allowed_actions": [
-          "capture_frame",
-          "wait_and_recheck",
-          "switch_to_wide",
-          "suggest_reframe",
-          "suggest_exposure_check"
-        ],
-        "never_execute": true
-      },
-      "rules": [
-        {
-          "id": "subject_lost",
-          "when": {
-            "tracking_confidence_lt": 0.45
-          },
-          "advice": {
-            "camera": "x4air",
-            "action": "recover_subject_from_panorama",
-            "composition": "environmental_wide"
-          },
-          "priority": 100,
-          "explanation": "主体跟踪不可靠时，先用全景记录保证不漏掉事件，不让云台盲目追踪"
-        },
-        {
-          "id": "face_obscured",
-          "when": {
-            "face_visible": false,
-            "occlusion_ratio_gte": 0.35
-          },
-          "advice": {
-            "camera": "link2",
-            "composition": "medium_shot",
-            "action": "wait_for_clear_face"
-          },
-          "priority": 90,
-          "explanation": "脸部被遮挡时不要继续强行拍特写，先退到中景或等待遮挡消失"
-        },
-        {
-          "id": "gaze_left",
-          "when": {
-            "gaze_direction": "left"
-          },
-          "advice": {
-            "composition": "preserve_left_negative_space",
-            "pan_bias": "left"
-          },
-          "priority": 65,
-          "explanation": "人物视线朝左时，在左侧保留空间可以强化注意力方向"
-        },
-        {
-          "id": "motion_right",
-          "when": {
-            "motion_direction": "right"
-          },
-          "advice": {
-            "composition": "preserve_right_motion_space",
-            "tracking_speed": "normal"
-          },
-          "priority": 75,
-          "explanation": "人物向右移动时，右侧空间用于承接运动方向"
-        },
-        {
-          "id": "portrait_closeup",
-          "when": {
-            "tracking_confidence_gte": 0.8,
-            "face_visible": true,
-            "occlusion_ratio_lt": 0.15
-          },
-          "advice": {
-            "camera": "link2",
-            "composition": "half_body_or_head",
-            "focus_priority": "face"
-          },
-          "priority": 80,
-          "explanation": "主体稳定且面部清晰时才进入人像近景，避免在跟踪不稳定时快速推近"
-        },
-        {
-          "id": "backlight_risk",
-          "when": {
-            "exposure_status": "strong_backlight"
-          },
-          "advice": {
-            "action": "suggest_exposure_check",
-            "do_not_execute": true,
-            "fallback": "move_subject_or_use_fill_light"
-          },
-          "priority": 85,
-          "explanation": "逆光应先提出曝光或位置调整建议，不能让 Agent 直接修改相机曝光"
-        },
-        {
-          "id": "subject_centered",
-          "when": {
-            "tracking_confidence_gte": 0.75,
-            "face_visible": true,
-            "composition_quality_gte": 0.7
-          },
-          "advice": {
-            "action": "capture_frame",
-            "composition": "current_stable_composition",
-            "hold_ms": 800
-          },
-          "priority": 92,
-          "explanation": "主体稳定、面部清晰且构图可用时，保存当前帧比继续移动更可靠。"
-        },
-        {
-          "id": "subject_too_small",
-          "when": {
-            "subject_area_ratio_lt": 0.08,
-            "tracking_confidence_gte": 0.6
-          },
-          "advice": {
-            "action": "suggest_reframe",
-            "composition": "medium_shot",
-            "camera_preference": "link2"
-          },
-          "priority": 72,
-          "explanation": "主体过小时先建议重新构图，避免输出只有环境而看不清人物。"
-        },
-        {
-          "id": "subject_too_close",
-          "when": {
-            "subject_area_ratio_gte": 0.65,
-            "face_visible": true
-          },
-          "advice": {
-            "action": "suggest_reframe",
-            "composition": "half_body_or_medium",
-            "keep_headroom": true
-          },
-          "priority": 74,
-          "explanation": "主体过近时保留头部和上半身安全区，避免裁切脸部或身体。"
-        },
-        {
-          "id": "uncertain_frame",
-          "when": {
-            "tracking_confidence_lt": 0.6
-          },
-          "advice": {
-            "action": "wait_and_recheck",
-            "hold_ms": 500,
-            "fallback_camera": "x4air"
-          },
-          "priority": 95,
-          "explanation": "置信度不足时不拍摄关键帧，等待下一帧或切换到全景安全记录。"
-        }
-      ],
-      "safety": {
-        "allowed_actions": [
-          "suggest_composition",
-          "suggest_tracking",
-          "suggest_reframe",
-          "suggest_exposure_check"
-        ],
-        "requires_human_approval": [
-          "change_primary_subject",
-          "exposure_override"
-        ],
-        "forbidden_actions": [
-          "direct_device_control",
-          "firmware_upgrade",
-          "delete_media",
-          "format_storage"
-        ],
-        "min_confidence_for_device_suggestion": 0.7
-      },
-      "latency_policy": {
-        "max_input_frames": 6,
-        "preferred_sampling_fps": 1,
-        "decision_timeout_ms": 5000,
-        "stale_after_ms": 2000
-      },
-      "failure_policy": {
-        "no_frames": "Return wait_and_recheck with an explicit missing_frame warning.",
-        "unreadable_frame": "Exclude the frame and continue with remaining frames.",
-        "no_subject": "Suggest switch_to_wide and do not capture a portrait close-up."
-      },
-      "evidence": {
-        "examples": [],
-        "expert_notes": []
-      },
-      "_path": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\cinematographer\\portrait_composition_coach.yaml",
-      "id": "portrait_composition_coach",
-      "stage": "cinematographer"
-    },
-    {
-      "schema_version": "1.0",
       "skill_id": "portrait_story_director",
       "version": "0.1.0",
       "name": "人像故事导演",
@@ -618,6 +314,374 @@
       "_path": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\director\\portrait_story_director.yaml",
       "id": "portrait_story_director",
       "stage": "director"
+    },
+    {
+      "schema_version": "1.0",
+      "skill_id": "portrait_composition_coach",
+      "version": "0.1.0",
+      "name": "人像摄影指导",
+      "name_en": "Portrait Composition Coach",
+      "description": "在拍摄过程中，根据主体状态、画面质量、光线和导演计划， 给出人像构图、景别、跟踪和设备动作建议。",
+      "purpose": "Analyze current frames and suggest the next safe and useful portrait capture.",
+      "author": {
+        "type": "expert",
+        "id": "open_vision_team",
+        "display_name": "OpenVision 团队",
+        "verified": false
+      },
+      "license": "CC-BY-4.0",
+      "visibility": "local",
+      "status": "draft",
+      "parent_skill": null,
+      "teaching": {
+        "audience": "beginner",
+        "principles": [
+          "比复杂构图更重要的是人物没有被遮挡、脸部清晰、画面不严重过曝",
+          "人物看向哪一侧，通常就在那一侧保留适量空间，画面会更自然",
+          "人物正在向前移动时，前方应比身后保留更多空间",
+          "从环境到人物再到表情逐级靠近，不要无理由频繁变焦"
+        ],
+        "explain_template": "根据主体跟踪置信度、面部可见性和运动方向，建议构图和设备动作； 跟踪不稳定时先用全景记录，稳定后再进入人像近景。"
+      },
+      "inputs": {
+        "intent": {
+          "type": "object",
+          "properties": {
+            "subject_id": {
+              "type": "string"
+            },
+            "bbox_normalized": {
+              "type": "array"
+            },
+            "face_visible": {
+              "type": "boolean"
+            },
+            "gaze_direction": {
+              "type": "string",
+              "enum": [
+                "left",
+                "right",
+                "camera",
+                "unknown"
+              ]
+            },
+            "motion_direction": {
+              "type": "string",
+              "enum": [
+                "left",
+                "right",
+                "toward_camera",
+                "away_camera",
+                "still",
+                "unknown"
+              ]
+            },
+            "occlusion_ratio": {
+              "type": "number"
+            },
+            "tracking_confidence": {
+              "type": "number"
+            }
+          }
+        },
+        "media_types": [
+          "image",
+          "video",
+          "panorama"
+        ],
+        "required_capabilities": [
+          "subject_tracking",
+          "face_detection"
+        ]
+      },
+      "agent_bindings": {
+        "director": false,
+        "cinematographer": true,
+        "editor": false,
+        "skills_manager": true
+      },
+      "supported_devices": [
+        "insta360_x4_air",
+        "insta360_link2"
+      ],
+      "tags": [
+        "人像摄影",
+        "构图指导",
+        "全身构图",
+        "动作摄影",
+        "portrait",
+        "cinematography",
+        "framing",
+        "realtime",
+        "subject_tracking"
+      ],
+      "prompt_context": {
+        "system_role": "You are a real-time portrait cinematographer. Analyze frames, then suggest one next action.",
+        "required_analysis": [
+          "subject_visibility",
+          "face_visibility",
+          "occlusion",
+          "framing_quality",
+          "gaze_and_motion_direction",
+          "exposure_risk"
+        ],
+        "output_language": "Chinese explanation; English action values."
+      },
+      "output_contract": {
+        "required": [
+          "analysis",
+          "suggestion",
+          "confidence",
+          "evidence_frames",
+          "user_summary_zh"
+        ],
+        "allowed_actions": [
+          "capture_frame",
+          "wait_and_recheck",
+          "switch_to_wide",
+          "suggest_reframe",
+          "suggest_exposure_check"
+        ],
+        "never_execute": true
+      },
+      "rules": [
+        {
+          "id": "subject_lost",
+          "when": {
+            "tracking_confidence_lt": 0.45
+          },
+          "advice": {
+            "camera": "x4air",
+            "action": "recover_subject_from_panorama",
+            "composition": "environmental_wide"
+          },
+          "priority": 100,
+          "explanation": "主体跟踪不可靠时，先用全景记录保证不漏掉事件，不让云台盲目追踪"
+        },
+        {
+          "id": "face_obscured",
+          "when": {
+            "face_visible": false,
+            "occlusion_ratio_gte": 0.35
+          },
+          "advice": {
+            "camera": "link2",
+            "composition": "medium_shot",
+            "action": "wait_for_clear_face"
+          },
+          "priority": 90,
+          "explanation": "脸部被遮挡时不要继续强行拍特写，先退到中景或等待遮挡消失"
+        },
+        {
+          "id": "gaze_left",
+          "when": {
+            "gaze_direction": "left"
+          },
+          "advice": {
+            "composition": "preserve_left_negative_space",
+            "pan_bias": "left"
+          },
+          "priority": 65,
+          "explanation": "人物视线朝左时，在左侧保留空间可以强化注意力方向"
+        },
+        {
+          "id": "motion_right",
+          "when": {
+            "motion_direction": "right"
+          },
+          "advice": {
+            "composition": "preserve_right_motion_space",
+            "tracking_speed": "normal"
+          },
+          "priority": 75,
+          "explanation": "人物向右移动时，右侧空间用于承接运动方向"
+        },
+        {
+          "id": "portrait_closeup",
+          "when": {
+            "tracking_confidence_gte": 0.8,
+            "face_visible": true,
+            "occlusion_ratio_lt": 0.15
+          },
+          "advice": {
+            "camera": "link2",
+            "composition": "half_body_or_head",
+            "focus_priority": "face"
+          },
+          "priority": 80,
+          "explanation": "主体稳定且面部清晰时才进入人像近景，避免在跟踪不稳定时快速推近"
+        },
+        {
+          "id": "backlight_risk",
+          "when": {
+            "exposure_status": "strong_backlight"
+          },
+          "advice": {
+            "action": "suggest_exposure_check",
+            "do_not_execute": true,
+            "fallback": "move_subject_or_use_fill_light"
+          },
+          "priority": 85,
+          "explanation": "逆光应先提出曝光或位置调整建议，不能让 Agent 直接修改相机曝光"
+        },
+        {
+          "id": "subject_centered",
+          "when": {
+            "tracking_confidence_gte": 0.75,
+            "face_visible": true,
+            "composition_quality_gte": 0.7
+          },
+          "advice": {
+            "action": "capture_frame",
+            "composition": "current_stable_composition",
+            "hold_ms": 800
+          },
+          "priority": 92,
+          "explanation": "主体稳定、面部清晰且构图可用时，保存当前帧比继续移动更可靠。"
+        },
+        {
+          "id": "subject_too_small",
+          "when": {
+            "subject_area_ratio_lt": 0.08,
+            "tracking_confidence_gte": 0.6
+          },
+          "advice": {
+            "action": "suggest_reframe",
+            "composition": "medium_shot",
+            "camera_preference": "link2"
+          },
+          "priority": 72,
+          "explanation": "主体过小时先建议重新构图，避免输出只有环境而看不清人物。"
+        },
+        {
+          "id": "subject_too_close",
+          "when": {
+            "subject_area_ratio_gte": 0.65,
+            "face_visible": true
+          },
+          "advice": {
+            "action": "suggest_reframe",
+            "composition": "half_body_or_medium",
+            "keep_headroom": true
+          },
+          "priority": 74,
+          "explanation": "主体过近时保留头部和上半身安全区，避免裁切脸部或身体。"
+        },
+        {
+          "id": "uncertain_frame",
+          "when": {
+            "tracking_confidence_lt": 0.6
+          },
+          "advice": {
+            "action": "wait_and_recheck",
+            "hold_ms": 500,
+            "fallback_camera": "x4air"
+          },
+          "priority": 95,
+          "explanation": "置信度不足时不拍摄关键帧，等待下一帧或切换到全景安全记录。"
+        }
+      ],
+      "safety": {
+        "allowed_actions": [
+          "suggest_composition",
+          "suggest_tracking",
+          "suggest_reframe",
+          "suggest_exposure_check"
+        ],
+        "requires_human_approval": [
+          "change_primary_subject",
+          "exposure_override"
+        ],
+        "forbidden_actions": [
+          "direct_device_control",
+          "firmware_upgrade",
+          "delete_media",
+          "format_storage"
+        ],
+        "min_confidence_for_device_suggestion": 0.7
+      },
+      "latency_policy": {
+        "max_input_frames": 6,
+        "preferred_sampling_fps": 1,
+        "decision_timeout_ms": 5000,
+        "stale_after_ms": 2000
+      },
+      "failure_policy": {
+        "no_frames": "Return wait_and_recheck with an explicit missing_frame warning.",
+        "unreadable_frame": "Exclude the frame and continue with remaining frames.",
+        "no_subject": "Suggest switch_to_wide and do not capture a portrait close-up."
+      },
+      "evidence": {
+        "examples": [],
+        "expert_notes": []
+      },
+      "_path": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\cinematographer\\portrait_composition_coach.yaml",
+      "id": "portrait_composition_coach",
+      "stage": "cinematographer"
+    },
+    {
+      "skill_id": "action_sports_cinematographer",
+      "name": "Action Sports Tracking",
+      "description": "Real-time tracking and capture guidance for fast-moving sports subjects",
+      "language": "en",
+      "author": "builtin",
+      "status": "active",
+      "stage": "cinematographer",
+      "category": "sports",
+      "tags": [
+        "sports",
+        "action",
+        "tracking",
+        "fast_motion"
+      ],
+      "agent_bindings": {
+        "cinematographer": true
+      },
+      "rules": [
+        {
+          "condition": "subject_moving_fast",
+          "action": "use_continuous_autofocus",
+          "priority": "high",
+          "reason": "Fast-moving subjects require continuous AF tracking to maintain focus"
+        },
+        {
+          "condition": "predictable_path",
+          "action": "pre_frame_motion_path",
+          "priority": "high",
+          "reason": "Pre-framing the path allows subject to enter and exit frame dynamically"
+        },
+        {
+          "condition": "peak_action_moment",
+          "action": "capture_frame_immediately",
+          "priority": "critical",
+          "reason": "Peak moments (jump apex, ball contact) happen in split seconds"
+        },
+        {
+          "condition": "motion_blur_detected",
+          "action": "increase_shutter_speed",
+          "priority": "high",
+          "reason": "Sports photography needs frozen motion unless intentional blur for effect"
+        },
+        {
+          "condition": "background_cluttered",
+          "action": "use_shallow_depth_of_field",
+          "priority": "medium",
+          "reason": "Shallow DOF isolates athlete from distracting backgrounds"
+        },
+        {
+          "condition": "multiple_subjects",
+          "action": "track_primary_athlete",
+          "priority": "high",
+          "reason": "Focus on primary subject even when multiple athletes are in frame"
+        }
+      ],
+      "metadata": {
+        "created_at": "2024-01-15T11:00:00Z",
+        "updated_at": "2024-01-15T11:00:00Z",
+        "version": "1.0"
+      },
+      "_path": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\cinematographer\\sports\\action_sports_tracking.yaml",
+      "id": "action_sports_cinematographer"
     },
     {
       "schema_version": "1.0",
@@ -938,80 +1002,31 @@
     }
   ],
   "director": {
-    "goal": "请拍摄自然人像，突出人物与环境关系",
+    "goal": "自然人像，保留环境和反应",
     "matched_skills": [
       "portrait_story_director"
     ],
-    "skills_guidance": "我严格遵循了‘人像故事导演’的五维分析框架：首先，将用户‘自然人像+突出人物与环境关系’的目标转化为三阶段拍摄逻辑（建立—主体—结果），确保每个镜头都有明确叙事功能；其次，在参考图分析中，我系统拆解了构图、光影、位置、情绪四要素，并特别关注‘环境如何影响人物状态’这一核心命题；第三，我识别出用户提供的图片中存在‘同一人物在不同时间/情绪下的多组状态’，因此建议采用‘时间序列式拍摄’策略，以增强故事连贯性；最后，所有建议均围绕‘环境不是背景而是角色’的理念展开，确保最终成片不仅是‘有人的照片’，更是‘人与世界对话的影像诗’。",
+    "skills_guidance": "",
     "shot_plan": [
       {
         "stage": "establish",
         "shot": "wide_context",
-        "reason": "需先建立人物所处的地理语境——湖岸、远山、现代建筑群共同构成‘人文自然共生’的核心环境价值；此镜头可交代时间（如黄昏/阴天）、气候（微风拂面）及空间尺度，为后续人物情绪铺垫基础。"
+        "reason": "建立环境背景"
       },
       {
         "stage": "subject",
         "shot": "medium_portrait",
-        "reason": "聚焦人物面部与上半身，捕捉其神态变化（如侧目沉思、直视镜头、低头凝神），结合黄挂绳、饮品等细节强化身份线索；中景构图平衡环境与人物，避免过度特写导致脱离情境，确保‘人与环境关系’始终在线。"
+        "reason": "聚焦主体清晰构图"
       },
       {
         "stage": "result",
         "shot": "reaction",
-        "reason": "通过人物对环境的回应（如望向远方、轻触栏杆、微笑回望）来完成情绪闭环；该镜头可捕捉其与自然/建筑/光影的互动瞬间，例如风吹发丝、目光随水波移动，让静态影像具备动态叙事力，实现从‘被看’到‘看见’的转变。"
+        "reason": "捕捉情感反应"
       }
     ],
-    "reference_analysis": [
-      {
-        "image_index": 0,
-        "summary": "一位长发女性侧身站立于湖边栏杆旁，背景是朦胧的山峦与现代建筑，整体色调偏冷灰，氛围静谧沉思。",
-        "composition": "中景人像（含环境），主体位于画面右侧1/3处，利用前景栏杆形成框架感，背景虚化突出人物轮廓",
-        "lighting": "阴天自然光，光线柔和均匀，无明显阴影，营造低对比度、情绪内敛的视觉基调",
-        "subject_position": "人物呈侧面微转，视线投向画面外，身体略靠后，与水面和远山形成前后纵深关系，体现人与自然的空间对话",
-        "emotional_tone": "宁静、若有所思、略带疏离感，强调人物在广阔自然中的个体存在感"
-      },
-      {
-        "image_index": 1,
-        "summary": "第一视角拍摄：一只手伸向一只黑白色的猫，猫因动作模糊而呈现动态瞬间，地面为浅色瓷砖，场景生活化、亲密。",
-        "composition": "俯拍特写+主观视角，手部占据画面右下角，猫位于中心偏左，利用运动模糊强化互动张力",
-        "lighting": "室内漫射光，亮度适中，无强烈明暗对比，突出日常质感与真实感",
-        "subject_position": "主体为“人-猫”互动关系，手部作为引导性元素指向猫，形成视觉动线与情感连接点",
-        "emotional_tone": "温馨、俏皮、充满生活气息，强调人与动物之间的信任与即时情绪流动"
-      },
-      {
-        "image_index": 2,
-        "summary": "同一位女性正面站立于湖边，手持饮品与手机，背景为清晰的湖面与绿树山丘，光线明亮，神情自然放松。",
-        "composition": "全身人像（中远景），人物居中偏右，栏杆横贯画面中部形成水平分割线，前景植物增加层次",
-        "lighting": "日间散射光，整体曝光正常，面部受光均匀，衣物与环境色彩还原真实，突出清新日常感",
-        "subject_position": "人物直视镜头，身体微倾，双手持物构成稳定三角构图，与背景形成“人在景中”的和谐共存关系",
-        "emotional_tone": "平和、从容、有生活仪式感，展现人物在环境中自在舒展的状态"
-      },
-      {
-        "image_index": 3,
-        "summary": "女性低头凝视手中物品，眼神内敛，姿态安静，背景环境与前图一致，但情绪更显沉静与专注。",
-        "composition": "中近景人像，人物居中，头部微低，视线向下，利用栏杆与水面形成上下空间结构",
-        "lighting": "柔光环境，略带逆光边缘光，使发丝与衣领产生轻微轮廓光，增强立体感而不破坏整体柔和氛围",
-        "subject_position": "人物处于画面中央偏上位置，身体重心下沉，与手持物形成垂直轴线，强化“沉浸于当下”的心理状态",
-        "emotional_tone": "沉思、专注、内省，强调人物内在情绪与外部环境的微妙呼应"
-      },
-      {
-        "image_index": 4,
-        "summary": "与第一张图相似，但人物角度略有变化，仍为侧脸望向远方，背景建筑与山体更清晰，夜幕初临或黄昏时分，光影更富戏剧性。",
-        "composition": "中景侧影人像，人物位于画面右侧，留白多于左侧，背景建筑成为视觉锚点，强化空间叙事",
-        "lighting": "黄昏/黎明低照度自然光，整体偏暗，人物面部受微弱补光，背景建筑局部亮灯形成点光源对比",
-        "subject_position": "人物面向画面左方，视线延伸至远方，与背景山势走向形成视觉引导线，构建“望向未来/回忆”的隐喻",
-        "emotional_tone": "悠远、略带忧郁、诗意，通过时间感与空间感强化人物与环境的情感联结"
-      },
-      {
-        "image_index": 5,
-        "summary": "女性正面微笑直视镜头，姿态开放，手持饮品与卡片，背景为开阔湖景与远处建筑群，光线充足，氛围轻松愉悦。",
-        "composition": "全身正面人像，人物居中，栏杆横贯画面下方，前景草叶点缀，背景层次丰富但不喧宾夺主",
-        "lighting": "正午或下午柔和阳光，正面补光使面部清晰明亮，衣物颜色饱和度高，整体画面温暖积极",
-        "subject_position": "人物站姿挺拔，双臂自然下垂并持物，形成稳定对称构图，与背景形成“人是风景一部分”的融合感",
-        "emotional_tone": "自信、亲切、活力充沛，强调人物在环境中主动参与、享受当下的积极情绪"
-      }
-    ],
-    "confidence": 0.85,
-    "user_summary_zh": "本次分析基于您提供的六张参考图，提炼出‘自然人像+环境叙事’的核心诉求。我们建议采用‘环境铺垫—人物特写—情绪回应’三段式拍摄流程：先用广角镜头交代湖岸山景的宏大语境，再以中景人像聚焦人物神态与日常细节（如饮品、挂绳），最后通过反应镜头捕捉其与自然互动的瞬间（如望向远方、微风拂面）。整套方案强调‘人非孤立存在，而是环境的一部分’，让每一张照片都承载着时间、情绪与空间的多重信息，最终产出一组既有生活温度又有诗意深度的系列人像作品。"
+    "reference_analysis": [],
+    "confidence": 0.75,
+    "user_summary_zh": "已生成导演拍摄计划。"
   },
   "filming": {
     "source_frames": [
@@ -1079,21 +1094,22 @@
     "analysis": {
       "subject_visible": true,
       "face_visible": true,
-      "tracking_confidence": 0.87,
-      "composition_quality": 0.8,
-      "summary": "画面为多人舞台合影，人物姿态自然、表情生动，背景‘BOLD MAKER 2026’字样清晰，环境氛围浓厚；但整体构图偏满，部分人物被遮挡（如中间后方人员），且右侧边缘人物有轻微出画趋势，影响主体完整性与空间层次感。",
-      "confidence": 0.85
+      "tracking_confidence": 0.75,
+      "composition_quality": 0.7,
+      "summary": "Mock analysis: a person is visible; keep the subject clear and leave directional space.",
+      "confidence": 0.75
     },
     "suggestion": {
       "action": "capture_frame",
-      "composition": "wide_shot",
-      "reason": "当前画面已捕捉到群体互动的自然瞬间，人物面部清晰、情绪饱满，背景信息完整，符合‘突出人物与环境关系’的核心目标；虽有轻微构图优化空间，但时机成熟，宜立即定格以保留真实生动的现场感，避免因等待导致气氛散失。"
+      "composition": "medium_portrait",
+      "reason": "Frame is suitable for capture"
     },
     "captured_frame": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\captures\\frame_000000.jpg",
     "matched_skills": [
-      "portrait_composition_coach"
+      "portrait_composition_coach",
+      "action_sports_cinematographer"
     ],
-    "skills_guidance": "依据人像摄影指导规范，我综合评估了主体状态（多人自然互动、表情真实）、画面质量（光线均匀、焦点清晰、无明显噪点/模糊）、以及导演计划中对‘环境关系’的强调——背景文字与舞台空间构成叙事语境。因此选择在动态稳定、情绪高点时执行拍摄动作（capture_frame），并推荐广角（wide_shot）构图以强化人与场景的共生关系，而非强行压缩为中景或特写而牺牲环境信息。",
+    "skills_guidance": "",
     "user_summary_zh": "已分析当前画面并标记拍摄建议。"
   },
   "editing": {
@@ -1102,25 +1118,19 @@
         "source": "data\\video\\test_video1.mp4",
         "role": "portrait_source",
         "reason": "主视频素材",
-        "keep": true,
-        "ai_role": "establishing_shot",
-        "ai_reason": "第1-4帧为舞台全景，可作为开场建立活动场景（BOLD MAKER 2026），突出“智能影像挑战”主题与群体氛围，适合作为环境/全景素材用于Link 2人物近景的转场铺垫"
+        "keep": true
       },
       {
         "source": "data\\video\\test_video2.mp4",
         "role": "portrait_source",
         "reason": "主视频素材",
-        "keep": true,
-        "ai_role": "main_portrait",
-        "ai_reason": "第5帧为女性主角特写，情绪沉静、构图留白，适合用作核心人物的情绪锚点；可与第1-4帧中该女性的群像镜头形成“个体—群体”呼应，支撑X4 Air人物近景与环境素材的协作逻辑"
+        "keep": true
       },
       {
         "source": "data\\video\\test_video3.mp4",
         "role": "portrait_source",
         "reason": "主视频素材",
-        "keep": true,
-        "ai_role": "reaction_shot",
-        "ai_reason": "第6帧为手与猫互动的动态瞬间，虽非人类表情，但其动作张力与生活化质感可作为情绪调剂镜头——在群像欢笑后插入此帧，制造节奏反差，增强真实感与电影感"
+        "keep": true
       },
       {
         "source": "data\\video\\test_video4.mp4",
@@ -1155,12 +1165,12 @@
     "matched_skills": [
       "portrait_reel_editor"
     ],
-    "skills_guidance": "严格遵循人像短片剪辑规范：首先通过前4帧全景建立‘BOLD MAKER 2026’活动语境（Link 2 环境/全景）；再以第5帧特写聚焦核心人物（X4 Air 近景），强化人物关系与情绪主线；最后用第6帧动物互动作为反应镜头或节奏休止符，实现情绪层次递进。输出格式采用9:16竖屏，契合短视频传播场景，编辑风格强调自然光影与呼吸感，符合‘电影感’要求。",
-    "analysis_summary": "素材整体质量良好，舞台场景光线充足、人物状态自然；户外人像略显灰暗但有氛围感，适配文艺调性；猫的动态帧具生活气息，可作情绪缓冲。建议以‘活动纪实+人物特写+生活片段’三段式结构剪辑，突出团队凝聚力与个体情感，避免过度炫技，保持真实温度。",
-    "user_summary_zh": "已生成剪辑时间线和预览视频。素材整体质量良好，舞台场景光线充足、人物状态自然；户外人像略显灰暗但有氛围感，适配文艺调性；猫的动态帧具生活气息，可作情绪缓冲。建议以‘活动纪实+人物特写+生活片段’三段式结构剪辑，突出团队凝聚力与个体情感，避免过度炫技，保持真实温度。"
+    "skills_guidance": "",
+    "analysis_summary": "Mock analysis: a person is visible; keep the subject clear and leave directional space.",
+    "user_summary_zh": "已生成剪辑时间线和预览视频。Mock analysis: a person is visible; keep the subject clear and leave directional space."
   },
   "decision_trace": {
-    "user_intent": "请拍摄自然人像，突出人物与环境关系",
+    "user_intent": "自然人像，保留环境和反应",
     "input_media": {
       "images": [
         "data\\img\\img1.jpg",
@@ -1187,113 +1197,6 @@
       ]
     },
     "skill_trace": [
-      {
-        "skill_id": "portrait_composition_coach",
-        "stage": "cinematographer",
-        "source": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\cinematographer\\portrait_composition_coach.yaml",
-        "rules": [
-          {
-            "rule_id": "subject_lost",
-            "condition": {
-              "tracking_confidence_lt": 0.45
-            },
-            "advice": {
-              "camera": "x4air",
-              "action": "recover_subject_from_panorama",
-              "composition": "environmental_wide"
-            },
-            "explanation": "主体跟踪不可靠时，先用全景记录保证不漏掉事件，不让云台盲目追踪"
-          },
-          {
-            "rule_id": "face_obscured",
-            "condition": {
-              "face_visible": false,
-              "occlusion_ratio_gte": 0.35
-            },
-            "advice": {
-              "camera": "link2",
-              "composition": "medium_shot",
-              "action": "wait_for_clear_face"
-            },
-            "explanation": "脸部被遮挡时不要继续强行拍特写，先退到中景或等待遮挡消失"
-          },
-          {
-            "rule_id": "gaze_left",
-            "condition": {
-              "gaze_direction": "left"
-            },
-            "advice": {
-              "composition": "preserve_left_negative_space",
-              "pan_bias": "left"
-            },
-            "explanation": "人物视线朝左时，在左侧保留空间可以强化注意力方向"
-          },
-          {
-            "rule_id": "motion_right",
-            "condition": {
-              "motion_direction": "right"
-            },
-            "advice": {
-              "composition": "preserve_right_motion_space",
-              "tracking_speed": "normal"
-            },
-            "explanation": "人物向右移动时，右侧空间用于承接运动方向"
-          },
-          {
-            "rule_id": "portrait_closeup",
-            "condition": {
-              "tracking_confidence_gte": 0.8,
-              "face_visible": true,
-              "occlusion_ratio_lt": 0.15
-            },
-            "advice": {
-              "camera": "link2",
-              "composition": "half_body_or_head",
-              "focus_priority": "face"
-            },
-            "explanation": "主体稳定且面部清晰时才进入人像近景，避免在跟踪不稳定时快速推近"
-          },
-          {
-            "rule_id": "backlight_risk",
-            "condition": {
-              "exposure_status": "strong_backlight"
-            },
-            "advice": {
-              "action": "suggest_exposure_check",
-              "do_not_execute": true,
-              "fallback": "move_subject_or_use_fill_light"
-            },
-            "explanation": "逆光应先提出曝光或位置调整建议，不能让 Agent 直接修改相机曝光"
-          },
-          {
-            "rule_id": "subject_centered",
-            "condition": {
-              "tracking_confidence_gte": 0.75,
-              "face_visible": true,
-              "composition_quality_gte": 0.7
-            },
-            "advice": {
-              "action": "capture_frame",
-              "composition": "current_stable_composition",
-              "hold_ms": 800
-            },
-            "explanation": "主体稳定、面部清晰且构图可用时，保存当前帧比继续移动更可靠。"
-          },
-          {
-            "rule_id": "subject_too_small",
-            "condition": {
-              "subject_area_ratio_lt": 0.08,
-              "tracking_confidence_gte": 0.6
-            },
-            "advice": {
-              "action": "suggest_reframe",
-              "composition": "medium_shot",
-              "camera_preference": "link2"
-            },
-            "explanation": "主体过小时先建议重新构图，避免输出只有环境而看不清人物。"
-          }
-        ]
-      },
       {
         "skill_id": "portrait_story_director",
         "stage": "director",
@@ -1428,6 +1331,119 @@
         ]
       },
       {
+        "skill_id": "portrait_composition_coach",
+        "stage": "cinematographer",
+        "source": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\cinematographer\\portrait_composition_coach.yaml",
+        "rules": [
+          {
+            "rule_id": "subject_lost",
+            "condition": {
+              "tracking_confidence_lt": 0.45
+            },
+            "advice": {
+              "camera": "x4air",
+              "action": "recover_subject_from_panorama",
+              "composition": "environmental_wide"
+            },
+            "explanation": "主体跟踪不可靠时，先用全景记录保证不漏掉事件，不让云台盲目追踪"
+          },
+          {
+            "rule_id": "face_obscured",
+            "condition": {
+              "face_visible": false,
+              "occlusion_ratio_gte": 0.35
+            },
+            "advice": {
+              "camera": "link2",
+              "composition": "medium_shot",
+              "action": "wait_for_clear_face"
+            },
+            "explanation": "脸部被遮挡时不要继续强行拍特写，先退到中景或等待遮挡消失"
+          },
+          {
+            "rule_id": "gaze_left",
+            "condition": {
+              "gaze_direction": "left"
+            },
+            "advice": {
+              "composition": "preserve_left_negative_space",
+              "pan_bias": "left"
+            },
+            "explanation": "人物视线朝左时，在左侧保留空间可以强化注意力方向"
+          },
+          {
+            "rule_id": "motion_right",
+            "condition": {
+              "motion_direction": "right"
+            },
+            "advice": {
+              "composition": "preserve_right_motion_space",
+              "tracking_speed": "normal"
+            },
+            "explanation": "人物向右移动时，右侧空间用于承接运动方向"
+          },
+          {
+            "rule_id": "portrait_closeup",
+            "condition": {
+              "tracking_confidence_gte": 0.8,
+              "face_visible": true,
+              "occlusion_ratio_lt": 0.15
+            },
+            "advice": {
+              "camera": "link2",
+              "composition": "half_body_or_head",
+              "focus_priority": "face"
+            },
+            "explanation": "主体稳定且面部清晰时才进入人像近景，避免在跟踪不稳定时快速推近"
+          },
+          {
+            "rule_id": "backlight_risk",
+            "condition": {
+              "exposure_status": "strong_backlight"
+            },
+            "advice": {
+              "action": "suggest_exposure_check",
+              "do_not_execute": true,
+              "fallback": "move_subject_or_use_fill_light"
+            },
+            "explanation": "逆光应先提出曝光或位置调整建议，不能让 Agent 直接修改相机曝光"
+          },
+          {
+            "rule_id": "subject_centered",
+            "condition": {
+              "tracking_confidence_gte": 0.75,
+              "face_visible": true,
+              "composition_quality_gte": 0.7
+            },
+            "advice": {
+              "action": "capture_frame",
+              "composition": "current_stable_composition",
+              "hold_ms": 800
+            },
+            "explanation": "主体稳定、面部清晰且构图可用时，保存当前帧比继续移动更可靠。"
+          },
+          {
+            "rule_id": "subject_too_small",
+            "condition": {
+              "subject_area_ratio_lt": 0.08,
+              "tracking_confidence_gte": 0.6
+            },
+            "advice": {
+              "action": "suggest_reframe",
+              "composition": "medium_shot",
+              "camera_preference": "link2"
+            },
+            "explanation": "主体过小时先建议重新构图，避免输出只有环境而看不清人物。"
+          }
+        ]
+      },
+      {
+        "skill_id": "action_sports_cinematographer",
+        "stage": "cinematographer",
+        "source": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\cinematographer\\sports\\action_sports_tracking.yaml",
+        "rules": []
+      },
+      {
         "skill_id": "portrait_reel_editor",
         "stage": "editor",
         "source": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\editor\\portrait_reel_editor.yaml",
@@ -1556,72 +1572,23 @@
     "agent_decisions": [
       {
         "agent": "director",
-        "summary": "本次分析基于您提供的六张参考图，提炼出‘自然人像+环境叙事’的核心诉求。我们建议采用‘环境铺垫—人物特写—情绪回应’三段式拍摄流程：先用广角镜头交代湖岸山景的宏大语境，再以中景人像聚焦人物神态与日常细节（如饮品、挂绳），最后通过反应镜头捕捉其与自然互动的瞬间（如望向远方、微风拂面）。整套方案强调‘人非孤立存在，而是环境的一部分’，让每一张照片都承载着时间、情绪与空间的多重信息，最终产出一组既有生活温度又有诗意深度的系列人像作品。",
-        "evidence": [
-          {
-            "image_index": 0,
-            "summary": "一位长发女性侧身站立于湖边栏杆旁，背景是朦胧的山峦与现代建筑，整体色调偏冷灰，氛围静谧沉思。",
-            "composition": "中景人像（含环境），主体位于画面右侧1/3处，利用前景栏杆形成框架感，背景虚化突出人物轮廓",
-            "lighting": "阴天自然光，光线柔和均匀，无明显阴影，营造低对比度、情绪内敛的视觉基调",
-            "subject_position": "人物呈侧面微转，视线投向画面外，身体略靠后，与水面和远山形成前后纵深关系，体现人与自然的空间对话",
-            "emotional_tone": "宁静、若有所思、略带疏离感，强调人物在广阔自然中的个体存在感"
-          },
-          {
-            "image_index": 1,
-            "summary": "第一视角拍摄：一只手伸向一只黑白色的猫，猫因动作模糊而呈现动态瞬间，地面为浅色瓷砖，场景生活化、亲密。",
-            "composition": "俯拍特写+主观视角，手部占据画面右下角，猫位于中心偏左，利用运动模糊强化互动张力",
-            "lighting": "室内漫射光，亮度适中，无强烈明暗对比，突出日常质感与真实感",
-            "subject_position": "主体为“人-猫”互动关系，手部作为引导性元素指向猫，形成视觉动线与情感连接点",
-            "emotional_tone": "温馨、俏皮、充满生活气息，强调人与动物之间的信任与即时情绪流动"
-          },
-          {
-            "image_index": 2,
-            "summary": "同一位女性正面站立于湖边，手持饮品与手机，背景为清晰的湖面与绿树山丘，光线明亮，神情自然放松。",
-            "composition": "全身人像（中远景），人物居中偏右，栏杆横贯画面中部形成水平分割线，前景植物增加层次",
-            "lighting": "日间散射光，整体曝光正常，面部受光均匀，衣物与环境色彩还原真实，突出清新日常感",
-            "subject_position": "人物直视镜头，身体微倾，双手持物构成稳定三角构图，与背景形成“人在景中”的和谐共存关系",
-            "emotional_tone": "平和、从容、有生活仪式感，展现人物在环境中自在舒展的状态"
-          },
-          {
-            "image_index": 3,
-            "summary": "女性低头凝视手中物品，眼神内敛，姿态安静，背景环境与前图一致，但情绪更显沉静与专注。",
-            "composition": "中近景人像，人物居中，头部微低，视线向下，利用栏杆与水面形成上下空间结构",
-            "lighting": "柔光环境，略带逆光边缘光，使发丝与衣领产生轻微轮廓光，增强立体感而不破坏整体柔和氛围",
-            "subject_position": "人物处于画面中央偏上位置，身体重心下沉，与手持物形成垂直轴线，强化“沉浸于当下”的心理状态",
-            "emotional_tone": "沉思、专注、内省，强调人物内在情绪与外部环境的微妙呼应"
-          },
-          {
-            "image_index": 4,
-            "summary": "与第一张图相似，但人物角度略有变化，仍为侧脸望向远方，背景建筑与山体更清晰，夜幕初临或黄昏时分，光影更富戏剧性。",
-            "composition": "中景侧影人像，人物位于画面右侧，留白多于左侧，背景建筑成为视觉锚点，强化空间叙事",
-            "lighting": "黄昏/黎明低照度自然光，整体偏暗，人物面部受微弱补光，背景建筑局部亮灯形成点光源对比",
-            "subject_position": "人物面向画面左方，视线延伸至远方，与背景山势走向形成视觉引导线，构建“望向未来/回忆”的隐喻",
-            "emotional_tone": "悠远、略带忧郁、诗意，通过时间感与空间感强化人物与环境的情感联结"
-          },
-          {
-            "image_index": 5,
-            "summary": "女性正面微笑直视镜头，姿态开放，手持饮品与卡片，背景为开阔湖景与远处建筑群，光线充足，氛围轻松愉悦。",
-            "composition": "全身正面人像，人物居中，栏杆横贯画面下方，前景草叶点缀，背景层次丰富但不喧宾夺主",
-            "lighting": "正午或下午柔和阳光，正面补光使面部清晰明亮，衣物颜色饱和度高，整体画面温暖积极",
-            "subject_position": "人物站姿挺拔，双臂自然下垂并持物，形成稳定对称构图，与背景形成“人是风景一部分”的融合感",
-            "emotional_tone": "自信、亲切、活力充沛，强调人物在环境中主动参与、享受当下的积极情绪"
-          }
-        ],
+        "summary": "已生成导演拍摄计划。",
+        "evidence": [],
         "output": [
           {
             "stage": "establish",
             "shot": "wide_context",
-            "reason": "需先建立人物所处的地理语境——湖岸、远山、现代建筑群共同构成‘人文自然共生’的核心环境价值；此镜头可交代时间（如黄昏/阴天）、气候（微风拂面）及空间尺度，为后续人物情绪铺垫基础。"
+            "reason": "建立环境背景"
           },
           {
             "stage": "subject",
             "shot": "medium_portrait",
-            "reason": "聚焦人物面部与上半身，捕捉其神态变化（如侧目沉思、直视镜头、低头凝神），结合黄挂绳、饮品等细节强化身份线索；中景构图平衡环境与人物，避免过度特写导致脱离情境，确保‘人与环境关系’始终在线。"
+            "reason": "聚焦主体清晰构图"
           },
           {
             "stage": "result",
             "shot": "reaction",
-            "reason": "通过人物对环境的回应（如望向远方、轻触栏杆、微笑回望）来完成情绪闭环；该镜头可捕捉其与自然/建筑/光影的互动瞬间，例如风吹发丝、目光随水波移动，让静态影像具备动态叙事力，实现从‘被看’到‘看见’的转变。"
+            "reason": "捕捉情感反应"
           }
         ]
       },
@@ -1692,37 +1659,31 @@
         ],
         "output": {
           "action": "capture_frame",
-          "composition": "wide_shot",
-          "reason": "当前画面已捕捉到群体互动的自然瞬间，人物面部清晰、情绪饱满，背景信息完整，符合‘突出人物与环境关系’的核心目标；虽有轻微构图优化空间，但时机成熟，宜立即定格以保留真实生动的现场感，避免因等待导致气氛散失。"
+          "composition": "medium_portrait",
+          "reason": "Frame is suitable for capture"
         }
       },
       {
         "agent": "editor",
-        "summary": "已生成剪辑时间线和预览视频。素材整体质量良好，舞台场景光线充足、人物状态自然；户外人像略显灰暗但有氛围感，适配文艺调性；猫的动态帧具生活气息，可作情绪缓冲。建议以‘活动纪实+人物特写+生活片段’三段式结构剪辑，突出团队凝聚力与个体情感，避免过度炫技，保持真实温度。",
+        "summary": "已生成剪辑时间线和预览视频。Mock analysis: a person is visible; keep the subject clear and leave directional space.",
         "evidence": [
           {
             "source": "data\\video\\test_video1.mp4",
             "role": "portrait_source",
             "reason": "主视频素材",
-            "keep": true,
-            "ai_role": "establishing_shot",
-            "ai_reason": "第1-4帧为舞台全景，可作为开场建立活动场景（BOLD MAKER 2026），突出“智能影像挑战”主题与群体氛围，适合作为环境/全景素材用于Link 2人物近景的转场铺垫"
+            "keep": true
           },
           {
             "source": "data\\video\\test_video2.mp4",
             "role": "portrait_source",
             "reason": "主视频素材",
-            "keep": true,
-            "ai_role": "main_portrait",
-            "ai_reason": "第5帧为女性主角特写，情绪沉静、构图留白，适合用作核心人物的情绪锚点；可与第1-4帧中该女性的群像镜头形成“个体—群体”呼应，支撑X4 Air人物近景与环境素材的协作逻辑"
+            "keep": true
           },
           {
             "source": "data\\video\\test_video3.mp4",
             "role": "portrait_source",
             "reason": "主视频素材",
-            "keep": true,
-            "ai_role": "reaction_shot",
-            "ai_reason": "第6帧为手与猫互动的动态瞬间，虽非人类表情，但其动作张力与生活化质感可作为情绪调剂镜头——在群像欢笑后插入此帧，制造节奏反差，增强真实感与电影感"
+            "keep": true
           },
           {
             "source": "data\\video\\test_video4.mp4",
@@ -1752,6 +1713,23 @@
         "output": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\preview.mp4"
       }
     ],
+    "matched_rule_ids": {
+      "director": [
+        "single_portrait_default",
+        "environmental_portrait",
+        "interview_story"
+      ],
+      "cinematographer": [
+        "subject_lost",
+        "face_obscured",
+        "gaze_left"
+      ],
+      "editor": [
+        "establish_context",
+        "portrait_anchor",
+        "interaction_cut"
+      ]
+    },
     "editable_controls": [
       "selected_skills",
       "shot_plan",

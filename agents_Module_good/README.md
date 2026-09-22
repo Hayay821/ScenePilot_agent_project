@@ -1,6 +1,17 @@
-# ScenePilot Fast
+# ScenePilot
 
-这是一个轻量级的四 Agent 影像制作原型，目标是验证核心能力：**读取媒体、调用多模态模型分析、输出导演/摄影/剪辑结果**。
+**开放式 AI 摄影导演工作台：让每个人都能学习专业摄影、定义创作规则并完成影像创作。**
+
+ScenePilot 不以取代摄影师为目标。系统把摄影知识整理为可替换、可修改、可解释的 Skills，由 SkillsManager、Director、Cinematographer、Editor 协作完成从创作意图到成片的流程。
+
+核心展示原则：
+
+```text
+AI 不替用户决定创作
+AI 把专业知识变成可理解的 Skill 和建议
+用户可以批准、修改或拒绝
+每个结果都能追溯到规则和媒体证据
+```
 
 **重要说明**：当前版本使用 `data/` 目录下的图片和视频作为输入来模拟真实拍摄场景，因为实际摄像机 SDK 暂未集成。这些图片和视频代表「已拍摄的素材」或「参考素材」，用于测试和验证 Agent 的分析能力。
 
@@ -14,6 +25,48 @@
 - **[测试所有 Agent](docs/guides/测试所有Agent.md)** ⭐ 详细测试指南
 - **[独立测试指南](docs/guides/TEST_INDIVIDUAL_AGENTS.md)** - 单独测试每个 Agent
 - **[模型配置说明](docs/reference/MODEL_CONFIGURATION.md)** - 模型配置和故障排查
+- **[API 使用与测试](API_USAGE_AND_TEST_GUIDE.md)** - FastAPI 与前端对接
+- **[前端测试步骤](前端测试步骤说明.md)** - 百炼、摄像头会话和 Editor 工作区测试
+- **[3 分钟 Demo 脚本](../黑客松3分钟Demo脚本.md)** - 路演展示主线
+
+## 当前比赛 Demo 主线
+
+```text
+中文创作目标
+  -> 本地 Skill 匹配
+  -> Director 生成镜头计划
+  -> Cinematographer 分析参考图/视频帧并建议构图或抓拍
+  -> Editor 生成时间线和可播放预览
+  -> decision_trace 显示 Skill 规则、证据和 Agent 决策
+  -> 用户修改创作规则并重新运行
+```
+
+完整流程响应包含 `decision_trace`：
+
+- `skill_trace`：采用的 Skill、来源及规则 ID。
+- `agent_decisions`：三个专业 Agent 的摘要、证据和输出。
+- `matched_rule_ids`：各阶段引用的实际规则 ID。
+- `editable_controls`：用户可修改的创作控制项。
+
+前端支持修改创作规则 JSON、重新运行和查看上次结果，便于展示人机共创及规则变化造成的结果差异。
+
+## 真实百炼验证与响应缓存
+
+当前 `.env` 的 `API_KEY` / `API_URL` 已验证可调用百炼 `qwen3-vl-flash`。真实本地图片和视频帧已通过 Director、Cinematographer、Editor 完整流程，生成 `outputs/preview.mp4`。
+
+百炼响应缓存位于 F 盘：
+
+```text
+F:\BoldMaker\models\scenepilot_cache
+```
+
+缓存键由模型、Base URL、Prompt 及输入图片路径/文件大小/修改时间计算。缓存不包含 API Key。要强制重新调用模型：
+
+```powershell
+$env:SCENEPILOT_DISABLE_CACHE="1"
+```
+
+比赛演示建议先用真实百炼预热缓存，再进行一次缓存回放彩排。
 
 ---
 
@@ -460,6 +513,36 @@ outputs/preview.mp4
 - Skill 检索已按 Agent 阶段过滤，Director/Cinematographer/Editor 分别使用对应 Skill。
 
 API 密钥只从 `.env` 读取，不应写入前端、代码、日志或答辩材料。
+
+### 真实模型缓存与现场回放
+
+真实百炼视觉响应会按以下信息生成缓存键：
+
+```text
+模型名 + Base URL + Prompt + 输入图片路径/大小/修改时间
+```
+
+缓存默认放在 F 盘：
+
+```text
+F:\BoldMaker\models\scenepilot_cache
+```
+
+用途：
+
+- 第一次彩排调用真实 Qwen。
+- 第二次相同输入快速回放。
+- 比赛现场减少网络、额度和模型延迟风险。
+- 不把 API Key 写入缓存。
+
+禁用缓存进行真实重新调用：
+
+```powershell
+$env:SCENEPILOT_DISABLE_CACHE="1"
+python fast.py run --mode bailian --text "自然人像" --media data
+```
+
+缓存不属于项目源码，迁移到另一台机器时应重新进行一次真实彩排。
 
 ## 快速开始
 
