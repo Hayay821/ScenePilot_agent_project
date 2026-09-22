@@ -1,0 +1,6 @@
+This repository contains original integration code only.
+
+Insta360 CameraSDK, MediaSDK, UVCCamera SDK, their headers, import libraries,
+DLLs, models, JSON files and documentation are third-party proprietary assets.
+They are not covered by this repository's MIT License and are not redistributed
+here. Users must obtain them from Insta360 and comply with the applicable terms.
