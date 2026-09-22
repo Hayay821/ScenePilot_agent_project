@@ -1,0 +1,4 @@
+  File "F:\BoldMaker\project00\agents_Module_fast\test_all.bat", line 3
+    REM 使用方法：双击运行此脚本，或在命令行中执行
+            ^
+SyntaxError: invalid character '：' (U+FF1A)

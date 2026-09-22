@@ -1,0 +1,111 @@
+(base) F:\BoldMaker\project00\agents_Module>install_deps.bat
+Installing dependencies for agents_Module...
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Requirement already satisfied: pydantic==2.13.5 in d:\anaconda3\lib\site-packages (2.13.5)
+Requirement already satisfied: PyYAML==6.0.1 in d:\anaconda3\lib\site-packages (6.0.1)
+Requirement already satisfied: dashscope==1.24.1 in d:\anaconda3\lib\site-packages (1.24.1)
+Requirement already satisfied: annotated-types>=0.6.0 in d:\anaconda3\lib\site-packages (from pydantic==2.13.5) (0.7.0)
+Requirement already satisfied: pydantic-core==2.46.5 in d:\anaconda3\lib\site-packages (from pydantic==2.13.5) (2.46.5)
+Requirement already satisfied: typing-extensions>=4.14.1 in d:\anaconda3\lib\site-packages (from pydantic==2.13.5) (4.16.0)
+Requirement already satisfied: typing-inspection>=0.4.2 in d:\anaconda3\lib\site-packages (from pydantic==2.13.5) (0.4.4)
+Requirement already satisfied: aiohttp in d:\anaconda3\lib\site-packages (from dashscope==1.24.1) (3.14.3)
+Requirement already satisfied: requests in d:\anaconda3\lib\site-packages (from dashscope==1.24.1) (2.34.2)
+Requirement already satisfied: websocket-client in d:\anaconda3\lib\site-packages (from dashscope==1.24.1) (0.58.0)
+Requirement already satisfied: cryptography in d:\anaconda3\lib\site-packages (from dashscope==1.24.1) (44.0.2)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in d:\anaconda3\lib\site-packages (from aiohttp->dashscope==1.24.1) (2.7.1)
+Requirement already satisfied: aiosignal>=1.4.0 in d:\anaconda3\lib\site-packages (from aiohttp->dashscope==1.24.1) (1.4.0)
+Requirement already satisfied: attrs>=17.3.0 in d:\anaconda3\lib\site-packages (from aiohttp->dashscope==1.24.1) (26.1.0)
+Requirement already satisfied: frozenlist>=1.1.1 in d:\anaconda3\lib\site-packages (from aiohttp->dashscope==1.24.1) (1.4.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in d:\anaconda3\lib\site-packages (from aiohttp->dashscope==1.24.1) (6.0.4)
+Requirement already satisfied: propcache>=0.2.0 in d:\anaconda3\lib\site-packages (from aiohttp->dashscope==1.24.1) (0.5.4)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in d:\anaconda3\lib\site-packages (from aiohttp->dashscope==1.24.1) (1.25.1)
+Requirement already satisfied: cffi>=1.12 in d:\anaconda3\lib\site-packages (from cryptography->dashscope==1.24.1) (1.16.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in d:\anaconda3\lib\site-packages (from requests->dashscope==1.24.1) (2.0.4)
+Requirement already satisfied: idna<4,>=2.5 in d:\anaconda3\lib\site-packages (from requests->dashscope==1.24.1) (3.20)
+Requirement already satisfied: urllib3<3,>=1.26 in d:\anaconda3\lib\site-packages (from requests->dashscope==1.24.1) (2.0.7)
+Requirement already satisfied: certifi>=2023.5.7 in d:\anaconda3\lib\site-packages (from requests->dashscope==1.24.1) (2024.12.14)
+Requirement already satisfied: six in d:\anaconda3\lib\site-packages (from websocket-client->dashscope==1.24.1) (1.16.0)
+Requirement already satisfied: pycparser in d:\anaconda3\lib\site-packages (from cffi>=1.12->cryptography->dashscope==1.24.1) (2.21)
+
+Installation complete!
+
+Now you can run:
+  python -m agents_Module list
+  python -m agents_Module run "your request" --mock
+  python examples/real_skills_demo.py
+请按任意键继续. . .
+
+(base) F:\BoldMaker\project00\agents_Module>python -m agents_Module list
+D:\anaconda3\python.exe: No module named agents_Module
+
+(base) F:\BoldMaker\project00\agents_Module>python -m agents_Module run "your request" --mock
+D:\anaconda3\python.exe: No module named agents_Module
+
+(base) F:\BoldMaker\project00\agents_Module> python examples/real_skills_demo.py
+
+======================================================================
+ ScenePilot Real Skills Demo
+======================================================================
+
+Using:
+  • Real portrait skills from data/skills/
+  • Test images and videos from data/test_data/
+  • User test cases from test_inputs/user_requests.yaml
+
+======================================================================
+ Test Case: U001_single_natural_avatar
+======================================================================
+User Input: 我想拍一组自然的个人肖像，用作社交头像，不要看起来像摆拍。
+User Level: beginner
+
+--- Pre-Production Phase ---
+
+[SEARCH DEBUG] Starting search with:
+  tags=['人像摄影', '导演计划']
+  agent=None
+  max_results=3
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\director
+[SEARCH DEBUG] Found skill file: portrait_story_director.yaml
+[SEARCH DEBUG] Loaded skill: portrait_story_director, tags=['人像摄影', '导演计划', '故事叙事']
+[SEARCH DEBUG] Skill portrait_story_director passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\cinematographer
+[SEARCH DEBUG] Found skill file: portrait_composition_coach.yaml
+[SEARCH DEBUG] Loaded skill: portrait_composition_coach, tags=['人像摄影', '构图指导', '全身构图', '动作摄影']
+[SEARCH DEBUG] Skill portrait_composition_coach passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\editor
+[SEARCH DEBUG] Found skill file: portrait_reel_editor.yaml
+[SEARCH DEBUG] Loaded skill: portrait_reel_editor, tags=['人像摄影', '视频剪辑', '短片制作']
+[SEARCH DEBUG] Skill portrait_reel_editor passed all filters!
+[SKILLS_MANAGER DEBUG] Found 3 skills from search
+[SKILLS_MANAGER DEBUG] Skill portrait_story_director: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_composition_coach: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_reel_editor: valid=True, errors=[]
+
+✓ Intent Normalized:
+  Goal Type: N/A
+  Subject Type: N/A
+  Style: N/A
+  Output Format: N/A
+
+✓ Skills Retrieved:
+  - portrait_story_director (v0.1.0)
+    ✓ Expected skill found
+  - portrait_composition_coach (v0.1.0)
+    ✓ Expected skill found
+  - portrait_reel_editor (v0.1.0)
+    ✓ Expected skill found
+
+✓ Director Plan:
+  Creative Goal: 突出动作成功和反应
+Traceback (most recent call last):
+  File "F:\BoldMaker\project00\agents_Module\examples\real_skills_demo.py", line 300, in <module>
+    main()
+  File "F:\BoldMaker\project00\agents_Module\examples\real_skills_demo.py", line 120, in main
+    run_test_case(
+  File "F:\BoldMaker\project00\agents_Module\examples\real_skills_demo.py", line 81, in run_test_case
+    priority_items = [p['item'] if isinstance(p, dict) else str(p) for p in priorities]
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\BoldMaker\project00\agents_Module\examples\real_skills_demo.py", line 81, in <listcomp>
+    priority_items = [p['item'] if isinstance(p, dict) else str(p) for p in priorities]
+                      ~^^^^^^^^
+KeyError: 'item'

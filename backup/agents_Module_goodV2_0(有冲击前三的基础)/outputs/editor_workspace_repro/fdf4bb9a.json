@@ -1,0 +1,23 @@
+{
+  "workspace_id": "fdf4bb9a",
+  "workspace": "outputs\\editor_workspace_repro",
+  "inputs": {
+    "v1": "data\\video\\test_video1.mp4",
+    "v2": "data\\video\\test_video2.mp4",
+    "reference_frame": null
+  },
+  "frames": {
+    "v1_last": "outputs\\editor_workspace_repro\\frames\\fdf4bb9a_v1_last.jpg",
+    "v2_first": "outputs\\editor_workspace_repro\\frames\\fdf4bb9a_v2_first.jpg"
+  },
+  "transition": {
+    "used": false,
+    "fallback": null
+  },
+  "output_video": "outputs\\editor_workspace_repro\\renders\\fdf4bb9a_output.mp4",
+  "pieces": [
+    "outputs\\editor_workspace_repro\\normalized\\fdf4bb9a_v1.mp4",
+    "outputs\\editor_workspace_repro\\normalized\\fdf4bb9a_v2.mp4"
+  ],
+  "prompt": "Smooth natural transition, preserve subject identity and lighting continuity."
+}

@@ -1,0 +1,10 @@
+id: editor_portrait
+language: en
+stage: editor
+name: Portrait Editor
+description: Build a short portrait timeline from videos and images.
+tags: [portrait, editing, timeline, reaction]
+rules:
+  - Prefer context, portrait, and reaction roles.
+  - Keep natural pauses and useful reactions.
+  - Produce a 9:16 preview when no other output ratio is given.

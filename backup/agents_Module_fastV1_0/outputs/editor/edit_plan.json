@@ -1,0 +1,19 @@
+{
+  "timeline": [
+    {
+      "source": "data/video/test_video1.mp4",
+      "role": "portrait_source",
+      "reason": "Main video footage",
+      "keep": true,
+      "ai_role": "establishing_shot",
+      "ai_reason": "The wide-angle shots with the 'BOLD MAKER 2026' backdrop establish the event context, venue scale, and group setting—ideal for opening sequence."
+    }
+  ],
+  "rendered_preview": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\editor\\preview.mp4",
+  "render": {
+    "ratio": "16:9",
+    "format": "mp4"
+  },
+  "analysis_summary": "Footage is well-lit with warm stage lighting, consistent framing across frames, and strong group chemistry. The subjects are engaged and expressive—ideal for a celebratory, human-centered short film. Slight color grading (warm tones + subtle contrast boost) will enhance cinematic feel. Prioritize dynamic cuts between wide group shots and intimate reaction close-ups to maintain rhythm.",
+  "user_summary_zh": "已生成剪辑时间线和预览视频。Footage is well-lit with warm stage lighting, consistent framing across frames, and strong group chemistry. The subjects are engaged and expressive—ideal for a celebratory, human-centered short film. Slight color grading (warm tones + subtle contrast boost) will enhance cinematic feel. Prioritize dynamic cuts between wide group shots and intimate reaction close-ups to maintain rhythm."
+}

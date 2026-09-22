@@ -1,0 +1,27 @@
+{
+  "goal": "自然人像",
+  "matched_skills": [
+    "portrait_story_director"
+  ],
+  "skills_guidance": "",
+  "shot_plan": [
+    {
+      "stage": "establish",
+      "shot": "wide_context",
+      "reason": "建立环境背景"
+    },
+    {
+      "stage": "subject",
+      "shot": "medium_portrait",
+      "reason": "聚焦主体清晰构图"
+    },
+    {
+      "stage": "result",
+      "shot": "reaction",
+      "reason": "捕捉情感反应"
+    }
+  ],
+  "reference_analysis": [],
+  "confidence": 0.75,
+  "user_summary_zh": "已生成导演拍摄计划。"
+}

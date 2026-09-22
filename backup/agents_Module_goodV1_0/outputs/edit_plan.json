@@ -1,0 +1,57 @@
+{
+  "timeline": [
+    {
+      "source": "data\\video\\test_video1.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\test_video2.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\test_video3.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\test_video4.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\img\\img1.jpg",
+      "role": "reference_frame",
+      "reason": "参考图片",
+      "keep": true
+    },
+    {
+      "source": "data\\img\\img2.jpg",
+      "role": "reference_frame",
+      "reason": "参考图片",
+      "keep": true
+    },
+    {
+      "source": "data\\img\\微信图片_20260922013228_909_27.jpg",
+      "role": "reference_frame",
+      "reason": "参考图片",
+      "keep": true
+    }
+  ],
+  "rendered_preview": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\preview.mp4",
+  "render": {
+    "ratio": "16:9",
+    "format": "mp4"
+  },
+  "matched_skills": [
+    "portrait_reel_editor"
+  ],
+  "skills_guidance": "",
+  "analysis_summary": "Mock analysis: a person is visible; keep the subject clear and leave directional space.",
+  "user_summary_zh": "已生成剪辑时间线和预览视频。Mock analysis: a person is visible; keep the subject clear and leave directional space."
+}

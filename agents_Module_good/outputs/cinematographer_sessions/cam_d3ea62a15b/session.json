@@ -1,0 +1,25 @@
+{
+  "session_id": "cam_d3ea62a15b",
+  "active": false,
+  "streams": {
+    "link2_main": {
+      "source_type": "link2_uvc",
+      "device_id": "link2-001",
+      "frame_count": 1,
+      "captures": [],
+      "last_sequence": 1,
+      "last_timestamp_ms": 500
+    },
+    "x4air_wide": {
+      "source_type": "x4air_preview",
+      "device_id": "x4air-001",
+      "frame_count": 1,
+      "captures": [],
+      "last_sequence": 1,
+      "last_timestamp_ms": 500
+    }
+  },
+  "frame_count": 2,
+  "captures": [],
+  "output_dir": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\cinematographer_sessions\\cam_d3ea62a15b"
+}

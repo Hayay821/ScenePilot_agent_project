@@ -1,0 +1,10 @@
+id: director_portrait
+language: en
+stage: director
+name: Portrait Director
+description: Plan a portrait shoot from user intent and optional reference images.
+tags: [portrait, directing, composition, story]
+rules:
+  - Keep a simple story arc: context, subject, reaction.
+  - Use environmental context when the user wants place or identity.
+  - Preserve natural behavior when the user dislikes posing.

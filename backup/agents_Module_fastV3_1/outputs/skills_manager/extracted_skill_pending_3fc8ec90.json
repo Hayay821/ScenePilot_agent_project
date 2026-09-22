@@ -1,0 +1,63 @@
+{
+  "skill_id": "pending_3fc8ec90",
+  "skill_data": {
+    "name": "Light-First Landscape Observation",
+    "name_zh": "光优先风景观察法",
+    "description": "Prioritize light assessment before selecting subject and composition in landscape photography.",
+    "description_zh": "在风光摄影中，先评估光线条件（如晨昏柔光、阴天漫射光），再确定主体与构图；强调慢观察、做减法、尊重自然，并通过持续实践形成个人视角。",
+    "stage": "cinematographer",
+    "category": "landscape",
+    "tags": [
+      "light analysis",
+      "composition",
+      "patience",
+      "environmental ethics",
+      "visual storytelling"
+    ],
+    "rules": [
+      {
+        "condition": "Golden hour (sunrise/sunset) is approaching or ongoing",
+        "condition_zh": "日出或日落的黄金时刻正在来临或进行中",
+        "action": "Position yourself to capture side/back lighting, emphasize texture and depth with long shadows",
+        "action_zh": "选择侧光或逆光位，利用长阴影突出景物纹理与空间层次",
+        "reason": "此时光线柔和、色温温暖、明暗对比丰富，能极大增强画面立体感与情绪感染力"
+      },
+      {
+        "condition": "Overcast sky with diffused light",
+        "condition_zh": "阴天，光线均匀漫射",
+        "action": "Focus on fine details, textures, and subtle tonal gradations; avoid high-contrast subjects",
+        "action_zh": "聚焦细节、质感与细腻影调过渡；避免依赖强对比的题材",
+        "reason": "漫射光减少硬阴影，适合表现静谧氛围与微小结构，如苔藓、水面涟漪、雾中轮廓"
+      },
+      {
+        "condition": "Scene appears cluttered or visually overwhelming",
+        "condition_zh": "画面元素杂乱、视觉信息过载",
+        "action": "Apply compositional subtraction: remove non-essential elements, use foreground as visual guide",
+        "action_zh": "执行构图减法：剔除非必要元素，利用前景引导视线至主体",
+        "reason": "简化构图可提升视觉焦点清晰度，避免观众注意力分散"
+      },
+      {
+        "condition": "Natural elements (wind, water, clouds) show dynamic movement",
+        "condition_zh": "风、水、云等自然元素呈现动态变化",
+        "action": "Pause, observe rhythm, and wait for the decisive moment of harmony or contrast",
+        "action_zh": "暂停拍摄，观察运动节奏，等待和谐或戏剧性瞬间出现",
+        "reason": "自然动态是风光摄影的灵魂，耐心等待能捕捉到不可复制的瞬时美感"
+      },
+      {
+        "condition": "Photographer feels urge to alter environment (e.g., move rocks, trample vegetation)",
+        "condition_zh": "摄影师产生改变环境的冲动（如搬动石块、踩踏植被）",
+        "action": "Refrain from any interference; seek alternative angles or compositions instead",
+        "action_zh": "克制干预行为，转而寻找替代角度或构图方案",
+        "reason": "尊重自然生态是职业伦理底线，真实、未被干扰的场景更具长期价值与艺术真诚性"
+      }
+    ],
+    "confidence": 0.85,
+    "skill_id": "pending_3fc8ec90",
+    "id": "pending_3fc8ec90",
+    "status": "pending_review",
+    "created_at": "2026-09-23T01:00:26.012207"
+  },
+  "pending_path": "F:\\BoldMaker\\project00\\agents_Module_fast\\skills\\repository\\pending_review\\pending_3fc8ec90.yaml",
+  "status": "pending_review",
+  "message_zh": "技能已提取并保存到待审核目录"
+}

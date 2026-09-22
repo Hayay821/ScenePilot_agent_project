@@ -1,0 +1,23 @@
+{
+  "workspace_id": "c39f5c26",
+  "workspace": "outputs\\editor_workspace_repro",
+  "inputs": {
+    "v1": "data\\video\\test_video1.mp4",
+    "v2": "data\\video\\test_video2.mp4",
+    "reference_frame": null
+  },
+  "frames": {
+    "v1_last": "outputs\\editor_workspace_repro\\frames\\c39f5c26_v1_last.jpg",
+    "v2_first": "outputs\\editor_workspace_repro\\frames\\c39f5c26_v2_first.jpg"
+  },
+  "transition": {
+    "used": false,
+    "fallback": "400 Client Error: Bad Request for url: https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis"
+  },
+  "output_video": "outputs\\editor_workspace_repro\\renders\\c39f5c26_output.mp4",
+  "pieces": [
+    "outputs\\editor_workspace_repro\\normalized\\c39f5c26_v1.mp4",
+    "outputs\\editor_workspace_repro\\normalized\\c39f5c26_v2.mp4"
+  ],
+  "prompt": "Smooth natural transition, preserve subject identity and lighting continuity."
+}

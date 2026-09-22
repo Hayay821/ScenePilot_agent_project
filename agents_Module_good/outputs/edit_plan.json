@@ -1,0 +1,63 @@
+{
+  "timeline": [
+    {
+      "source": "data\\video\\test_video1.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true,
+      "ai_role": "establishing_shot",
+      "ai_reason": "第1-4帧为舞台全景，可作为开场建立活动场景（BOLD MAKER 2026），突出“智能影像挑战”主题与群体氛围，适合作为环境/全景素材用于Link 2人物近景的转场铺垫"
+    },
+    {
+      "source": "data\\video\\test_video2.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true,
+      "ai_role": "main_portrait",
+      "ai_reason": "第5帧为女性主角特写，情绪沉静、构图留白，适合用作核心人物的情绪锚点；可与第1-4帧中该女性的群像镜头形成“个体—群体”呼应，支撑X4 Air人物近景与环境素材的协作逻辑"
+    },
+    {
+      "source": "data\\video\\test_video3.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true,
+      "ai_role": "reaction_shot",
+      "ai_reason": "第6帧为手与猫互动的动态瞬间，虽非人类表情，但其动作张力与生活化质感可作为情绪调剂镜头——在群像欢笑后插入此帧，制造节奏反差，增强真实感与电影感"
+    },
+    {
+      "source": "data\\video\\test_video4.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\img\\img1.jpg",
+      "role": "reference_frame",
+      "reason": "参考图片",
+      "keep": true
+    },
+    {
+      "source": "data\\img\\img2.jpg",
+      "role": "reference_frame",
+      "reason": "参考图片",
+      "keep": true
+    },
+    {
+      "source": "data\\img\\微信图片_20260922013228_909_27.jpg",
+      "role": "reference_frame",
+      "reason": "参考图片",
+      "keep": true
+    }
+  ],
+  "rendered_preview": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\preview.mp4",
+  "render": {
+    "ratio": "16:9",
+    "format": "mp4"
+  },
+  "matched_skills": [
+    "portrait_reel_editor"
+  ],
+  "skills_guidance": "严格遵循人像短片剪辑规范：首先通过前4帧全景建立‘BOLD MAKER 2026’活动语境（Link 2 环境/全景）；再以第5帧特写聚焦核心人物（X4 Air 近景），强化人物关系与情绪主线；最后用第6帧动物互动作为反应镜头或节奏休止符，实现情绪层次递进。输出格式采用9:16竖屏，契合短视频传播场景，编辑风格强调自然光影与呼吸感，符合‘电影感’要求。",
+  "analysis_summary": "素材整体质量良好，舞台场景光线充足、人物状态自然；户外人像略显灰暗但有氛围感，适配文艺调性；猫的动态帧具生活气息，可作情绪缓冲。建议以‘活动纪实+人物特写+生活片段’三段式结构剪辑，突出团队凝聚力与个体情感，避免过度炫技，保持真实温度。",
+  "user_summary_zh": "已生成剪辑时间线和预览视频。素材整体质量良好，舞台场景光线充足、人物状态自然；户外人像略显灰暗但有氛围感，适配文艺调性；猫的动态帧具生活气息，可作情绪缓冲。建议以‘活动纪实+人物特写+生活片段’三段式结构剪辑，突出团队凝聚力与个体情感，避免过度炫技，保持真实温度。"
+}

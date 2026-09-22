@@ -1,0 +1,146 @@
+schema_version: "1.0"
+skill_id: team_moment
+version: "0.1.0"
+name: 团队时刻记录
+name_en: Team Moment Recorder
+description: >-
+  记录多人团队互动时刻，平衡群体关系和个体表情。
+  强调如何在群体场景中突出关键人物和互动关系。
+
+author:
+  type: expert
+  id: expert_demo
+  display_name: 示例摄影师
+  verified: false
+
+license: CC-BY-4.0
+visibility: local
+status: draft
+parent_skill: null
+
+teaching:
+  audience: intermediate
+  principles:
+    - "团队场景需要平衡群体构图和个体特写"
+    - "互动开始时使用中景展示人物关系，高潮时切换到关键人物特写"
+    - "全景用于建立团队氛围和空间关系"
+    - "声音和肢体语言是判断互动强度的重要线索"
+  explain_template: >-
+    检测到多人互动时，先用中景展示团队关系；
+    互动达到高潮时切换到主要说话者或反应者；
+    使用全景记录团队整体氛围。
+
+inputs:
+  intent:
+    type: object
+    properties:
+      group_size:
+        type: string
+        enum: [小组2-3人, 团队4-8人, 大型8人以上]
+      activity_type:
+        type: string
+        enum: [讨论, 庆祝, 协作, 竞技]
+      focus:
+        type: string
+        enum: [平衡所有人, 突出领导者, 捕捉反应]
+      output_ratio:
+        type: string
+        enum: ["16:9", "9:16", "1:1"]
+  media_types:
+    - video
+    - panorama
+  required_capabilities:
+    - subject_tracking
+    - group_detection
+    - interaction_detection
+
+agent_bindings:
+  director: true
+  cinematographer: true
+  editor: true
+  skills_manager: true
+
+rules:
+  - id: establish_group
+    when:
+      event: group_activity
+      confidence_gte: 0.70
+    advice:
+      composition: wide
+      camera_preference: x4air
+      keep_pre_roll_ms: 4000
+    priority: 85
+    explanation: "团队活动开始时用全景建立群体关系和空间环境。"
+
+  - id: interaction_medium
+    when:
+      event: interaction
+      confidence_gte: 0.75
+    advice:
+      composition: full_body
+      camera_preference: link2
+      tracking_speed: normal
+    priority: 80
+    explanation: "互动发生时使用中景，展示人物之间的关系和肢体语言。"
+
+  - id: capture_key_speaker
+    when:
+      event: conversation
+      confidence_gte: 0.70
+    advice:
+      composition: half_body
+      camera_preference: link2
+      mark_highlight: true
+    priority: 90
+    explanation: "对话高潮时切换到主要说话者，捕捉表情和情绪。"
+
+  - id: reaction_shots
+    when:
+      event: excitement
+      confidence_gte: 0.65
+    advice:
+      composition: half_body
+      mark_highlight: true
+      keep_post_roll_ms: 3000
+    priority: 75
+    explanation: "团队庆祝或兴奋时刻，捕捉个体反应和情绪。"
+
+  - id: panorama_atmosphere
+    when:
+      event: group_activity
+      confidence_gte: 0.60
+    advice:
+      panorama_reframe: group_center
+      keep_post_roll_ms: 5000
+    priority: 70
+    explanation: "使用全景保留团队整体氛围和空间感。"
+
+safety:
+  allowed_actions:
+    - suggest_composition
+    - suggest_tracking
+    - mark_highlight
+    - suggest_reframe
+    - mark_segment
+  requires_human_approval:
+    - publish
+    - upload
+    - overwrite_skill
+  forbidden_actions:
+    - delete_media
+    - format_storage
+    - firmware_upgrade
+  min_confidence_for_device_suggestion: 0.70
+
+evidence:
+  examples: []
+  expert_notes:
+    - "团队拍摄时注意不要遗漏边缘人物"
+    - "全景和特写的切换要有视觉逻辑"
+
+tags:
+  - 团队拍摄
+  - 多人互动
+  - 群体构图
+  - 关系记录
+  - 中高级技巧

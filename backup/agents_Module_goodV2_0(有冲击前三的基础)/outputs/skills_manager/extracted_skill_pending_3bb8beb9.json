@@ -1,0 +1,62 @@
+{
+  "skill_id": "pending_3bb8beb9",
+  "skill_data": {
+    "name": "Light-First Observation",
+    "name_zh": "以光为先的观察法",
+    "description": "Prioritize light assessment before selecting subject and composition in landscape photography.",
+    "description_zh": "在风景摄影中，优先评估光线条件（如方向、强度、色温），再据此选择主体与构图，确保画面具备最佳光影层次与情绪基调。",
+    "stage": "cinematographer",
+    "category": "landscape",
+    "tags": [
+      "lighting",
+      "observation",
+      "timing",
+      "composition"
+    ],
+    "rules": [
+      {
+        "condition": "Golden hour (sunrise/sunset) with soft, directional light",
+        "condition_zh": "日出或日落的黄金时刻，光线柔和且具方向性",
+        "action": "Position yourself to capture side or backlight for depth and texture",
+        "action_zh": "调整机位，采用侧光或逆光拍摄，以增强景物立体感与质感",
+        "reason": "此时光线角度低，阴影拉长，明暗对比自然，能突出地形起伏与纹理细节，营造丰富层次"
+      },
+      {
+        "condition": "Overcast sky with diffused light",
+        "condition_zh": "阴天，光线漫射均匀",
+        "action": "Focus on fine details, textures, and mood; avoid high-contrast subjects",
+        "action_zh": "聚焦于细节、质感与静谧氛围；避免依赖强对比的主体",
+        "reason": "漫射光减少硬阴影，利于表现细腻纹理（如苔藓、水面涟漪）和内敛情绪，适合抒情式风景表达"
+      },
+      {
+        "condition": "Wind, clouds, or water movement visible in scene",
+        "condition_zh": "场景中可见风、云或水流等动态元素",
+        "action": "Wait patiently for a decisive moment when motion aligns with composition",
+        "action_zh": "耐心等待动态元素（如云隙透光、浪花定格）与构图形成最佳呼应的瞬间",
+        "reason": "自然动态是画面生命力的来源；‘决定性瞬间’可将静态构图转化为有叙事张力的画面"
+      },
+      {
+        "condition": "Multiple potential subjects or cluttered foreground/midground",
+        "condition_zh": "存在多个潜在主体或前景/中景杂乱",
+        "action": "Apply compositional subtraction: remove distractions, use leading foreground elements selectively",
+        "action_zh": "执行构图减法：剔除干扰元素，仅保留能引导视线的前景元素",
+        "reason": "简洁构图提升视觉焦点清晰度；前景引导线可增强纵深感，避免画面信息过载导致主题模糊"
+      },
+      {
+        "condition": "Photographer feels urge to rush or disturb natural setting",
+        "condition_zh": "摄影师产生急于拍摄或可能干扰自然环境的冲动",
+        "action": "Pause, observe without shooting; prioritize ecological respect over image capture",
+        "action_zh": "暂停拍摄，仅观察不干预；将尊重自然置于获取照片之上",
+        "reason": "可持续摄影伦理是专业素养的核心；干扰行为不仅违背道德，也可能破坏后续拍摄机会与生态平衡"
+      }
+    ],
+    "confidence": 0.85,
+    "skill_id": "pending_3bb8beb9",
+    "id": "pending_3bb8beb9",
+    "status": "pending_review",
+    "created_at": "2026-09-22T23:42:08.562402"
+  },
+  "pending_path": "F:\\BoldMaker\\project00\\agents_Module_fast\\skills\\repository\\pending_review\\pending_3bb8beb9.yaml",
+  "status": "pending_review",
+  "message_zh": "技能已提取并保存到待审核目录"
+}

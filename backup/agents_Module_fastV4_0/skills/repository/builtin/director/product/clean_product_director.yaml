@@ -1,0 +1,47 @@
+skill_id: clean_product_director
+name: Clean Product Photography Planning
+description: Planning product shots with minimal background and focused lighting
+language: en
+author: builtin
+status: active
+stage: director
+category: product
+tags:
+  - product
+  - commercial
+  - clean_background
+  - lighting
+
+agent_bindings:
+  director: true
+
+rules:
+  - condition: product_showcase
+    action: plan_multiple_angles
+    priority: high
+    reason: Products need to be shown from multiple perspectives (front, side, detail, context)
+
+  - condition: white_background_setup
+    action: ensure_even_lighting
+    priority: high
+    reason: Clean white background requires even lighting to avoid shadows and hotspots
+
+  - condition: small_product
+    action: plan_macro_detail_shots
+    priority: medium
+    reason: Small products benefit from close-up detail shots showing texture and quality
+
+  - condition: product_in_use
+    action: include_lifestyle_context
+    priority: medium
+    reason: Showing product in use helps customers understand scale and application
+
+  - condition: reflective_surface
+    action: control_light_reflection
+    priority: high
+    reason: Reflective products need careful light placement to avoid unwanted reflections
+
+metadata:
+  created_at: "2024-01-15T10:30:00Z"
+  updated_at: "2024-01-15T10:30:00Z"
+  version: "1.0"

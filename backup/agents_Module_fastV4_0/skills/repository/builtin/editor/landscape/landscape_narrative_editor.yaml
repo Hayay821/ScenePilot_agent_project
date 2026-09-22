@@ -1,0 +1,52 @@
+skill_id: landscape_narrative_editor
+name: Landscape Narrative Editing
+description: Editing techniques for creating narrative flow in landscape video sequences
+language: en
+author: builtin
+status: active
+stage: editor
+category: landscape
+tags:
+  - landscape
+  - narrative
+  - pacing
+  - sequence
+
+agent_bindings:
+  editor: true
+
+rules:
+  - condition: multiple_landscape_shots
+    action: establish_wide_then_detail
+    priority: high
+    reason: Start with wide establishing shots, then move to intimate details for narrative flow
+
+  - condition: time_of_day_variation
+    action: sequence_chronologically
+    priority: medium
+    reason: Showing progression from dawn to dusk creates natural temporal narrative
+
+  - condition: location_change
+    action: use_transition_shots
+    priority: medium
+    reason: Transitional elements (paths, horizons) smooth location changes
+
+  - condition: static_landscape_clips
+    action: vary_clip_duration
+    priority: medium
+    reason: Mix longer contemplative shots with shorter dynamic cuts to maintain interest
+
+  - condition: natural_movement_present
+    action: highlight_motion_elements
+    priority: medium
+    reason: Water, clouds, grass movement adds life to otherwise static landscapes
+
+  - condition: audio_ambience
+    action: preserve_natural_soundscape
+    priority: high
+    reason: Natural sounds (wind, water, birds) enhance immersive landscape experience
+
+metadata:
+  created_at: "2024-01-15T12:00:00Z"
+  updated_at: "2024-01-15T12:00:00Z"
+  version: "1.0"

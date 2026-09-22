@@ -1,0 +1,156 @@
+schema_version: "1.0"
+skill_id: portrait_composition_coach
+version: "0.1.0"
+name: 人像摄影指导
+name_en: Portrait Composition Coach
+description: >-
+  在拍摄过程中，根据主体状态、画面质量、光线和导演计划，
+  给出人像构图、景别、跟踪和设备动作建议。
+
+author:
+  type: expert
+  id: open_vision_team
+  display_name: OpenVision 团队
+  verified: false
+
+license: CC-BY-4.0
+visibility: local
+status: draft
+parent_skill: null
+
+teaching:
+  audience: beginner
+  principles:
+    - "比复杂构图更重要的是人物没有被遮挡、脸部清晰、画面不严重过曝"
+    - "人物看向哪一侧，通常就在那一侧保留适量空间，画面会更自然"
+    - "人物正在向前移动时，前方应比身后保留更多空间"
+    - "从环境到人物再到表情逐级靠近，不要无理由频繁变焦"
+  explain_template: >-
+    根据主体跟踪置信度、面部可见性和运动方向，建议构图和设备动作；
+    跟踪不稳定时先用全景记录，稳定后再进入人像近景。
+
+inputs:
+  intent:
+    type: object
+    properties:
+      subject_id:
+        type: string
+      bbox_normalized:
+        type: array
+      face_visible:
+        type: boolean
+      gaze_direction:
+        type: string
+        enum: [left, right, camera, unknown]
+      motion_direction:
+        type: string
+        enum: [left, right, toward_camera, away_camera, still, unknown]
+      occlusion_ratio:
+        type: number
+      tracking_confidence:
+        type: number
+  media_types:
+    - image
+    - video
+    - panorama
+  required_capabilities:
+    - subject_tracking
+    - face_detection
+
+agent_bindings:
+  director: false
+  cinematographer: true
+  editor: false
+  skills_manager: true
+
+supported_devices:
+  - insta360_x4_air
+  - insta360_link2
+
+tags:
+  - 人像摄影
+  - 构图指导
+  - 全身构图
+  - 动作摄影
+
+rules:
+  - id: subject_lost
+    when:
+      tracking_confidence_lt: 0.45
+    advice:
+      camera: x4air
+      action: recover_subject_from_panorama
+      composition: environmental_wide
+    priority: 100
+    explanation: "主体跟踪不可靠时，先用全景记录保证不漏掉事件，不让云台盲目追踪"
+
+  - id: face_obscured
+    when:
+      face_visible: false
+      occlusion_ratio_gte: 0.35
+    advice:
+      camera: link2
+      composition: medium_shot
+      action: wait_for_clear_face
+    priority: 90
+    explanation: "脸部被遮挡时不要继续强行拍特写，先退到中景或等待遮挡消失"
+
+  - id: gaze_left
+    when:
+      gaze_direction: left
+    advice:
+      composition: preserve_left_negative_space
+      pan_bias: left
+    priority: 65
+    explanation: "人物视线朝左时，在左侧保留空间可以强化注意力方向"
+
+  - id: motion_right
+    when:
+      motion_direction: right
+    advice:
+      composition: preserve_right_motion_space
+      tracking_speed: normal
+    priority: 75
+    explanation: "人物向右移动时，右侧空间用于承接运动方向"
+
+  - id: portrait_closeup
+    when:
+      tracking_confidence_gte: 0.80
+      face_visible: true
+      occlusion_ratio_lt: 0.15
+    advice:
+      camera: link2
+      composition: half_body_or_head
+      focus_priority: face
+    priority: 80
+    explanation: "主体稳定且面部清晰时才进入人像近景，避免在跟踪不稳定时快速推近"
+
+  - id: backlight_risk
+    when:
+      exposure_status: strong_backlight
+    advice:
+      action: suggest_exposure_check
+      do_not_execute: true
+      fallback: move_subject_or_use_fill_light
+    priority: 85
+    explanation: "逆光应先提出曝光或位置调整建议，不能让 Agent 直接修改相机曝光"
+
+safety:
+  allowed_actions:
+    - suggest_composition
+    - suggest_tracking
+    - suggest_reframe
+    - suggest_exposure_check
+  requires_human_approval:
+    - change_primary_subject
+    - exposure_override
+  forbidden_actions:
+    - direct_device_control
+    - firmware_upgrade
+    - delete_media
+    - format_storage
+  min_confidence_for_device_suggestion: 0.70
+
+evidence:
+  examples: []
+  expert_notes: []

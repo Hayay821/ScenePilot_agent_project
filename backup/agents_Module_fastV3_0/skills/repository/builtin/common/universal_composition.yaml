@@ -1,0 +1,54 @@
+skill_id: universal_composition_common
+name: Universal Composition Rules
+description: Fundamental composition principles applicable across all shooting stages
+language: en
+author: builtin
+status: active
+stage: common
+category: common
+tags:
+  - composition
+  - universal
+  - fundamentals
+  - all_stages
+
+agent_bindings:
+  director: true
+  cinematographer: true
+  editor: true
+
+rules:
+  - condition: frame_composition
+    action: check_rule_of_thirds
+    priority: high
+    reason: Rule of thirds creates balanced, visually pleasing compositions across all media types
+
+  - condition: subject_placement
+    action: avoid_center_dead_space
+    priority: medium
+    reason: Off-center subjects create more dynamic and engaging frames
+
+  - condition: leading_lines_present
+    action: use_lines_to_guide_eye
+    priority: medium
+    reason: Natural or architectural lines guide viewer attention to the subject
+
+  - condition: negative_space_available
+    action: use_negative_space_intentionally
+    priority: medium
+    reason: Negative space gives breathing room and emphasizes the subject
+
+  - condition: symmetry_opportunity
+    action: perfect_center_alignment
+    priority: medium
+    reason: Symmetrical compositions create powerful, formal images when appropriate
+
+  - condition: foreground_interest
+    action: include_depth_layers
+    priority: medium
+    reason: Foreground, subject, and background layers create depth perception
+
+metadata:
+  created_at: "2024-01-15T11:30:00Z"
+  updated_at: "2024-01-15T11:30:00Z"
+  version: "1.0"

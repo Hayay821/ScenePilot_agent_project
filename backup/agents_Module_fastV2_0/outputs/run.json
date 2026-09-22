@@ -1,0 +1,1086 @@
+{
+  "skills": [
+    {
+      "schema_version": "1.0",
+      "skill_id": "portrait_composition_coach",
+      "version": "0.1.0",
+      "name": "人像摄影指导",
+      "name_en": "Portrait Composition Coach",
+      "description": "在拍摄过程中，根据主体状态、画面质量、光线和导演计划， 给出人像构图、景别、跟踪和设备动作建议。",
+      "purpose": "Analyze current frames and suggest the next safe and useful portrait capture.",
+      "author": {
+        "type": "expert",
+        "id": "open_vision_team",
+        "display_name": "OpenVision 团队",
+        "verified": false
+      },
+      "license": "CC-BY-4.0",
+      "visibility": "local",
+      "status": "draft",
+      "parent_skill": null,
+      "teaching": {
+        "audience": "beginner",
+        "principles": [
+          "比复杂构图更重要的是人物没有被遮挡、脸部清晰、画面不严重过曝",
+          "人物看向哪一侧，通常就在那一侧保留适量空间，画面会更自然",
+          "人物正在向前移动时，前方应比身后保留更多空间",
+          "从环境到人物再到表情逐级靠近，不要无理由频繁变焦"
+        ],
+        "explain_template": "根据主体跟踪置信度、面部可见性和运动方向，建议构图和设备动作； 跟踪不稳定时先用全景记录，稳定后再进入人像近景。"
+      },
+      "inputs": {
+        "intent": {
+          "type": "object",
+          "properties": {
+            "subject_id": {
+              "type": "string"
+            },
+            "bbox_normalized": {
+              "type": "array"
+            },
+            "face_visible": {
+              "type": "boolean"
+            },
+            "gaze_direction": {
+              "type": "string",
+              "enum": [
+                "left",
+                "right",
+                "camera",
+                "unknown"
+              ]
+            },
+            "motion_direction": {
+              "type": "string",
+              "enum": [
+                "left",
+                "right",
+                "toward_camera",
+                "away_camera",
+                "still",
+                "unknown"
+              ]
+            },
+            "occlusion_ratio": {
+              "type": "number"
+            },
+            "tracking_confidence": {
+              "type": "number"
+            }
+          }
+        },
+        "media_types": [
+          "image",
+          "video",
+          "panorama"
+        ],
+        "required_capabilities": [
+          "subject_tracking",
+          "face_detection"
+        ]
+      },
+      "agent_bindings": {
+        "director": false,
+        "cinematographer": true,
+        "editor": false,
+        "skills_manager": true
+      },
+      "supported_devices": [
+        "insta360_x4_air",
+        "insta360_link2"
+      ],
+      "tags": [
+        "人像摄影",
+        "构图指导",
+        "全身构图",
+        "动作摄影",
+        "portrait",
+        "cinematography",
+        "framing",
+        "realtime",
+        "subject_tracking"
+      ],
+      "prompt_context": {
+        "system_role": "You are a real-time portrait cinematographer. Analyze frames, then suggest one next action.",
+        "required_analysis": [
+          "subject_visibility",
+          "face_visibility",
+          "occlusion",
+          "framing_quality",
+          "gaze_and_motion_direction",
+          "exposure_risk"
+        ],
+        "output_language": "Chinese explanation; English action values."
+      },
+      "output_contract": {
+        "required": [
+          "analysis",
+          "suggestion",
+          "confidence",
+          "evidence_frames",
+          "user_summary_zh"
+        ],
+        "allowed_actions": [
+          "capture_frame",
+          "wait_and_recheck",
+          "switch_to_wide",
+          "suggest_reframe",
+          "suggest_exposure_check"
+        ],
+        "never_execute": true
+      },
+      "rules": [
+        {
+          "id": "subject_lost",
+          "when": {
+            "tracking_confidence_lt": 0.45
+          },
+          "advice": {
+            "camera": "x4air",
+            "action": "recover_subject_from_panorama",
+            "composition": "environmental_wide"
+          },
+          "priority": 100,
+          "explanation": "主体跟踪不可靠时，先用全景记录保证不漏掉事件，不让云台盲目追踪"
+        },
+        {
+          "id": "face_obscured",
+          "when": {
+            "face_visible": false,
+            "occlusion_ratio_gte": 0.35
+          },
+          "advice": {
+            "camera": "link2",
+            "composition": "medium_shot",
+            "action": "wait_for_clear_face"
+          },
+          "priority": 90,
+          "explanation": "脸部被遮挡时不要继续强行拍特写，先退到中景或等待遮挡消失"
+        },
+        {
+          "id": "gaze_left",
+          "when": {
+            "gaze_direction": "left"
+          },
+          "advice": {
+            "composition": "preserve_left_negative_space",
+            "pan_bias": "left"
+          },
+          "priority": 65,
+          "explanation": "人物视线朝左时，在左侧保留空间可以强化注意力方向"
+        },
+        {
+          "id": "motion_right",
+          "when": {
+            "motion_direction": "right"
+          },
+          "advice": {
+            "composition": "preserve_right_motion_space",
+            "tracking_speed": "normal"
+          },
+          "priority": 75,
+          "explanation": "人物向右移动时，右侧空间用于承接运动方向"
+        },
+        {
+          "id": "portrait_closeup",
+          "when": {
+            "tracking_confidence_gte": 0.8,
+            "face_visible": true,
+            "occlusion_ratio_lt": 0.15
+          },
+          "advice": {
+            "camera": "link2",
+            "composition": "half_body_or_head",
+            "focus_priority": "face"
+          },
+          "priority": 80,
+          "explanation": "主体稳定且面部清晰时才进入人像近景，避免在跟踪不稳定时快速推近"
+        },
+        {
+          "id": "backlight_risk",
+          "when": {
+            "exposure_status": "strong_backlight"
+          },
+          "advice": {
+            "action": "suggest_exposure_check",
+            "do_not_execute": true,
+            "fallback": "move_subject_or_use_fill_light"
+          },
+          "priority": 85,
+          "explanation": "逆光应先提出曝光或位置调整建议，不能让 Agent 直接修改相机曝光"
+        },
+        {
+          "id": "subject_centered",
+          "when": {
+            "tracking_confidence_gte": 0.75,
+            "face_visible": true,
+            "composition_quality_gte": 0.7
+          },
+          "advice": {
+            "action": "capture_frame",
+            "composition": "current_stable_composition",
+            "hold_ms": 800
+          },
+          "priority": 92,
+          "explanation": "主体稳定、面部清晰且构图可用时，保存当前帧比继续移动更可靠。"
+        },
+        {
+          "id": "subject_too_small",
+          "when": {
+            "subject_area_ratio_lt": 0.08,
+            "tracking_confidence_gte": 0.6
+          },
+          "advice": {
+            "action": "suggest_reframe",
+            "composition": "medium_shot",
+            "camera_preference": "link2"
+          },
+          "priority": 72,
+          "explanation": "主体过小时先建议重新构图，避免输出只有环境而看不清人物。"
+        },
+        {
+          "id": "subject_too_close",
+          "when": {
+            "subject_area_ratio_gte": 0.65,
+            "face_visible": true
+          },
+          "advice": {
+            "action": "suggest_reframe",
+            "composition": "half_body_or_medium",
+            "keep_headroom": true
+          },
+          "priority": 74,
+          "explanation": "主体过近时保留头部和上半身安全区，避免裁切脸部或身体。"
+        },
+        {
+          "id": "uncertain_frame",
+          "when": {
+            "tracking_confidence_lt": 0.6
+          },
+          "advice": {
+            "action": "wait_and_recheck",
+            "hold_ms": 500,
+            "fallback_camera": "x4air"
+          },
+          "priority": 95,
+          "explanation": "置信度不足时不拍摄关键帧，等待下一帧或切换到全景安全记录。"
+        }
+      ],
+      "safety": {
+        "allowed_actions": [
+          "suggest_composition",
+          "suggest_tracking",
+          "suggest_reframe",
+          "suggest_exposure_check"
+        ],
+        "requires_human_approval": [
+          "change_primary_subject",
+          "exposure_override"
+        ],
+        "forbidden_actions": [
+          "direct_device_control",
+          "firmware_upgrade",
+          "delete_media",
+          "format_storage"
+        ],
+        "min_confidence_for_device_suggestion": 0.7
+      },
+      "latency_policy": {
+        "max_input_frames": 6,
+        "preferred_sampling_fps": 1,
+        "decision_timeout_ms": 5000,
+        "stale_after_ms": 2000
+      },
+      "failure_policy": {
+        "no_frames": "Return wait_and_recheck with an explicit missing_frame warning.",
+        "unreadable_frame": "Exclude the frame and continue with remaining frames.",
+        "no_subject": "Suggest switch_to_wide and do not capture a portrait close-up."
+      },
+      "evidence": {
+        "examples": [],
+        "expert_notes": []
+      },
+      "_path": "F:\\BoldMaker\\project00\\agents_Module_fast\\skills\\repository\\builtin\\cinematographer\\portrait_composition_coach.yaml",
+      "id": "portrait_composition_coach",
+      "stage": "cinematographer"
+    },
+    {
+      "schema_version": "1.0",
+      "skill_id": "portrait_story_director",
+      "version": "0.1.0",
+      "name": "人像故事导演",
+      "name_en": "Portrait Story Director",
+      "description": "在拍摄前将用户的人像创作目标转成可执行的导演计划。 重点判断主体关系、人物状态、环境价值、情绪变化和输出用途。",
+      "purpose": "Convert user intent and reference images into a practical portrait shot plan.",
+      "author": {
+        "type": "expert",
+        "id": "open_vision_team",
+        "display_name": "OpenVision 团队",
+        "verified": false
+      },
+      "license": "CC-BY-4.0",
+      "visibility": "local",
+      "status": "draft",
+      "parent_skill": null,
+      "teaching": {
+        "audience": "beginner",
+        "principles": [
+          "人像不是只拍脸。先判断是个人肖像、朋友合影、采访还是环境人像，才能决定景别、背景和设备位置",
+          "需要讲故事时，不要只保留最好看的一帧，应保留准备、互动、高潮和结果反应",
+          "近景强调表情，中景强调人物关系，全身或广角强调人物与环境的关系"
+        ],
+        "explain_template": "根据主体关系和情绪变化，建议使用环境、中景和特写的组合； 竖屏输出需要预留头部空间；自然风格避免频繁变焦。"
+      },
+      "inputs": {
+        "intent": {
+          "type": "object",
+          "properties": {
+            "subject_type": {
+              "type": "string",
+              "enum": [
+                "single_portrait",
+                "group_portrait",
+                "interview",
+                "environmental_portrait"
+              ]
+            },
+            "mood": {
+              "type": "string",
+              "enum": [
+                "自然",
+                "专业",
+                "温暖",
+                "活泼",
+                "纪实",
+                "电影感"
+              ]
+            },
+            "output_goal": {
+              "type": "string",
+              "enum": [
+                "头像",
+                "采访",
+                "社交短片",
+                "活动记录",
+                "旅行记录"
+              ]
+            },
+            "output_ratio": {
+              "type": "string",
+              "enum": [
+                "16:9",
+                "9:16",
+                "1:1"
+              ]
+            }
+          }
+        },
+        "media_types": [
+          "image",
+          "video",
+          "panorama"
+        ],
+        "required_capabilities": [
+          "subject_detection",
+          "face_detection"
+        ]
+      },
+      "agent_bindings": {
+        "director": true,
+        "cinematographer": false,
+        "editor": false,
+        "skills_manager": true
+      },
+      "supported_devices": [
+        "insta360_x4_air",
+        "insta360_link2"
+      ],
+      "tags": [
+        "人像摄影",
+        "导演计划",
+        "故事叙事",
+        "portrait",
+        "directing",
+        "story",
+        "shot_planning"
+      ],
+      "prompt_context": {
+        "system_role": "You are a portrait film director. Plan before filming and explain decisions clearly.",
+        "required_analysis": [
+          "subject_identity_and_relationship",
+          "environment_value",
+          "mood_and_expression",
+          "lighting_and_background",
+          "output_ratio_constraints"
+        ],
+        "output_language": "Chinese for user explanation; English keys for machine output."
+      },
+      "output_contract": {
+        "required": [
+          "creative_goal",
+          "priorities",
+          "shot_intentions",
+          "camera_roles",
+          "user_summary_zh"
+        ],
+        "shot_intention_fields": [
+          "stage",
+          "shot",
+          "camera",
+          "duration_sec",
+          "reason"
+        ],
+        "stages": [
+          "establish",
+          "subject",
+          "interaction",
+          "result"
+        ]
+      },
+      "rules": [
+        {
+          "id": "single_portrait_default",
+          "when": {
+            "subject_type": "single_portrait"
+          },
+          "advice": {
+            "primary_camera": "link2",
+            "recommended_shots": [
+              "medium_close_up",
+              "medium_shot",
+              "environmental_wide"
+            ],
+            "keep_environment_context": false
+          },
+          "priority": 70,
+          "explanation": "单人肖像优先保证人物表情和眼神清晰，再用少量环境镜头补充人物背景"
+        },
+        {
+          "id": "environmental_portrait",
+          "when": {
+            "subject_type": "environmental_portrait"
+          },
+          "advice": {
+            "primary_camera": "x4air",
+            "recommended_shots": [
+              "environmental_wide",
+              "medium_shot",
+              "subject_detail"
+            ],
+            "keep_environment_context": true,
+            "panorama_reframe": "subject_and_environment"
+          },
+          "priority": 90,
+          "explanation": "环境人像的重点是人物和地点的关系，不能只输出紧脸特写"
+        },
+        {
+          "id": "interview_story",
+          "when": {
+            "subject_type": "interview"
+          },
+          "advice": {
+            "primary_camera": "link2",
+            "supporting_camera": "x4air",
+            "recommended_shots": [
+              "medium_close_up",
+              "reaction_shot",
+              "environment_cutaway"
+            ],
+            "preserve_speech": true,
+            "reserve_silence_before_answer_ms": 800
+          },
+          "priority": 100,
+          "explanation": "采访需要清晰人声、稳定半身构图和适量环境切镜，不能用快速转场破坏表达"
+        },
+        {
+          "id": "natural_mood",
+          "when": {
+            "mood": "自然"
+          },
+          "advice": {
+            "camera_behavior": "slow_reframe",
+            "avoid": [
+              "rapid_zoom",
+              "frequent_cut",
+              "forced_pose"
+            ]
+          },
+          "priority": 80,
+          "explanation": "自然风格减少设备打扰，保留人物真实状态"
+        },
+        {
+          "id": "vertical_social",
+          "when": {
+            "output_ratio": "9:16"
+          },
+          "advice": {
+            "composition": "headroom_and_body_safe",
+            "avoid_edge_cropping": true
+          },
+          "priority": 75,
+          "explanation": "竖屏需要预留头顶和身体运动空间，避免导出后裁掉人物"
+        },
+        {
+          "id": "group_portrait",
+          "when": {
+            "subject_type": "group_portrait"
+          },
+          "advice": {
+            "primary_camera": "x4air",
+            "recommended_shots": [
+              "group_context",
+              "individual_reaction",
+              "group_result"
+            ],
+            "keep_relationship_context": true
+          },
+          "priority": 88,
+          "explanation": "多人肖像需要先建立人物关系，再补充个人表情，不能只追踪一个人。"
+        },
+        {
+          "id": "warm_mood",
+          "when": {
+            "mood": "温暖"
+          },
+          "advice": {
+            "shot_sequence": [
+              "environment_context",
+              "medium_interaction",
+              "emotional_result"
+            ],
+            "pacing": "gentle",
+            "preserve_reaction": true
+          },
+          "priority": 78,
+          "explanation": "温暖风格依靠人物关系和反应建立情绪，不应依赖快速切镜。"
+        },
+        {
+          "id": "cinematic_mood",
+          "when": {
+            "mood": "电影感"
+          },
+          "advice": {
+            "shot_sequence": [
+              "wide_context",
+              "medium_subject",
+              "detail",
+              "reaction"
+            ],
+            "prefer_layered_depth": true,
+            "avoid_flat_background": true
+          },
+          "priority": 76,
+          "explanation": "电影感优先建立前景、主体和背景层次，再用细节镜头完成表达。"
+        },
+        {
+          "id": "low_light_reference",
+          "when": {
+            "reference_analysis_contains": "low_light"
+          },
+          "advice": {
+            "primary_camera": "link2",
+            "shot_strategy": "stable_medium_first",
+            "avoid": [
+              "fast_camera_move",
+              "extreme_underexposure"
+            ]
+          },
+          "priority": 86,
+          "explanation": "低光环境先保证人物可用和稳定，再考虑近景和运动。"
+        }
+      ],
+      "safety": {
+        "allowed_actions": [
+          "suggest_camera_role",
+          "suggest_shot_sequence",
+          "suggest_subject_priority"
+        ],
+        "requires_human_approval": [
+          "change_primary_subject",
+          "publish_plan"
+        ],
+        "forbidden_actions": [
+          "direct_device_control",
+          "delete_media",
+          "publish_without_approval"
+        ],
+        "min_confidence_for_device_suggestion": 0.7
+      },
+      "failure_policy": {
+        "missing_reference_image": "Use user text only and mark reference_analysis as unavailable.",
+        "ambiguous_subject": "Ask the user to choose single, group, interview, or environmental portrait.",
+        "conflicting_preferences": "Prefer explicit user requirements and explain the trade-off."
+      },
+      "evidence": {
+        "examples": [],
+        "expert_notes": []
+      },
+      "_path": "F:\\BoldMaker\\project00\\agents_Module_fast\\skills\\repository\\builtin\\director\\portrait_story_director.yaml",
+      "id": "portrait_story_director",
+      "stage": "director"
+    },
+    {
+      "schema_version": "1.0",
+      "skill_id": "portrait_reel_editor",
+      "version": "0.1.0",
+      "name": "人像短片剪辑",
+      "name_en": "Portrait Reel Editor",
+      "description": "将人像图片或视频组织成有明确人物关系、情绪变化和节奏的成片计划。 支持 Link 2 人物近景与 X4 Air 环境/全景素材协作。",
+      "purpose": "Turn analyzed portrait media into an explainable timeline and a playable preview plan.",
+      "author": {
+        "type": "expert",
+        "id": "open_vision_team",
+        "display_name": "OpenVision 团队",
+        "verified": false
+      },
+      "license": "CC-BY-4.0",
+      "visibility": "local",
+      "status": "draft",
+      "parent_skill": null,
+      "teaching": {
+        "audience": "beginner",
+        "principles": [
+          "推荐使用环境/建立、人物状态、互动或动作、情绪结果四类镜头",
+          "连续相同大小的脸部画面容易单调，可用环境或反应镜头打断",
+          "采访和人物表达需要保留自然停顿，不能只追求快节奏",
+          "人物做完动作后的表情和周围人的反应，往往决定观众是否感受到结果"
+        ],
+        "explain_template": "根据事件时间线和素材证据，建立环境-人物-互动-结果的叙事结构； 竖屏输出使用全景轨迹重构图，避免主体出框。"
+      },
+      "inputs": {
+        "intent": {
+          "type": "object",
+          "properties": {
+            "event_timeline": {
+              "type": "array"
+            },
+            "media_evidence": {
+              "type": "array"
+            },
+            "output_requirements": {
+              "type": "object"
+            }
+          }
+        },
+        "media_types": [
+          "image",
+          "video",
+          "panorama"
+        ],
+        "required_capabilities": [
+          "event_detection",
+          "timeline_construction"
+        ]
+      },
+      "agent_bindings": {
+        "director": false,
+        "cinematographer": false,
+        "editor": true,
+        "skills_manager": true
+      },
+      "supported_devices": [
+        "insta360_x4_air",
+        "insta360_link2"
+      ],
+      "tags": [
+        "人像摄影",
+        "视频剪辑",
+        "短片制作",
+        "portrait",
+        "editing",
+        "timeline",
+        "reaction",
+        "reframing"
+      ],
+      "prompt_context": {
+        "system_role": "You are a portrait video editor. Build a concise, coherent and explainable edit plan.",
+        "required_analysis": [
+          "media_quality",
+          "event_order",
+          "portrait_continuity",
+          "reaction_value",
+          "duplicate_shot_detection",
+          "output_ratio"
+        ],
+        "output_language": "Chinese explanation; English role and action values."
+      },
+      "output_contract": {
+        "required": [
+          "timeline",
+          "selected_sources",
+          "panorama_tracks",
+          "render",
+          "explanations",
+          "user_summary_zh"
+        ],
+        "timeline_fields": [
+          "source",
+          "start_ms",
+          "end_ms",
+          "role",
+          "reason",
+          "keep"
+        ]
+      },
+      "rules": [
+        {
+          "id": "establish_context",
+          "when": {
+            "first_scene": true
+          },
+          "advice": {
+            "preferred_role": "environment_context",
+            "preferred_camera": "x4air",
+            "duration_ms_range": [
+              1500,
+              4000
+            ]
+          },
+          "priority": 80,
+          "explanation": "先用环境镜头说明人物在哪里，观众更容易理解后续人像画面"
+        },
+        {
+          "id": "portrait_anchor",
+          "when": {
+            "event": "subject_stable",
+            "face_quality_gte": 0.7
+          },
+          "advice": {
+            "preferred_role": "portrait_anchor",
+            "preferred_camera": "link2",
+            "composition": "half_body_or_head",
+            "duration_ms_range": [
+              2000,
+              5000
+            ]
+          },
+          "priority": 85,
+          "explanation": "稳定的人物近景作为情绪锚点，保持观众与人物建立联系"
+        },
+        {
+          "id": "interaction_cut",
+          "when": {
+            "event": "interaction",
+            "participants_gte": 2
+          },
+          "advice": {
+            "preferred_role": "relationship_context",
+            "preferred_camera": "x4air",
+            "composition": "group_or_environment",
+            "duration_ms_range": [
+              1500,
+              4000
+            ]
+          },
+          "priority": 90,
+          "explanation": "多人互动使用更宽视角，避免只剪一个人的表情而丢失关系"
+        },
+        {
+          "id": "emotional_result",
+          "when": {
+            "event": "celebration_or_reaction"
+          },
+          "advice": {
+            "preferred_role": "emotional_result",
+            "keep_post_roll_ms": 3000,
+            "mark_highlight": true
+          },
+          "priority": 100,
+          "explanation": "情绪结果是人像短片的收束节点，应保留反应而不是马上切走"
+        },
+        {
+          "id": "avoid_repetition",
+          "when": {
+            "previous_shot_same_role_count_gte": 2
+          },
+          "advice": {
+            "insert_role": "environment_or_reaction",
+            "avoid_same_framing": true
+          },
+          "priority": 75,
+          "explanation": "连续相同景别会使节奏单调，插入环境或反应镜头恢复层次"
+        },
+        {
+          "id": "vertical_reframe",
+          "when": {
+            "output_ratio": "9:16"
+          },
+          "advice": {
+            "reframe": "keep_face_and_upper_body",
+            "safe_margin_percent": 12,
+            "use_panorama_track": true
+          },
+          "priority": 80,
+          "explanation": "竖屏裁切要保留脸部和上半身安全区，优先使用全景轨迹避免主体出框"
+        },
+        {
+          "id": "natural_portrait_pacing",
+          "when": {
+            "style": "natural"
+          },
+          "advice": {
+            "max_consecutive_cuts": 3,
+            "preserve_pause_ms": 500,
+            "avoid_transition": "hard_flash",
+            "preferred_roles": [
+              "environment_context",
+              "portrait_anchor",
+              "emotional_result"
+            ]
+          },
+          "priority": 86,
+          "explanation": "自然人像保留适度停顿和真实反应，避免剪成广告式快节奏。"
+        },
+        {
+          "id": "interview_edit",
+          "when": {
+            "subject_type": "interview"
+          },
+          "advice": {
+            "preserve_speech": true,
+            "preserve_pause_ms": 800,
+            "use_cutaway_for_repetition": true,
+            "prefer_roles": [
+              "portrait_anchor",
+              "environment_context",
+              "reaction"
+            ]
+          },
+          "priority": 95,
+          "explanation": "采访优先保证表达连续性，使用环境或反应镜头处理重复而不是切碎人声。"
+        },
+        {
+          "id": "image_only_sequence",
+          "when": {
+            "video_count": 0,
+            "image_count_gte": 2
+          },
+          "advice": {
+            "duration_per_image_ms": [
+              1800,
+              3500
+            ],
+            "use_motion_effect": "gentle_pan",
+            "order_by": [
+              "story_role",
+              "quality",
+              "timestamp"
+            ]
+          },
+          "priority": 82,
+          "explanation": "只有图片时用轻微视差/平移维持节奏，不使用快速转场掩盖素材不足。"
+        },
+        {
+          "id": "quality_filter",
+          "when": {
+            "quality_score_lt": 0.4
+          },
+          "advice": {
+            "keep": false,
+            "reason": "low_quality",
+            "exception": "keep_if_unique_event"
+          },
+          "priority": 100,
+          "explanation": "低质量素材默认不进入成片，除非它记录了无法替代的关键事件。"
+        },
+        {
+          "id": "duplicate_protection",
+          "when": {
+            "semantic_similarity_gte": 0.9
+          },
+          "advice": {
+            "keep_best_quality_only": true,
+            "keep_reaction_if_different": true
+          },
+          "priority": 78,
+          "explanation": "高度重复的画面只保留质量最好的一段，但不同情绪反应可以保留。"
+        }
+      ],
+      "safety": {
+        "allowed_actions": [
+          "select_clip",
+          "suggest_reframe",
+          "create_subtitle_plan",
+          "mark_highlight"
+        ],
+        "requires_human_approval": [
+          "final_render",
+          "publish",
+          "face_blur_policy"
+        ],
+        "forbidden_actions": [
+          "delete_original_media",
+          "publish_without_approval",
+          "direct_device_control"
+        ],
+        "min_confidence_for_device_suggestion": 0.7
+      },
+      "render_policy": {
+        "default_ratio": "9:16",
+        "default_duration_sec": 30,
+        "preview_codec": "h264",
+        "preview_container": "mp4",
+        "preserve_originals": true,
+        "overwrite_originals": false
+      },
+      "failure_policy": {
+        "no_media": "Return an empty timeline with a user-facing missing_media warning.",
+        "no_events": "Use chronological quality-based selection and mark the timeline as low_confidence.",
+        "render_failure": "Keep edit_plan.json and report the FFmpeg error without deleting sources."
+      },
+      "evidence": {
+        "examples": [],
+        "expert_notes": []
+      },
+      "_path": "F:\\BoldMaker\\project00\\agents_Module_fast\\skills\\repository\\builtin\\editor\\portrait_reel_editor.yaml",
+      "id": "portrait_reel_editor",
+      "stage": "editor"
+    }
+  ],
+  "director": {
+    "goal": "我想拍自然的人像短片",
+    "skills": [
+      "portrait_story_director"
+    ],
+    "shot_plan": [
+      {
+        "stage": "establish",
+        "shot": "wide_context",
+        "reason": "Set up environment and context"
+      },
+      {
+        "stage": "subject",
+        "shot": "medium_portrait",
+        "reason": "Focus on subject with clear framing"
+      },
+      {
+        "stage": "result",
+        "shot": "reaction",
+        "reason": "Capture emotional response or result"
+      }
+    ],
+    "reference_analysis": [],
+    "confidence": 0.75,
+    "user_summary_zh": "已生成导演拍摄计划。"
+  },
+  "filming": {
+    "source_frames": [
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000000.jpg",
+        "index": 0,
+        "timestamp_ms": 0
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000060.jpg",
+        "index": 1,
+        "timestamp_ms": 2000
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000120.jpg",
+        "index": 2,
+        "timestamp_ms": 4000
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000180.jpg",
+        "index": 3,
+        "timestamp_ms": 6000
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000240.jpg",
+        "index": 4,
+        "timestamp_ms": 8000
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000300.jpg",
+        "index": 5,
+        "timestamp_ms": 10000
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000360.jpg",
+        "index": 6,
+        "timestamp_ms": 12000
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000420.jpg",
+        "index": 7,
+        "timestamp_ms": 14000
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000480.jpg",
+        "index": 8,
+        "timestamp_ms": 16000
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000540.jpg",
+        "index": 9,
+        "timestamp_ms": 18000
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000600.jpg",
+        "index": 10,
+        "timestamp_ms": 20000
+      },
+      {
+        "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\frames\\test_video1\\frame_000660.jpg",
+        "index": 11,
+        "timestamp_ms": 22000
+      }
+    ],
+    "analysis": {
+      "subject_visible": true,
+      "face_visible": true,
+      "tracking_confidence": 0.75,
+      "composition_quality": 0.7,
+      "summary": "Mock analysis: a person is visible; keep the subject clear and leave directional space.",
+      "confidence": 0.75
+    },
+    "suggestion": {
+      "action": "capture_frame",
+      "composition": "medium_portrait",
+      "reason": "Frame is suitable for capture"
+    },
+    "captured_frame": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\captures\\frame_000000.jpg",
+    "user_summary_zh": "已分析当前画面并标记拍摄建议。"
+  },
+  "editing": {
+    "timeline": [
+      {
+        "source": "data\\video\\test_video1.mp4",
+        "role": "portrait_source",
+        "reason": "Main video footage",
+        "keep": true
+      },
+      {
+        "source": "data\\video\\test_video2.mp4",
+        "role": "portrait_source",
+        "reason": "Main video footage",
+        "keep": true
+      },
+      {
+        "source": "data\\img\\img1.jpg",
+        "role": "reference_frame",
+        "reason": "Reference image",
+        "keep": true
+      },
+      {
+        "source": "data\\img\\img2.jpg",
+        "role": "reference_frame",
+        "reason": "Reference image",
+        "keep": true
+      },
+      {
+        "source": "data\\img\\微信图片_20260922013228_909_27.jpg",
+        "role": "reference_frame",
+        "reason": "Reference image",
+        "keep": true
+      }
+    ],
+    "rendered_preview": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\preview.mp4",
+    "render": {
+      "ratio": "16:9",
+      "format": "mp4"
+    },
+    "analysis_summary": "Mock analysis: a person is visible; keep the subject clear and leave directional space.",
+    "user_summary_zh": "已生成剪辑时间线和预览视频。Mock analysis: a person is visible; keep the subject clear and leave directional space."
+  }
+}

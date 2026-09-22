@@ -1,0 +1,83 @@
+{
+  "source_frames": [
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000000.jpg",
+      "index": 0,
+      "timestamp_ms": 0
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000060.jpg",
+      "index": 1,
+      "timestamp_ms": 2000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000120.jpg",
+      "index": 2,
+      "timestamp_ms": 4000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000180.jpg",
+      "index": 3,
+      "timestamp_ms": 6000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000240.jpg",
+      "index": 4,
+      "timestamp_ms": 8000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000300.jpg",
+      "index": 5,
+      "timestamp_ms": 10000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000360.jpg",
+      "index": 6,
+      "timestamp_ms": 12000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000420.jpg",
+      "index": 7,
+      "timestamp_ms": 14000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000480.jpg",
+      "index": 8,
+      "timestamp_ms": 16000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000540.jpg",
+      "index": 9,
+      "timestamp_ms": 18000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000600.jpg",
+      "index": 10,
+      "timestamp_ms": 20000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000660.jpg",
+      "index": 11,
+      "timestamp_ms": 22000
+    }
+  ],
+  "analysis": {
+    "subject_visible": true,
+    "face_visible": true,
+    "tracking_confidence": 0.87,
+    "composition_quality": 0.8,
+    "summary": "画面为多人舞台合影，人物姿态自然、表情生动，背景‘BOLD MAKER 2026’字样清晰，环境氛围浓厚；但整体构图偏满，部分人物被遮挡（如中间后方人员），且右侧边缘人物有轻微出画趋势，影响主体完整性与空间层次感。",
+    "confidence": 0.85
+  },
+  "suggestion": {
+    "action": "capture_frame",
+    "composition": "wide_shot",
+    "reason": "当前画面已捕捉到群体互动的自然瞬间，人物面部清晰、情绪饱满，背景信息完整，符合‘突出人物与环境关系’的核心目标；虽有轻微构图优化空间，但时机成熟，宜立即定格以保留真实生动的现场感，避免因等待导致气氛散失。"
+  },
+  "captured_frame": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\captures\\frame_000000.jpg",
+  "matched_skills": [
+    "portrait_composition_coach"
+  ],
+  "skills_guidance": "依据人像摄影指导规范，我综合评估了主体状态（多人自然互动、表情真实）、画面质量（光线均匀、焦点清晰、无明显噪点/模糊）、以及导演计划中对‘环境关系’的强调——背景文字与舞台空间构成叙事语境。因此选择在动态稳定、情绪高点时执行拍摄动作（capture_frame），并推荐广角（wide_shot）构图以强化人与场景的共生关系，而非强行压缩为中景或特写而牺牲环境信息。",
+  "user_summary_zh": "已分析当前画面并标记拍摄建议。"
+}

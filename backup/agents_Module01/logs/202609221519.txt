@@ -1,0 +1,103 @@
+
+[SEARCH DEBUG] Starting search with:
+  tags=['人像摄影', '自然光拍摄', '社交头像设计', 'Insta360操作']
+  agent=None
+  max_results=3
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\director
+[SEARCH DEBUG] Found skill file: portrait_story_director.yaml
+[SEARCH DEBUG] Loaded skill: portrait_story_director, tags=['人像摄影', '导演计划', '故事叙事']
+[SEARCH DEBUG] Skill portrait_story_director passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\cinematographer
+[SEARCH DEBUG] Found skill file: portrait_composition_coach.yaml
+[SEARCH DEBUG] Loaded skill: portrait_composition_coach, tags=['人像摄影', '构图指导', '全身构图', '动作摄影']
+[SEARCH DEBUG] Skill portrait_composition_coach passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\editor
+[SEARCH DEBUG] Found skill file: portrait_reel_editor.yaml
+[SEARCH DEBUG] Loaded skill: portrait_reel_editor, tags=['人像摄影', '视频剪辑', '短片制作']
+[SEARCH DEBUG] Skill portrait_reel_editor passed all filters!
+[SKILLS_MANAGER DEBUG] Found 3 skills from search
+[SKILLS_MANAGER DEBUG] Skill portrait_story_director: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_composition_coach: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_reel_editor: valid=True, errors=[]
+
+[SEARCH DEBUG] Starting search with:
+  tags=['旅行人像摄影', '环境肖像', '地域标识拍摄', '新手友好']
+  agent=None
+  max_results=3
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\director
+[SEARCH DEBUG] Found skill file: portrait_story_director.yaml
+[SEARCH DEBUG] Loaded skill: portrait_story_director, tags=['人像摄影', '导演计划', '故事叙事']
+[SEARCH DEBUG] Filtered by tags - no match
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\cinematographer
+[SEARCH DEBUG] Found skill file: portrait_composition_coach.yaml
+[SEARCH DEBUG] Loaded skill: portrait_composition_coach, tags=['人像摄影', '构图指导', '全身构图', '动作摄影']
+[SEARCH DEBUG] Filtered by tags - no match
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\editor
+[SEARCH DEBUG] Found skill file: portrait_reel_editor.yaml
+[SEARCH DEBUG] Loaded skill: portrait_reel_editor, tags=['人像摄影', '视频剪辑', '短片制作']
+[SEARCH DEBUG] Filtered by tags - no match
+[SKILLS_MANAGER DEBUG] Found 0 skills from search
+
+======================================================================
+ ScenePilot Real Skills Demo
+======================================================================
+
+Using:
+  - Real portrait skills from data/skills/
+  - Test images and videos from data/test_data/
+  - User test cases from test_inputs/user_requests.yaml
+
+======================================================================
+ Test Case: U001_single_natural_avatar
+======================================================================
+User Input: 我想拍一组自然的个人肖像，用作社交头像，不要看起来像摆拍。
+User Level: beginner
+
+--- Pre-Production Phase ---
+
+[OK] Intent Normalized:
+  Goal Type: N/A
+  Subject Type: N/A
+  Style: N/A
+  Output Format: N/A
+
+[OK] Skills Retrieved:
+  - portrait_story_director (v0.1.0)
+    [OK] Expected skill found
+  - portrait_composition_coach (v0.1.0)
+    [OK] Expected skill found
+  - portrait_reel_editor (v0.1.0)
+    [OK] Expected skill found
+
+[OK] Director Plan:
+  Creative Goal: 用自然纪实的方式捕捉真实、轻松、亲切的单人状态，产出适配1:1社交头像的高质量静态肖像，杜绝摆拍感与人工干预痕迹。
+  Priorities: 自然感, 适合作为社交头像, 避免摆拍痕迹
+  Shot Intentions: 3 stages
+
+  [INFO] Teaching Notes (for beginners):
+    - 自然人像不是‘不构图’，而是‘让构图服务于人的状态’：当人低头整理袖口时，X4 Air的宽景别保留手部动作与环境关系；当人抬头微笑，Link 2才推进到半身——景别变化由人物行为驱动，而非导演指令。
+    - 1:1头像的安全构图 = 头顶留白15% + 肩颈完整可见 + 面部居中偏下（非绝对中心）：这样既适应Instagram圆形头像裁切，又避免安卓系统默认方形裁剪砍掉下巴。
+    - ‘避免摆拍’的实操心法：永远比用户预期多录3秒（pre-roll/post-roll），捕捉动作前的呼吸、动作后的微表情——最真实的瞬间常在‘开始’和‘结束’的0.5秒边缘。
+
+======================================================================
+ Test Case: U002_environment_travel
+======================================================================
+User Input: 请拍一个人在南京户外环境中的旅行肖像，要让人看出这个地方，而不是只有一张脸。
+User Level: beginner
+
+--- Pre-Production Phase ---
+
+[OK] Intent Normalized:
+  Goal Type: N/A
+  Subject Type: N/A
+  Style: N/A
+  Output Format: N/A
+Traceback (most recent call last):
+  File "F:\BoldMaker\project00\agents_Module\examples\real_skills_demo.py", line 308, in <module>
+    main()
+  File "F:\BoldMaker\project00\agents_Module\examples\real_skills_demo.py", line 135, in main
+    run_test_case(
+  File "F:\BoldMaker\project00\agents_Module\examples\real_skills_demo.py", line 70, in run_test_case
+    if pre_results["bundle"].is_successful():
+       ~~~~~~~~~~~^^^^^^^^^^
+KeyError: 'bundle'

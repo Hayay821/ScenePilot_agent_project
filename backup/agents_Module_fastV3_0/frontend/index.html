@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ScenePilot Fast API Demo</title>
+  <style>
+    body { max-width: 1100px; margin: 24px auto; padding: 0 16px; font: 15px system-ui, sans-serif; color: #202124; }
+    textarea, input { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0 12px; }
+    button { padding: 9px 14px; margin: 4px 6px 4px 0; cursor: pointer; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    section { border: 1px solid #ddd; padding: 14px; border-radius: 8px; }
+    pre { background: #f5f5f5; padding: 12px; overflow: auto; max-height: 560px; white-space: pre-wrap; }
+    .muted { color: #666; }
+  </style>
+</head>
+<body>
+  <h1>ScenePilot Fast</h1>
+  <p class="muted">调用本地 FastAPI 的四 Agent 示例。图片/视频使用服务端已有路径或目录。</p>
+
+  <label for="base">API Base URL</label>
+  <input id="base" value="http://127.0.0.1:8765/api/v1" />
+
+  <label for="text">用户需求</label>
+  <textarea id="text" rows="3">请拍摄一组自然的人像短片，保留人物和环境关系，不要明显摆拍。</textarea>
+
+  <label for="paths">媒体文件路径，每行一个（可选）</label>
+  <textarea id="paths" rows="4">F:\\BoldMaker\\project00\\agents_Module_fast\\data\\img\\img1.jpg
+F:\\BoldMaker\\project00\\agents_Module_fast\\data\\video\\test_video1.mp4</textarea>
+
+  <div class="grid">
+    <section>
+      <h2>SkillsManager</h2>
+      <button onclick="callSkills()">检索 Skill</button>
+      <button onclick="listSkills()">列出 Skill</button>
+    </section>
+    <section>
+      <h2>Director</h2>
+      <button onclick="callAgent('director')">生成导演计划</button>
+    </section>
+    <section>
+      <h2>Cinematographer</h2>
+      <button onclick="callAgent('cinematographer')">分析拍摄画面</button>
+    </section>
+    <section>
+      <h2>Editor</h2>
+      <button onclick="callAgent('editor')">生成剪辑计划</button>
+    </section>
+    <section>
+      <h2>完整流程</h2>
+      <button onclick="callRunAll()">运行全部 Agent</button>
+    </section>
+  </div>
+
+  <h2>响应</h2>
+  <pre id="output">等待调用...</pre>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const paths = () => $('paths').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    const mediaInput = () => ({ source_type: 'FILE', paths: paths() });
+    async function request(path, body, method = 'POST') {
+      $('output').textContent = '请求中...';
+      try {
+        const res = await fetch($('base').value + path, {
+          method,
+          headers: {'Content-Type': 'application/json'},
+          body: method === 'GET' ? undefined : JSON.stringify(body)
+        });
+        const data = await res.json();
+        $('output').textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        $('output').textContent = String(error);
+      }
+    }
+    function callSkills() {
+      request('/skills/select', {user_text: $('text').value, stage: 'director', limit: 3});
+    }
+    function listSkills() { request('/skills', null, 'GET'); }
+    function callAgent(agent) {
+      request('/agents/' + agent, {
+        user_text: $('text').value,
+        media_input: mediaInput(),
+        skills_filter: {stage: agent, limit: 3},
+        output_config: {output_dir: 'outputs', save_intermediate: true}
+      });
+    }
+    function callRunAll() {
+      request('/agents/run-all', {user_text: $('text').value, media_dir: 'data', output_config: {output_dir: 'outputs'}});
+    }
+  </script>
+</body>
+</html>

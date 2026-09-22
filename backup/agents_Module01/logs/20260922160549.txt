@@ -1,0 +1,66 @@
+2026-09-22 16:05:50,874 - __main__ - INFO - ScenePilot Real Skills Demo
+2026-09-22 16:05:50,875 - __main__ - INFO - ======================================================================
+2026-09-22 16:05:50,875 - __main__ - INFO - ScenePilot Real Skills Demo Started
+2026-09-22 16:05:50,875 - __main__ - INFO - Log file: F:\BoldMaker\project00\agents_Module\logs\20260922160549.txt
+2026-09-22 16:05:50,875 - __main__ - INFO - ======================================================================
+2026-09-22 16:05:50,876 - __main__ - INFO - Test Case: U001_single_natural_avatar
+2026-09-22 16:05:50,876 - __main__ - INFO - User Input: 我想拍一组自然的个人肖像，用作社交头像，不要看起来像摆拍。
+2026-09-22 16:05:50,876 - __main__ - INFO - User Level: beginner
+2026-09-22 16:05:50,876 - __main__ - INFO - --- Pre-Production Phase ---
+2026-09-22 16:06:40,534 - __main__ - INFO - Intent: {'intent_id': 'portrait_social_avatar_natural', 'session_id': 'sess_001', 'raw_input': '我想拍一组自然的个人肖像，用作社交头像，不要看起来像摆拍。', 'goal': {'goal_type': 'personal_portrait', 'subject': 'single_person', 'priority': ['自然感', '适配社交头像尺寸', '真实不造作'], 'style': '自然纪实风', 'tone': '轻松、亲切、生活化'}, 'output': {'duration_sec': None, 'ratio': '1:1', 'format': 'jpg', 'quality': 'high'}, 'skill_query': {'tags': ['人像摄影', '自然光运用', '社交头像构图', 'Insta360操作指导'], 'agents': ['director', 'photographer'], 'devices': ['insta360_link2', 'insta360_x4_air'], 'max_results': 3}, 'user_level': 'beginner', 'teaching_mode': True, 'available_devices': ['insta360_link2', 'insta360_x4_air'], 'device_preferences': {'primary': 'insta360_link2', 'fallback': 'insta360_x4_air'}, 'constraints': {'no_studio_lighting': True, 'no_tripod_required': True, 'mobile_workflow_friendly': True}, 'created_at': '2024-06-15T10:30:00Z', 'confidence': 0.95}
+2026-09-22 16:06:40,534 - __main__ - INFO - Skills Retrieved: 3 skills
+2026-09-22 16:06:40,534 - __main__ - INFO -   Skill: portrait_story_director v0.1.0
+2026-09-22 16:06:40,535 - __main__ - INFO -   Skill: portrait_composition_coach v0.1.0
+2026-09-22 16:06:40,535 - __main__ - INFO -   Skill: portrait_reel_editor v0.1.0
+2026-09-22 16:06:40,535 - __main__ - INFO - Director Plan - Creative Goal: 捕捉真实、轻松、生活化的单人肖像，呈现未经修饰的自然状态；所有画面需适配1:1社交头像尺寸，强调人物神态与环境呼吸感，避免摆拍痕迹与技术干预感。
+2026-09-22 16:06:40,535 - __main__ - INFO - Priorities: 自然感, 1:1头像适配性, 真实不造作, 移动工作流友好
+2026-09-22 16:06:40,535 - __main__ - INFO - Teaching Notes:
+2026-09-22 16:06:40,541 - __main__ - INFO -   - 初学者常误以为‘自然’=‘随便拍’——其实恰恰相反：自然感需要更精密的准备。比如提前5分钟让主体在拍摄地自由活动，让身体忘记镜头存在，这才是专业级‘不摆拍’的起点。
+2026-09-22 16:06:40,541 - __main__ - INFO -   - 1:1头像不是‘只拍脸’！安全区（headroom + shoulder space）决定观众第一眼是否感到舒适。测试方法：把手机横放，将预览画面缩放到1:1比例，检查头顶是否被切、肩膀是否完整——这是比美颜更重要的基础。
+2026-09-22 16:06:40,541 - __main__ - INFO -   - Insta360 Link2的‘Auto Framing’不是魔法，它依赖清晰的面部轮廓和稳定光照。避开正午强逆光（如背对大窗户），选择上午/下午斜射光，能让AI更准确锁定‘自然峰值表情’。
+2026-09-22 16:06:40,541 - __main__ - INFO - Test Case: U002_environment_travel
+2026-09-22 16:06:40,541 - __main__ - INFO - User Input: 请拍一个人在南京户外环境中的旅行肖像，要让人看出这个地方，而不是只有一张脸。
+2026-09-22 16:06:40,541 - __main__ - INFO - User Level: beginner
+2026-09-22 16:06:40,542 - __main__ - INFO - --- Pre-Production Phase ---
+2026-09-22 16:06:48,966 - __main__ - INFO - Intent: {'intent_id': 'travel_portrait_nanjing_001', 'session_id': 'sess_2024_nanjing_travel', 'raw_input': '请拍一个人在南京户外环境中的旅行肖像，要让人看出这个地方，而不是只有一张脸。', 'goal': {'goal_type': 'travel_portrait', 'subject': 'single_person', 'priority': ['环境辨识', '人物自然状态', '地域特征呈现'], 'style': '纪实人文风格', 'tone': '轻松、真实、有故事感'}, 'output': {'duration_sec': None, 'ratio': '16:9', 'format': 'mp4', 'quality': 'high'}, 'skill_query': {'tags': ['旅行人像', '环境肖像', '地域识别摄影', '新手友好'], 'agents': ['director', 'cinematographer'], 'devices': ['insta360_link2', 'insta360_x4_air'], 'max_results': 3}, 'user_level': 'beginner', 'teaching_mode': True, 'available_devices': ['insta360_link2', 'insta360_x4_air'], 'device_preferences': {}, 'constraints': {}, 'created_at': '2024-06-15T10:30:00Z', 'confidence': 0.95}
+2026-09-22 16:06:48,966 - __main__ - WARNING - No skills found - bundle not created
+2026-09-22 16:06:48,966 - __main__ - INFO - Test Case: U003_interview
+2026-09-22 16:06:48,966 - __main__ - INFO - User Input: 我要录一个人物采访，画面自然、声音清楚，不要因为追求节奏把说话人的停顿都剪掉。
+2026-09-22 16:06:48,966 - __main__ - INFO - User Level: intermediate
+2026-09-22 16:06:48,966 - __main__ - INFO - --- Pre-Production Phase ---
+2026-09-22 16:07:00,247 - __main__ - INFO - Intent: {'intent_id': 'interview_2024_natural_editing', 'session_id': 'sess_789xyz', 'raw_input': '我要录一个人物采访，画面自然、声音清楚，不要因为追求节奏把说话人的停顿都剪掉。', 'goal': {'goal_type': 'interview_documentary', 'subject': 'single_person', 'priority': ['声音清晰', '画面自然', '保留真实停顿', '人物表达完整性'], 'style': '纪实风格', 'tone': '平实可信'}, 'output': {'duration_sec': None, 'ratio': '16:9', 'format': 'mp4', 'quality': 'high'}, 'skill_query': {'tags': ['人物采访', '纪实拍摄', '同期声录制', '自然剪辑'], 'agents': ['director', 'cinematographer', 'editor'], 'devices': ['insta360_link2', 'insta360_x4_air'], 'max_results': 3}, 'user_level': 'intermediate', 'teaching_mode': True, 'available_devices': ['insta360_link2', 'insta360_x4_air'], 'device_preferences': {'primary_audio': 'insta360_link2', 'primary_video': 'insta360_x4_air', 'backup_recording': True}, 'constraints': {'editing_constraint': '禁止过度压缩语句间隙，保留呼吸感与思考停顿', 'audio_priority': '以Link2的AI降噪+指向收音为基准，避免X4 Air内置麦克风主导', 'framing_guideline': 'X4 Air建议使用单机位中景（肩部以上）或双机位（主讲+反应），禁用快速跳切'}, 'created_at': '2024-06-15T10:30:00Z', 'confidence': 0.95}
+2026-09-22 16:07:00,248 - __main__ - WARNING - No skills found - bundle not created
+2026-09-22 16:07:00,248 - __main__ - INFO - Test Case: U006_user_prefers_reaction
+2026-09-22 16:07:00,248 - __main__ - INFO - User Input: 不要只剪最好看的正脸，我更想保留人物完成动作后笑出来、朋友在旁边反应的画面。
+2026-09-22 16:07:00,248 - __main__ - INFO - User Level: beginner
+2026-09-22 16:07:00,248 - __main__ - INFO - --- Pre-Production Phase ---
+2026-09-22 16:07:36,046 - __main__ - INFO - Intent: {'intent_id': 'intent_789abc', 'session_id': 'sess_456def', 'raw_input': '不要只剪最好看的正脸，我更想保留人物完成动作后笑出来、朋友在旁边反应的画面。', 'goal': {'goal_type': 'team_moment', 'subject': 'group', 'priority': ['自然情绪流露', '互动反应捕捉', '动作完成瞬间'], 'style': '纪实风格', 'tone': '轻松愉快'}, 'output': {'duration_sec': None, 'ratio': '16:9', 'format': 'mp4', 'quality': 'high'}, 'skill_query': {'tags': ['多人互动拍摄', '情绪捕捉', '纪实摄影', '导演计划'], 'agents': ['director', 'cinematographer'], 'devices': ['insta360_link2', 'insta360_x4_air'], 'max_results': 3}, 'user_level': 'beginner', 'teaching_mode': True, 'available_devices': ['insta360_link2', 'insta360_x4_air'], 'device_preferences': {}, 'constraints': {}, 'created_at': '2024-06-15T10:30:00Z', 'confidence': 0.92}
+2026-09-22 16:07:36,047 - __main__ - INFO - Skills Retrieved: 1 skills
+2026-09-22 16:07:36,047 - __main__ - INFO -   Skill: portrait_story_director v0.1.0
+2026-09-22 16:07:36,047 - __main__ - INFO - Director Plan - Creative Goal: 真实记录团队协作完成动作后的自然情绪流露与人际互动瞬间，以纪实风格构建有呼吸感的‘团队时刻’短片——不追求完美正脸，而珍视动作落地、笑容迸发、旁观者反应这一连串有机的情绪涟漪。
+2026-09-22 16:07:36,047 - __main__ - INFO - Priorities: 自然情绪流露, 互动反应捕捉, 动作完成瞬间
+2026-09-22 16:07:36,047 - __main__ - INFO - Teaching Notes:
+2026-09-22 16:07:36,047 - __main__ - INFO -   - ✅ 教学重点1：纪实不是‘随便拍’，而是有意识地延长‘情绪时间线’——准备（3秒）、高峰（2秒）、反应（4秒）共同构成一个完整情绪单元。初学者常误删‘反应’段，却不知那才是观众共情的入口。
+2026-09-22 16:07:36,047 - __main__ - INFO -   - ✅ 教学重点2：Insta360 X4 Air 的全景优势不在‘炫技’，而在‘一次拍摄，多重重构’：同一段素材可导出 wide_context（准备）、medium_group_reframe（反应）、甚至单人特写（后期选帧），避免多机位手忙脚乱。
+2026-09-22 16:07:36,047 - __main__ - INFO -   - ✅ 教学重点3：‘朋友反应’不是配角镜头——当A笑出来时，B的眼睛亮起、C伸手去捏A肩膀、D转头对E说悄悄话…这些‘非主体’的微动作，恰恰证明情绪已真实传染，是团队时刻最有力的证据。
+2026-09-22 16:07:36,047 - __main__ - INFO - Test Case: U007_low_confidence
+2026-09-22 16:07:36,047 - __main__ - INFO - User Input: 我不确定该用近景还是全身，你先给我三个方案并解释区别，不要直接执行。
+2026-09-22 16:07:36,047 - __main__ - INFO - User Level: beginner
+2026-09-22 16:07:36,047 - __main__ - INFO - --- Pre-Production Phase ---
+2026-09-22 16:08:25,074 - __main__ - INFO - Intent: {'intent_id': 'intent_789a456b', 'session_id': 'sess_123xyz', 'raw_input': '我不确定该用近景还是全身，你先给我三个方案并解释区别，不要直接执行。', 'goal': {'goal_type': 'action_story', 'subject': 'single_person', 'priority': ['framing_clarity', 'subject_emphasis', 'composition_guidance'], 'style': None, 'tone': None}, 'output': {'duration_sec': None, 'ratio': '16:9', 'format': 'mp4', 'quality': 'high'}, 'skill_query': {'tags': ['人像摄影', '构图指导', '导演计划', '新手教学'], 'agents': ['director', 'cinematographer'], 'devices': ['insta360_link2', 'insta360_x4_air'], 'max_results': 3}, 'user_level': 'beginner', 'teaching_mode': True, 'available_devices': ['insta360_link2', 'insta360_x4_air'], 'device_preferences': {}, 'constraints': {'no_execution': True, 'explanation_required': True, 'comparison_required': True}, 'created_at': '2024-06-15T10:30:00Z', 'confidence': 0.95}
+2026-09-22 16:08:25,074 - __main__ - INFO - Skills Retrieved: 3 skills
+2026-09-22 16:08:25,074 - __main__ - INFO -   Skill: portrait_story_director v0.1.0
+2026-09-22 16:08:25,074 - __main__ - INFO -   Skill: portrait_composition_coach v0.1.0
+2026-09-22 16:08:25,074 - __main__ - INFO -   Skill: portrait_reel_editor v0.1.0
+2026-09-22 16:08:25,074 - __main__ - INFO - Director Plan - Creative Goal: 帮助新手用户理解近景与全身镜头在单人叙事中的功能差异，通过三种结构化方案建立‘景别即语言’的直观认知，强调 framing_clarity、subject_emphasis 和 composition_guidance 的协同实现。
+2026-09-22 16:08:25,074 - __main__ - INFO - Priorities: framing_clarity, subject_emphasis, composition_guidance
+2026-09-22 16:08:25,075 - __main__ - INFO - Teaching Notes:
+2026-09-22 16:08:25,075 - __main__ - INFO -   - 【近景 ≠ 脸填满画面】真正有效的近景（Close-up）是‘情绪锚点’：它只在人物静止、光线稳定、表情清晰时启用，目的是放大无法被中景传递的微妙心理变化（如瞳孔收缩、鼻翼微颤）。盲目推近会导致畸变、失焦和观众疏离。
+2026-09-22 16:08:25,075 - __main__ - INFO -   - 【全身 ≠ 环境无关】全身镜头（Full-body）的核心价值是‘关系声明’：它回答‘这个人和空间如何共处？’——是松弛站立还是紧绷行走？背景杂乱还是简洁？地面材质是否暗示职业？新手常误以为全身=交代清楚，实则需主动设计人物姿态与环境互动（如倚靠窗框、手持道具）。
+2026-09-22 16:08:25,075 - __main__ - INFO -   - 【中景 = 叙事黄金区】中景（Medium Shot，腰线以上）是单人故事最安全、信息量最丰富的景别：既保留手势、体态、服装细节等非语言线索，又足够靠近以读取微表情；Insta360 Link 2 的稳定跟踪在此景别最可靠，完美平衡‘subject_emphasis’与‘framing_clarity’。
+2026-09-22 16:08:25,075 - __main__ - INFO - Cinematographer Real-Time Suggestions
+2026-09-22 16:08:25,075 - __main__ - INFO - --- Scenario 1: Subject Tracking Lost ---
+2026-09-22 16:09:31,961 - __main__ - INFO - --- Scenario 2: Subject Stable with Gaze Left ---
+2026-09-22 16:09:53,180 - __main__ - INFO - Editor Post-Production Timeline
+2026-09-22 16:09:53,180 - __main__ - INFO - --- Scenario: Natural Portrait Story Arc ---
+2026-09-22 16:10:25,046 - __main__ - INFO - Demo Summary

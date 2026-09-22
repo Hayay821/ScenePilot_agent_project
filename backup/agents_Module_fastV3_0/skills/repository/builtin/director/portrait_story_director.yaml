@@ -1,0 +1,217 @@
+schema_version: "1.0"
+skill_id: portrait_story_director
+version: "0.1.0"
+name: 人像故事导演
+name_en: Portrait Story Director
+description: >-
+  在拍摄前将用户的人像创作目标转成可执行的导演计划。
+  重点判断主体关系、人物状态、环境价值、情绪变化和输出用途。
+purpose: "Convert user intent and reference images into a practical portrait shot plan."
+
+author:
+  type: expert
+  id: open_vision_team
+  display_name: OpenVision 团队
+  verified: false
+
+license: CC-BY-4.0
+visibility: local
+status: draft
+parent_skill: null
+
+teaching:
+  audience: beginner
+  principles:
+    - "人像不是只拍脸。先判断是个人肖像、朋友合影、采访还是环境人像，才能决定景别、背景和设备位置"
+    - "需要讲故事时，不要只保留最好看的一帧，应保留准备、互动、高潮和结果反应"
+    - "近景强调表情，中景强调人物关系，全身或广角强调人物与环境的关系"
+  explain_template: >-
+    根据主体关系和情绪变化，建议使用环境、中景和特写的组合；
+    竖屏输出需要预留头部空间；自然风格避免频繁变焦。
+
+inputs:
+  intent:
+    type: object
+    properties:
+      subject_type:
+        type: string
+        enum: [single_portrait, group_portrait, interview, environmental_portrait]
+      mood:
+        type: string
+        enum: [自然, 专业, 温暖, 活泼, 纪实, 电影感]
+      output_goal:
+        type: string
+        enum: [头像, 采访, 社交短片, 活动记录, 旅行记录]
+      output_ratio:
+        type: string
+        enum: ["16:9", "9:16", "1:1"]
+  media_types:
+    - image
+    - video
+    - panorama
+  required_capabilities:
+    - subject_detection
+    - face_detection
+
+agent_bindings:
+  director: true
+  cinematographer: false
+  editor: false
+  skills_manager: true
+
+supported_devices:
+  - insta360_x4_air
+  - insta360_link2
+
+tags:
+  - 人像摄影
+  - 导演计划
+  - 故事叙事
+  - portrait
+  - directing
+  - story
+  - shot_planning
+
+prompt_context:
+  system_role: "You are a portrait film director. Plan before filming and explain decisions clearly."
+  required_analysis:
+    - subject_identity_and_relationship
+    - environment_value
+    - mood_and_expression
+    - lighting_and_background
+    - output_ratio_constraints
+  output_language: "Chinese for user explanation; English keys for machine output."
+
+output_contract:
+  required:
+    - creative_goal
+    - priorities
+    - shot_intentions
+    - camera_roles
+    - user_summary_zh
+  shot_intention_fields:
+    - stage
+    - shot
+    - camera
+    - duration_sec
+    - reason
+  stages:
+    - establish
+    - subject
+    - interaction
+    - result
+
+rules:
+  - id: single_portrait_default
+    when:
+      subject_type: single_portrait
+    advice:
+      primary_camera: link2
+      recommended_shots: [medium_close_up, medium_shot, environmental_wide]
+      keep_environment_context: false
+    priority: 70
+    explanation: "单人肖像优先保证人物表情和眼神清晰，再用少量环境镜头补充人物背景"
+
+  - id: environmental_portrait
+    when:
+      subject_type: environmental_portrait
+    advice:
+      primary_camera: x4air
+      recommended_shots: [environmental_wide, medium_shot, subject_detail]
+      keep_environment_context: true
+      panorama_reframe: subject_and_environment
+    priority: 90
+    explanation: "环境人像的重点是人物和地点的关系，不能只输出紧脸特写"
+
+  - id: interview_story
+    when:
+      subject_type: interview
+    advice:
+      primary_camera: link2
+      supporting_camera: x4air
+      recommended_shots: [medium_close_up, reaction_shot, environment_cutaway]
+      preserve_speech: true
+      reserve_silence_before_answer_ms: 800
+    priority: 100
+    explanation: "采访需要清晰人声、稳定半身构图和适量环境切镜，不能用快速转场破坏表达"
+
+  - id: natural_mood
+    when:
+      mood: 自然
+    advice:
+      camera_behavior: slow_reframe
+      avoid: [rapid_zoom, frequent_cut, forced_pose]
+    priority: 80
+    explanation: "自然风格减少设备打扰，保留人物真实状态"
+
+  - id: vertical_social
+    when:
+      output_ratio: "9:16"
+    advice:
+      composition: headroom_and_body_safe
+      avoid_edge_cropping: true
+    priority: 75
+    explanation: "竖屏需要预留头顶和身体运动空间，避免导出后裁掉人物"
+
+  - id: group_portrait
+    when:
+      subject_type: group_portrait
+    advice:
+      primary_camera: x4air
+      recommended_shots: [group_context, individual_reaction, group_result]
+      keep_relationship_context: true
+    priority: 88
+    explanation: "多人肖像需要先建立人物关系，再补充个人表情，不能只追踪一个人。"
+
+  - id: warm_mood
+    when:
+      mood: 温暖
+    advice:
+      shot_sequence: [environment_context, medium_interaction, emotional_result]
+      pacing: gentle
+      preserve_reaction: true
+    priority: 78
+    explanation: "温暖风格依靠人物关系和反应建立情绪，不应依赖快速切镜。"
+
+  - id: cinematic_mood
+    when:
+      mood: 电影感
+    advice:
+      shot_sequence: [wide_context, medium_subject, detail, reaction]
+      prefer_layered_depth: true
+      avoid_flat_background: true
+    priority: 76
+    explanation: "电影感优先建立前景、主体和背景层次，再用细节镜头完成表达。"
+
+  - id: low_light_reference
+    when:
+      reference_analysis_contains: low_light
+    advice:
+      primary_camera: link2
+      shot_strategy: stable_medium_first
+      avoid: [fast_camera_move, extreme_underexposure]
+    priority: 86
+    explanation: "低光环境先保证人物可用和稳定，再考虑近景和运动。"
+
+safety:
+  allowed_actions:
+    - suggest_camera_role
+    - suggest_shot_sequence
+    - suggest_subject_priority
+  requires_human_approval:
+    - change_primary_subject
+    - publish_plan
+  forbidden_actions:
+    - direct_device_control
+    - delete_media
+    - publish_without_approval
+  min_confidence_for_device_suggestion: 0.70
+
+failure_policy:
+  missing_reference_image: "Use user text only and mark reference_analysis as unavailable."
+  ambiguous_subject: "Ask the user to choose single, group, interview, or environmental portrait."
+  conflicting_preferences: "Prefer explicit user requirements and explain the trade-off."
+
+evidence:
+  examples: []
+  expert_notes: []

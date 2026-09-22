@@ -1,0 +1,115 @@
+schema_version: "1.0"
+skill_id: action_coach
+version: "0.1.0"
+name: 动作挑战导演
+name_en: Action Coach Director
+description: >-
+  记录单人动作挑战，保留动作准备、高潮和完成后的反应。
+  重点是让初学者理解为什么要保留完整动作弧线。
+
+author:
+  type: expert
+  id: expert_demo
+  display_name: 示例摄影师
+  verified: false
+
+license: CC-BY-4.0
+visibility: local
+status: draft
+parent_skill: null
+
+teaching:
+  audience: beginner
+  principles:
+    - "动作类视频需要准备、过程、结果，而不是只截取动作最激烈的一帧"
+    - "动作高潮使用更紧的景别，结果反应保留环境和人物关系"
+    - "预留动作前后的缓冲时间，让观众理解动作的完整性"
+  explain_template: >-
+    因为检测到动作开始，所以先保留全身构图；动作达到高潮后再使用更紧的视角；
+    动作结束后保留反应，保证观众理解结果。
+
+inputs:
+  intent:
+    type: object
+    properties:
+      subject:
+        type: string
+      activity:
+        type: string
+      tone:
+        type: string
+        enum: [纪录, 热血, 教学, 轻松]
+      output_ratio:
+        type: string
+        enum: ["16:9", "9:16", "1:1"]
+  media_types:
+    - image
+    - video
+    - panorama
+  required_capabilities:
+    - event_detection
+
+agent_bindings:
+  director: true
+  cinematographer: true
+  editor: true
+  skills_manager: true
+
+rules:
+  - id: prepare_wide
+    when:
+      event: action_start
+      confidence_gte: 0.70
+    advice:
+      composition: full_body
+      keep_pre_roll_ms: 3000
+    priority: 80
+    explanation: "动作开始时使用全身构图，让观众理解动作环境和身体关系。"
+
+  - id: action_peak
+    when:
+      event: action_peak
+      confidence_gte: 0.75
+    advice:
+      camera_preference: link2
+      mark_highlight: true
+      panorama_reframe: subject_center
+    priority: 100
+    explanation: "动作高潮是主叙事节点，应优先保留并突出主体。"
+
+  - id: result_reaction
+    when:
+      event: celebration
+      confidence_gte: 0.60
+    advice:
+      keep_post_roll_ms: 4000
+      camera_preference: x4air_if_group_visible
+    priority: 70
+    explanation: "结果反应提供情绪闭环，并展示人物与队友的关系。"
+
+safety:
+  allowed_actions:
+    - suggest_composition
+    - suggest_tracking
+    - mark_highlight
+    - suggest_reframe
+  requires_human_approval:
+    - publish
+    - upload
+    - overwrite_skill
+  forbidden_actions:
+    - delete_media
+    - format_storage
+    - firmware_upgrade
+  min_confidence_for_device_suggestion: 0.75
+
+evidence:
+  examples: []
+  expert_notes: []
+
+tags:
+  - 动作摄影
+  - 全身构图
+  - 高潮
+  - 反应镜头
+  - 初学者友好

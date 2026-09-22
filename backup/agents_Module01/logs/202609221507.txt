@@ -1,0 +1,298 @@
+(base) F:\BoldMaker\project00\agents_Module>python examples/real_skills_demo.py
+
+======================================================================
+ ScenePilot Real Skills Demo
+======================================================================
+
+Using:
+  • Real portrait skills from data/skills/
+  • Test images and videos from data/test_data/
+  • User test cases from test_inputs/user_requests.yaml
+
+======================================================================
+ Test Case: U001_single_natural_avatar
+======================================================================
+User Input: 我想拍一组自然的个人肖像，用作社交头像，不要看起来像摆拍。
+User Level: beginner
+
+--- Pre-Production Phase ---
+
+[SEARCH DEBUG] Starting search with:
+  tags=['人像摄影', '导演计划']
+  agent=None
+  max_results=3
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\director
+[SEARCH DEBUG] Found skill file: portrait_story_director.yaml
+[SEARCH DEBUG] Loaded skill: portrait_story_director, tags=['人像摄影', '导演计划', '故事叙事']
+[SEARCH DEBUG] Skill portrait_story_director passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\cinematographer
+[SEARCH DEBUG] Found skill file: portrait_composition_coach.yaml
+[SEARCH DEBUG] Loaded skill: portrait_composition_coach, tags=['人像摄影', '构图指导', '全身构图', '动作摄影']
+[SEARCH DEBUG] Skill portrait_composition_coach passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\editor
+[SEARCH DEBUG] Found skill file: portrait_reel_editor.yaml
+[SEARCH DEBUG] Loaded skill: portrait_reel_editor, tags=['人像摄影', '视频剪辑', '短片制作']
+[SEARCH DEBUG] Skill portrait_reel_editor passed all filters!
+[SKILLS_MANAGER DEBUG] Found 3 skills from search
+[SKILLS_MANAGER DEBUG] Skill portrait_story_director: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_composition_coach: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_reel_editor: valid=True, errors=[]
+
+✓ Intent Normalized:
+  Goal Type: N/A
+  Subject Type: N/A
+  Style: N/A
+  Output Format: N/A
+
+✓ Skills Retrieved:
+  - portrait_story_director (v0.1.0)
+    ✓ Expected skill found
+  - portrait_composition_coach (v0.1.0)
+    ✓ Expected skill found
+  - portrait_reel_editor (v0.1.0)
+    ✓ Expected skill found
+
+✓ Director Plan:
+  Creative Goal: 突出动作成功和反应
+  Priorities: action_peak, reaction
+  Shot Intentions: 2 stages
+
+  📚 Teaching Notes (for beginners):
+    • 动作前保留环境有助于观众理解空间关系
+
+======================================================================
+ Test Case: U002_environment_travel
+======================================================================
+User Input: 请拍一个人在南京户外环境中的旅行肖像，要让人看出这个地方，而不是只有一张脸。
+User Level: beginner
+
+--- Pre-Production Phase ---
+
+[SEARCH DEBUG] Starting search with:
+  tags=['人像摄影', '导演计划']
+  agent=None
+  max_results=3
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\director
+[SEARCH DEBUG] Found skill file: portrait_story_director.yaml
+[SEARCH DEBUG] Loaded skill: portrait_story_director, tags=['人像摄影', '导演计划', '故事叙事']
+[SEARCH DEBUG] Skill portrait_story_director passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\cinematographer
+[SEARCH DEBUG] Found skill file: portrait_composition_coach.yaml
+[SEARCH DEBUG] Loaded skill: portrait_composition_coach, tags=['人像摄影', '构图指导', '全身构图', '动作摄影']
+[SEARCH DEBUG] Skill portrait_composition_coach passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\editor
+[SEARCH DEBUG] Found skill file: portrait_reel_editor.yaml
+[SEARCH DEBUG] Loaded skill: portrait_reel_editor, tags=['人像摄影', '视频剪辑', '短片制作']
+[SEARCH DEBUG] Skill portrait_reel_editor passed all filters!
+[SKILLS_MANAGER DEBUG] Found 3 skills from search
+[SKILLS_MANAGER DEBUG] Skill portrait_story_director: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_composition_coach: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_reel_editor: valid=True, errors=[]
+
+✓ Intent Normalized:
+  Goal Type: N/A
+  Subject Type: N/A
+  Style: N/A
+  Output Format: N/A
+
+✓ Skills Retrieved:
+  - portrait_story_director (v0.1.0)
+    ✓ Expected skill found
+  - portrait_composition_coach (v0.1.0)
+    ✓ Expected skill found
+  - portrait_reel_editor (v0.1.0)
+    ✓ Expected skill found
+
+✓ Director Plan:
+  Creative Goal: 突出动作成功和反应
+  Priorities: action_peak, reaction
+  Shot Intentions: 2 stages
+
+  📚 Teaching Notes (for beginners):
+    • 动作前保留环境有助于观众理解空间关系
+
+======================================================================
+ Test Case: U003_interview
+======================================================================
+User Input: 我要录一个人物采访，画面自然、声音清楚，不要因为追求节奏把说话人的停顿都剪掉。
+User Level: intermediate
+
+--- Pre-Production Phase ---
+
+[SEARCH DEBUG] Starting search with:
+  tags=['人像摄影', '导演计划']
+  agent=None
+  max_results=3
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\director
+[SEARCH DEBUG] Found skill file: portrait_story_director.yaml
+[SEARCH DEBUG] Loaded skill: portrait_story_director, tags=['人像摄影', '导演计划', '故事叙事']
+[SEARCH DEBUG] Skill portrait_story_director passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\cinematographer
+[SEARCH DEBUG] Found skill file: portrait_composition_coach.yaml
+[SEARCH DEBUG] Loaded skill: portrait_composition_coach, tags=['人像摄影', '构图指导', '全身构图', '动作摄影']
+[SEARCH DEBUG] Skill portrait_composition_coach passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\editor
+[SEARCH DEBUG] Found skill file: portrait_reel_editor.yaml
+[SEARCH DEBUG] Loaded skill: portrait_reel_editor, tags=['人像摄影', '视频剪辑', '短片制作']
+[SEARCH DEBUG] Skill portrait_reel_editor passed all filters!
+[SKILLS_MANAGER DEBUG] Found 3 skills from search
+[SKILLS_MANAGER DEBUG] Skill portrait_story_director: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_composition_coach: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_reel_editor: valid=True, errors=[]
+
+✓ Intent Normalized:
+  Goal Type: N/A
+  Subject Type: N/A
+  Style: N/A
+  Output Format: N/A
+
+✓ Skills Retrieved:
+  - portrait_story_director (v0.1.0)
+    ✓ Expected skill found
+  - portrait_composition_coach (v0.1.0)
+    ✓ Expected skill found
+  - portrait_reel_editor (v0.1.0)
+    ✓ Expected skill found
+
+✓ Director Plan:
+  Creative Goal: 突出动作成功和反应
+  Priorities: action_peak, reaction
+  Shot Intentions: 2 stages
+
+  📚 Teaching Notes (for beginners):
+    • 动作前保留环境有助于观众理解空间关系
+
+======================================================================
+ Test Case: U006_user_prefers_reaction
+======================================================================
+User Input: 不要只剪最好看的正脸，我更想保留人物完成动作后笑出来、朋友在旁边反应的画面。
+User Level: beginner
+
+--- Pre-Production Phase ---
+
+[SEARCH DEBUG] Starting search with:
+  tags=['人像摄影', '导演计划']
+  agent=None
+  max_results=3
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\director
+[SEARCH DEBUG] Found skill file: portrait_story_director.yaml
+[SEARCH DEBUG] Loaded skill: portrait_story_director, tags=['人像摄影', '导演计划', '故事叙事']
+[SEARCH DEBUG] Skill portrait_story_director passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\cinematographer
+[SEARCH DEBUG] Found skill file: portrait_composition_coach.yaml
+[SEARCH DEBUG] Loaded skill: portrait_composition_coach, tags=['人像摄影', '构图指导', '全身构图', '动作摄影']
+[SEARCH DEBUG] Skill portrait_composition_coach passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\editor
+[SEARCH DEBUG] Found skill file: portrait_reel_editor.yaml
+[SEARCH DEBUG] Loaded skill: portrait_reel_editor, tags=['人像摄影', '视频剪辑', '短片制作']
+[SEARCH DEBUG] Skill portrait_reel_editor passed all filters!
+[SKILLS_MANAGER DEBUG] Found 3 skills from search
+[SKILLS_MANAGER DEBUG] Skill portrait_story_director: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_composition_coach: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_reel_editor: valid=True, errors=[]
+
+✓ Intent Normalized:
+  Goal Type: N/A
+  Subject Type: N/A
+  Style: N/A
+  Output Format: N/A
+
+✓ Skills Retrieved:
+  - portrait_story_director (v0.1.0)
+    ✓ Expected skill found
+  - portrait_composition_coach (v0.1.0)
+    ✓ Expected skill found
+  - portrait_reel_editor (v0.1.0)
+    ✓ Expected skill found
+
+✓ Director Plan:
+  Creative Goal: 突出动作成功和反应
+  Priorities: action_peak, reaction
+  Shot Intentions: 2 stages
+
+  📚 Teaching Notes (for beginners):
+    • 动作前保留环境有助于观众理解空间关系
+
+======================================================================
+ Test Case: U007_low_confidence
+======================================================================
+User Input: 我不确定该用近景还是全身，你先给我三个方案并解释区别，不要直接执行。
+User Level: beginner
+
+--- Pre-Production Phase ---
+
+[SEARCH DEBUG] Starting search with:
+  tags=['人像摄影', '导演计划']
+  agent=None
+  max_results=3
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\director
+[SEARCH DEBUG] Found skill file: portrait_story_director.yaml
+[SEARCH DEBUG] Loaded skill: portrait_story_director, tags=['人像摄影', '导演计划', '故事叙事']
+[SEARCH DEBUG] Skill portrait_story_director passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\cinematographer
+[SEARCH DEBUG] Found skill file: portrait_composition_coach.yaml
+[SEARCH DEBUG] Loaded skill: portrait_composition_coach, tags=['人像摄影', '构图指导', '全身构图', '动作摄影']
+[SEARCH DEBUG] Skill portrait_composition_coach passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\editor
+[SEARCH DEBUG] Found skill file: portrait_reel_editor.yaml
+[SEARCH DEBUG] Loaded skill: portrait_reel_editor, tags=['人像摄影', '视频剪辑', '短片制作']
+[SEARCH DEBUG] Skill portrait_reel_editor passed all filters!
+[SKILLS_MANAGER DEBUG] Found 3 skills from search
+[SKILLS_MANAGER DEBUG] Skill portrait_story_director: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_composition_coach: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_reel_editor: valid=True, errors=[]
+
+✓ Intent Normalized:
+  Goal Type: N/A
+  Subject Type: N/A
+  Style: N/A
+  Output Format: N/A
+
+✓ Skills Retrieved:
+  - portrait_story_director (v0.1.0)
+    ✓ Expected skill found
+  - portrait_composition_coach (v0.1.0)
+    ✓ Expected skill found
+  - portrait_reel_editor (v0.1.0)
+    ✓ Expected skill found
+
+✓ Director Plan:
+  Creative Goal: 突出动作成功和反应
+  Priorities: action_peak, reaction
+  Shot Intentions: 2 stages
+
+  📚 Teaching Notes (for beginners):
+    • 动作前保留环境有助于观众理解空间关系
+
+======================================================================
+ Cinematographer Real-Time Suggestions
+======================================================================
+
+--- Scenario 1: Subject Tracking Lost ---
+
+[SEARCH DEBUG] Starting search with:
+  tags=['人像摄影', '导演计划']
+  agent=None
+  max_results=3
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\director
+[SEARCH DEBUG] Found skill file: portrait_story_director.yaml
+[SEARCH DEBUG] Loaded skill: portrait_story_director, tags=['人像摄影', '导演计划', '故事叙事']
+[SEARCH DEBUG] Skill portrait_story_director passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\cinematographer
+[SEARCH DEBUG] Found skill file: portrait_composition_coach.yaml
+[SEARCH DEBUG] Loaded skill: portrait_composition_coach, tags=['人像摄影', '构图指导', '全身构图', '动作摄影']
+[SEARCH DEBUG] Skill portrait_composition_coach passed all filters!
+[SEARCH DEBUG] Checking F:\BoldMaker\project00\agents_Module\skills\repository\builtin\editor
+[SEARCH DEBUG] Found skill file: portrait_reel_editor.yaml
+[SEARCH DEBUG] Loaded skill: portrait_reel_editor, tags=['人像摄影', '视频剪辑', '短片制作']
+[SEARCH DEBUG] Skill portrait_reel_editor passed all filters!
+[SKILLS_MANAGER DEBUG] Found 3 skills from search
+[SKILLS_MANAGER DEBUG] Skill portrait_story_director: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_composition_coach: valid=True, errors=[]
+[SKILLS_MANAGER DEBUG] Skill portrait_reel_editor: valid=True, errors=[]
+Traceback (most recent call last):
+  File "F:\BoldMaker\project00\agents_Module\examples\real_skills_demo.py", line 300, in <module>
+    main()
+  File "F:\BoldMaker\project00\agents_Module\examples\real_skills_demo.py", line 186, in main
+    result_lost = orchestrator.run_filming_step(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

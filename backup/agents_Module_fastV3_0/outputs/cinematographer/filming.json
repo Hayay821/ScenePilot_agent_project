@@ -1,0 +1,85 @@
+{
+  "source_frames": [
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000000.jpg",
+      "index": 0,
+      "timestamp_ms": 0
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000060.jpg",
+      "index": 1,
+      "timestamp_ms": 2000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000120.jpg",
+      "index": 2,
+      "timestamp_ms": 4000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000180.jpg",
+      "index": 3,
+      "timestamp_ms": 6000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000240.jpg",
+      "index": 4,
+      "timestamp_ms": 8000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000300.jpg",
+      "index": 5,
+      "timestamp_ms": 10000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000360.jpg",
+      "index": 6,
+      "timestamp_ms": 12000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000420.jpg",
+      "index": 7,
+      "timestamp_ms": 14000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000480.jpg",
+      "index": 8,
+      "timestamp_ms": 16000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000540.jpg",
+      "index": 9,
+      "timestamp_ms": 18000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000600.jpg",
+      "index": 10,
+      "timestamp_ms": 20000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000660.jpg",
+      "index": 11,
+      "timestamp_ms": 22000
+    }
+  ],
+  "analysis": {
+    "subject_visible": true,
+    "face_visible": true,
+    "tracking_confidence": 0.87,
+    "composition_quality": 0.8,
+    "summary": "画面为舞台集体合影，主体人物清晰可见，多数人面带笑容、姿态自然，背景“BOLD MAKER 2026”字样醒目，灯光氛围感强；但人物站位略显拥挤，部分人被遮挡（如中间后方人员），且右侧边缘人物有轻微转身背对镜头趋势，构图完整性略有不足。",
+    "confidence": 0.85
+  },
+  "suggestion": {
+    "action": "capture_frame",
+    "composition": "wide_shot（广角）、group_portrait（群体人像）",
+    "reason": "当前画面中人物表情生动、互动自然，整体情绪积极向上，符合‘自然人像’创作目标；虽有轻微站位不均，但属于现场抓拍的典型状态，此时捕捉可保留真实瞬间；建议立即拍摄以定格这一高光群像时刻，避免后续动作变化导致构图失衡。"
+  },
+  "captured_frame": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\captures\\frame_000000.jpg",
+  "matched_skills": [
+    "portrait_composition_coach",
+    "portrait_story_director",
+    "portrait_reel_editor"
+  ],
+  "skills_guidance": "依据‘人像故事导演’规范，将活动场景转化为‘团队荣誉时刻’叙事主线，突出‘智能挑战赛’背景与青年创作者的自信状态；结合‘人像摄影指导’，判断当前光线柔和、景深适中，适合用广角记录群体关系；同时运用‘人像短片剪辑’思维，此组画面可作为成片开场或结尾的‘群像收束’段落，后续可搭配X4 Air环境全景素材形成空间纵深感。",
+  "user_summary_zh": "已分析当前画面并标记拍摄建议。"
+}

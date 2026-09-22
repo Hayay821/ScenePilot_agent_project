@@ -1,0 +1,79 @@
+{
+  "source_frames": [
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000000.jpg",
+      "index": 0,
+      "timestamp_ms": 0
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000060.jpg",
+      "index": 1,
+      "timestamp_ms": 2000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000120.jpg",
+      "index": 2,
+      "timestamp_ms": 4000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000180.jpg",
+      "index": 3,
+      "timestamp_ms": 6000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000240.jpg",
+      "index": 4,
+      "timestamp_ms": 8000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000300.jpg",
+      "index": 5,
+      "timestamp_ms": 10000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000360.jpg",
+      "index": 6,
+      "timestamp_ms": 12000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000420.jpg",
+      "index": 7,
+      "timestamp_ms": 14000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000480.jpg",
+      "index": 8,
+      "timestamp_ms": 16000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000540.jpg",
+      "index": 9,
+      "timestamp_ms": 18000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000600.jpg",
+      "index": 10,
+      "timestamp_ms": 20000
+    },
+    {
+      "path": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\cinematographer\\frames\\test_video1\\frame_000660.jpg",
+      "index": 11,
+      "timestamp_ms": 22000
+    }
+  ],
+  "analysis": {
+    "subject_visible": true,
+    "face_visible": false,
+    "tracking_confidence": 0.5,
+    "composition_quality": 0.5,
+    "summary": "Analysis failed: Vision API call failed: Connection error.",
+    "confidence": 0.5
+  },
+  "suggestion": {
+    "action": "wait_and_recheck",
+    "composition": "medium_portrait",
+    "reason": "Unable to analyze frame quality"
+  },
+  "captured_frame": null,
+  "user_summary_zh": "画面分析失败（Vision API call failed: Connec），建议重试。"
+}

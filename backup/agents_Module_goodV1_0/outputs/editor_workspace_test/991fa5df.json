@@ -1,0 +1,23 @@
+{
+  "workspace_id": "991fa5df",
+  "workspace": "outputs\\editor_workspace_test",
+  "inputs": {
+    "v1": "data\\video\\test_video1.mp4",
+    "v2": "data\\video\\test_video2.mp4",
+    "reference_frame": null
+  },
+  "frames": {
+    "v1_last": "outputs\\editor_workspace_test\\frames\\991fa5df_v1_last.jpg",
+    "v2_first": "outputs\\editor_workspace_test\\frames\\991fa5df_v2_first.jpg"
+  },
+  "transition": {
+    "used": false,
+    "fallback": null
+  },
+  "output_video": "outputs\\editor_workspace_test\\renders\\991fa5df_output.mp4",
+  "pieces": [
+    "outputs\\editor_workspace_test\\normalized\\991fa5df_v1.mp4",
+    "outputs\\editor_workspace_test\\normalized\\991fa5df_v2.mp4"
+  ],
+  "prompt": "Smooth natural transition"
+}

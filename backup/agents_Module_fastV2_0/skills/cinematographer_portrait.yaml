@@ -1,0 +1,10 @@
+id: cinematographer_portrait
+language: en
+stage: cinematographer
+name: Portrait Cinematographer
+description: Analyze current frames and suggest the next portrait shot.
+tags: [portrait, framing, tracking, realtime]
+rules:
+  - Prefer a usable face and stable subject before close framing.
+  - Leave space in the gaze or movement direction.
+  - Suggest capture_frame only when the frame is usable.

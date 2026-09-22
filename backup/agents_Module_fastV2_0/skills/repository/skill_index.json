@@ -1,0 +1,58 @@
+{
+  "portrait_composition_coach": {
+    "path": "builtin\\cinematographer\\portrait_composition_coach.yaml",
+    "stage": "cinematographer",
+    "category": null,
+    "source": "builtin",
+    "last_updated": "2026-09-22T23:41:48.989441"
+  },
+  "action_sports_cinematographer": {
+    "path": "builtin\\cinematographer\\sports\\action_sports_tracking.yaml",
+    "stage": "cinematographer",
+    "category": "sports",
+    "source": "builtin",
+    "last_updated": "2026-09-22T23:41:48.993436"
+  },
+  "universal_composition_common": {
+    "path": "builtin\\common\\universal_composition.yaml",
+    "stage": "common",
+    "category": null,
+    "source": "builtin",
+    "last_updated": "2026-09-22T23:41:48.995435"
+  },
+  "portrait_story_director": {
+    "path": "builtin\\director\\portrait_story_director.yaml",
+    "stage": "director",
+    "category": null,
+    "source": "builtin",
+    "last_updated": "2026-09-22T23:41:49.007422"
+  },
+  "golden_hour_landscape_director": {
+    "path": "builtin\\director\\landscape\\golden_hour_landscape.yaml",
+    "stage": "director",
+    "category": "landscape",
+    "source": "builtin",
+    "last_updated": "2026-09-22T23:41:49.009421"
+  },
+  "clean_product_director": {
+    "path": "builtin\\director\\product\\clean_product_director.yaml",
+    "stage": "director",
+    "category": "product",
+    "source": "builtin",
+    "last_updated": "2026-09-22T23:41:49.012422"
+  },
+  "portrait_reel_editor": {
+    "path": "builtin\\editor\\portrait_reel_editor.yaml",
+    "stage": "editor",
+    "category": null,
+    "source": "builtin",
+    "last_updated": "2026-09-22T23:41:49.023422"
+  },
+  "landscape_narrative_editor": {
+    "path": "builtin\\editor\\landscape\\landscape_narrative_editor.yaml",
+    "stage": "editor",
+    "category": "landscape",
+    "source": "builtin",
+    "last_updated": "2026-09-22T23:41:49.026421"
+  }
+}

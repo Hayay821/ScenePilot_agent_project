@@ -1,0 +1,108 @@
+(base) F:\BoldMaker\project00\agents_Module_fast>python test_agents.py editor --mode bailian --video data/video/test_video1.mp4
+
+初始化 ScenePilotFast (mode=bailian)...
+
+============================================================
+测试 Editor Agent
+============================================================
+视频素材: ['data/video/test_video1.mp4']
+图片素材: []
+匹配的 Skills: ['portrait_reel_editor']
+Warning: Vision analysis for editing failed: Vision API call failed: Connection error.
+Full error traceback:
+Traceback (most recent call last):
+  File "D:\anaconda3\Lib\site-packages\httpx2\_transports\default.py", line 98, in map_httpcore_exceptions
+    yield
+  File "D:\anaconda3\Lib\site-packages\httpx2\_transports\default.py", line 245, in handle_request
+    resp = self._pool.handle_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\httpcore2\_sync\connection_pool.py", line 242, in handle_request
+    raise exc from None
+  File "D:\anaconda3\Lib\site-packages\httpcore2\_sync\connection_pool.py", line 224, in handle_request
+    response = connection.handle_request(pool_request.request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\httpcore2\_sync\connection.py", line 96, in handle_request
+    return self._connection.handle_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\httpcore2\_sync\http11.py", line 125, in handle_request
+    raise exc
+  File "D:\anaconda3\Lib\site-packages\httpcore2\_sync\http11.py", line 79, in handle_request
+    self._send_request_headers(**kwargs)
+  File "D:\anaconda3\Lib\site-packages\httpcore2\_sync\http11.py", line 133, in _send_request_headers
+    with map_exceptions({h11.LocalProtocolError: LocalProtocolError}):
+  File "D:\anaconda3\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "D:\anaconda3\Lib\site-packages\httpcore2\_exceptions.py", line 17, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore2.LocalProtocolError: Illegal header value b'Bearer sk-ws-H.EEMDYID.QmDS.MEUCIQC4GJuh3AE0w0IMCaQ8XewoDACnQQaUWdFlD9mGYA-RYgIgH5wpMhWP7GMToYjoJrXshltncDcmx8PPn6x-uGRuKgw '
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\anaconda3\Lib\site-packages\openai\_base_client.py", line 1086, in request
+    response = self._send_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\openai\_client.py", line 600, in _send_request
+    response = self._send_with_auth_retry(request, stream=stream, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\openai\_client.py", line 579, in _send_with_auth_retry
+    response = super()._send_request(request, stream=stream, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\openai\_base_client.py", line 1008, in _send_request
+    return self._client.send(request, stream=stream, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\httpx2\_client.py", line 980, in send
+    response = self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\httpx2\_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\httpx2\_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\httpx2\_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\httpx2\_transports\default.py", line 244, in handle_request
+    with map_httpcore_exceptions():
+  File "D:\anaconda3\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "D:\anaconda3\Lib\site-packages\httpx2\_transports\default.py", line 115, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx2.LocalProtocolError: Illegal header value b'Bearer sk-ws-H.EEMDYID.QmDS.MEUCIQC4GJuh3AE0w0IMCaQ8XewoDACnQQaUWdFlD9mGYA-RYgIgH5wpMhWP7GMToYjoJrXshltncDcmx8PPn6x-uGRuKgw '
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "F:\BoldMaker\project00\agents_Module_fast\fast.py", line 227, in vision
+    response = client.chat.completions.create(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\openai\resources\chat\completions\completions.py", line 1308, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\openai\_base_client.py", line 1378, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\openai\_base_client.py", line 1121, in request
+    raise APIConnectionError(request=request) from err
+openai.APIConnectionError: Connection error.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "F:\BoldMaker\project00\agents_Module_fast\editor_agent.py", line 98, in run
+    result = self.provider.vision(prompt, media_for_analysis, expect_json=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\BoldMaker\project00\agents_Module_fast\fast.py", line 252, in vision
+    raise ValueError(f"Vision API call failed: {error_msg}")
+ValueError: Vision API call failed: Connection error.
+Generated preview: F:\BoldMaker\project00\agents_Module_fast\outputs\editor\preview.mp4
+
+✅ Editor 测试完成
+输出目录: F:\BoldMaker\project00\agents_Module_fast\outputs\editor
+结果文件: F:\BoldMaker\project00\agents_Module_fast\outputs\editor\edit_plan.json
+预览视频: F:\BoldMaker\project00\agents_Module_fast\outputs\editor\preview.mp4
+总结: 已生成剪辑时间线和预览视频。基础剪辑方案（视觉分析失败：Vision API c
