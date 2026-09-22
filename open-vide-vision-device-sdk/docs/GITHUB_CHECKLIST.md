@@ -3,7 +3,6 @@
 - [ ] Commit only this integration package and your own project code.
 - [ ] Confirm `git status` contains no `.dll`, `.lib`, models, JSON capability files or SDK archives.
 - [ ] Add the repository remote and push the source tree.
-- [ ] Each teammate obtains the three official SDKs separately.
 - [ ] Configure all three SDK roots with CMake cache variables.
 - [ ] Build with MSVC x64.
 - [ ] Run the Mock test before connecting hardware.
