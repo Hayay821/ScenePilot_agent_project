@@ -1,6 +1,6 @@
 # Open Vide Vision 设备 SDK
 
-这是一个可直接提交到 GitHub 的 C++17 设备集成层，用于在 Windows 系统上连接 Open Vide Vision 多 Agent 架构、Insta360 X5 和 Insta360 Link 2。
+这是一个 C++17 设备集成层，用于在 Windows 系统上连接 Open Vide Vision 多 Agent 架构、Insta360 X5 和 Insta360 Link 2。
 
 ## 仓库包含的内容
 
