@@ -75,5 +75,9 @@
     "reason": "Frame is suitable for capture"
   },
   "captured_frame": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\captures\\frame_000000.jpg",
+  "matched_skills": [
+    "portrait_composition_coach"
+  ],
+  "skills_guidance": "",
   "user_summary_zh": "已分析当前画面并标记拍摄建议。"
 }

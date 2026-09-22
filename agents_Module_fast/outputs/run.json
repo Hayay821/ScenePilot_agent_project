@@ -938,25 +938,26 @@
     }
   ],
   "director": {
-    "goal": "我想拍自然的人像短片",
-    "skills": [
+    "goal": "自然人像",
+    "matched_skills": [
       "portrait_story_director"
     ],
+    "skills_guidance": "",
     "shot_plan": [
       {
         "stage": "establish",
         "shot": "wide_context",
-        "reason": "Set up environment and context"
+        "reason": "建立环境背景"
       },
       {
         "stage": "subject",
         "shot": "medium_portrait",
-        "reason": "Focus on subject with clear framing"
+        "reason": "聚焦主体清晰构图"
       },
       {
         "stage": "result",
         "shot": "reaction",
-        "reason": "Capture emotional response or result"
+        "reason": "捕捉情感反应"
       }
     ],
     "reference_analysis": [],
@@ -1040,6 +1041,10 @@
       "reason": "Frame is suitable for capture"
     },
     "captured_frame": "F:\\BoldMaker\\project00\\agents_Module_fast\\outputs\\captures\\frame_000000.jpg",
+    "matched_skills": [
+      "portrait_composition_coach"
+    ],
+    "skills_guidance": "",
     "user_summary_zh": "已分析当前画面并标记拍摄建议。"
   },
   "editing": {
@@ -1047,31 +1052,31 @@
       {
         "source": "data\\video\\test_video1.mp4",
         "role": "portrait_source",
-        "reason": "Main video footage",
+        "reason": "主视频素材",
         "keep": true
       },
       {
         "source": "data\\video\\test_video2.mp4",
         "role": "portrait_source",
-        "reason": "Main video footage",
+        "reason": "主视频素材",
         "keep": true
       },
       {
         "source": "data\\img\\img1.jpg",
         "role": "reference_frame",
-        "reason": "Reference image",
+        "reason": "参考图片",
         "keep": true
       },
       {
         "source": "data\\img\\img2.jpg",
         "role": "reference_frame",
-        "reason": "Reference image",
+        "reason": "参考图片",
         "keep": true
       },
       {
         "source": "data\\img\\微信图片_20260922013228_909_27.jpg",
         "role": "reference_frame",
-        "reason": "Reference image",
+        "reason": "参考图片",
         "keep": true
       }
     ],
@@ -1080,6 +1085,10 @@
       "ratio": "16:9",
       "format": "mp4"
     },
+    "matched_skills": [
+      "portrait_reel_editor"
+    ],
+    "skills_guidance": "",
     "analysis_summary": "Mock analysis: a person is visible; keep the subject clear and leave directional space.",
     "user_summary_zh": "已生成剪辑时间线和预览视频。Mock analysis: a person is visible; keep the subject clear and leave directional space."
   }

@@ -1,23 +1,24 @@
 {
-  "goal": "我想拍自然的人像短片",
-  "skills": [
+  "goal": "自然人像",
+  "matched_skills": [
     "portrait_story_director"
   ],
+  "skills_guidance": "",
   "shot_plan": [
     {
       "stage": "establish",
       "shot": "wide_context",
-      "reason": "Set up environment and context"
+      "reason": "建立环境背景"
     },
     {
       "stage": "subject",
       "shot": "medium_portrait",
-      "reason": "Focus on subject with clear framing"
+      "reason": "聚焦主体清晰构图"
     },
     {
       "stage": "result",
       "shot": "reaction",
-      "reason": "Capture emotional response or result"
+      "reason": "捕捉情感反应"
     }
   ],
   "reference_analysis": [],

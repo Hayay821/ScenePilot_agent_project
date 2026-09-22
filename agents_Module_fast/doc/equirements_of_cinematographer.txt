@@ -1,15 +1,16 @@
 对于cinemagrapher和editor这三部分的agent多轮交互
-
+需求1：
 对于editor,你可以把它设计成一个多轮的对话交互式剪辑系统，当前你有一个工作区，工作区可以分别存储图片与视频，针对于图片和视频你可以设计一个排列方式，并且对于帧间的过程按照提示词和提供的图片
 使用视频流的AI模型进行自然的过度，并且对于结果的视频保存在工作区,同时也可以对于工作区当前生成的视频流进行保存(这部分请你结合前端实现便于理解)
 当前要实现的demo:
 目标：输入 v1.mp4、v2.mp4，可选 frame.jpg；输出 output.mp4 = v1 + AI过渡 + v2。
-AI过渡：提取 v1 最后一帧和 v2 第一帧，调用百炼 DashScope 首尾帧视频模型（Wan3.0-Video 或 PixVerse kf2v），提示词如“镜头平滑推进，自然过渡”，轮询下载 transition.mp4。
+AI过渡：提取 v1 最后一帧和 v2 第一帧，调用百炼 DashScope 首尾帧视频模型（Wan3.0-Video 或 PixVerse kf2v），提示词如“镜头平滑推进，自然过渡和skills中的关键词等”，轮询下载 transition.mp4。
 拼接：用 ffmpeg 统一为 1280x720、30fps、yuv420p、无音频，然后 concat v1_norm + transition_norm + v2_norm。
 技术栈：Python + dashscope + requests + ffmpeg。
 并且将生成的素材保存到工作区，注意当前为demo，只跑一次，失败则降级为纯 ffmpeg 拼接。
 
+需求2：
 对于cinemagraphers,只有在第一次的时候调用skills作为一个prompt与用户的输入要求，和当时拍摄的图片进行合并通过api访问模型（我记得之后调用api是有记忆的吧，当前的模型是记得你的要求和skills的）
 之后按照每0.5s只发送当前图片通过api给模型进行快速分析并且模型实时响应输出，譬如让你靠前一点，靠后一点，左右调整位置，等角度），并且对于好的图片进行抓拍，不自动停止，手动停止，你认为可行吗？
-
+需求3：暂时不做
 还有就是对于project00\agents_Module_fast\skills\repository这个skills数据库中，如果直接者基于builtin,community,pending_review,prersonal,deprecated目录下，更新里面的文档或者信息，是否可以新增一个程序来来实现数据库的索引重新实现

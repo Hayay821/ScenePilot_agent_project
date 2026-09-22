@@ -12,16 +12,34 @@ import os
 import re
 import shutil
 import subprocess
+import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 import cv2
+import yaml
 from dotenv import load_dotenv
 
 from agents.skills_manager_agent import SkillManager, SkillsManagerAgent
 from agents.director_agent import DirectorAgent
 from agents.cinematographer_agent import CinematographerAgent
 from agents.editor_agent import EditorAgent
+from api.schemas import (
+    APIErrorEnvelope,
+    APIEnvelope,
+    CaptureWebcamRequest,
+    CinematographerRequest,
+    CreateSkillRequest,
+    DirectorRequest,
+    EditorRequest,
+    ExtractFramesRequest,
+    MediaInput,
+    MediaSourceType,
+    RunAllRequest,
+    SelectSkillsRequest,
+    SkillsFilter,
+)
 
 ROOT = Path(__file__).resolve().parent
 SKILLS_DIR = ROOT / "skills" / "repository"
@@ -30,6 +48,36 @@ OUTPUT_DIR = ROOT / "outputs"
 
 # Load .env file
 load_dotenv(ROOT / ".env")
+
+# Windows consoles may use GBK; agent progress messages contain non-ASCII text.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
+
+def _timestamp() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _envelope(data: Any, agent_type: str | None = None) -> dict:
+    return {"success": True, "data": _json(data), "agent_type": agent_type, "timestamp": _timestamp()}
+
+
+def _media_paths(media_input: MediaInput | None, default_dir: str | None = None) -> tuple[list[str], list[str]]:
+    if media_input is None:
+        root = default_dir or str(MEDIA_DIR)
+        return MediaTools.images(root), MediaTools.videos(root)
+    if media_input.source_type == MediaSourceType.FILE:
+        paths = [str(Path(p)) for p in (media_input.paths or [])]
+        missing = [p for p in paths if not Path(p).exists()]
+        if missing:
+            raise FileNotFoundError(f"Media files not found: {missing}")
+        images = [p for p in paths if Path(p).suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}]
+        videos = [p for p in paths if Path(p).suffix.lower() in {".mp4", ".mov", ".avi", ".mkv", ".insv"}]
+        return images, videos
+    config = media_input.camera_config
+    frames = MediaTools.capture_webcam_frames(config.camera_id, 5, config.frame_interval, OUTPUT_DIR / "captures", tuple(config.resolution) if config.resolution else None)
+    return frames, []
 
 
 def _json(value: Any) -> Any:
@@ -96,6 +144,97 @@ class MediaTools:
         Path(output).parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(["ffmpeg", "-y", "-ss", str(start), "-i", str(video), "-t", str(duration), "-c", "copy", str(output)], check=True, capture_output=True)
         return str(output)
+
+    @staticmethod
+    def capture_webcam_frames(
+        camera_id: int,
+        num_frames: int,
+        interval: float,
+        output_dir: str | Path,
+        resolution: tuple[int, int] | None = None
+    ) -> list[str]:
+        """从摄像头捕获多帧图像
+
+        Args:
+            camera_id: 摄像头 ID
+            num_frames: 捕获帧数
+            interval: 捕获间隔（秒）
+            output_dir: 输出目录
+            resolution: 分辨率 (width, height)
+
+        Returns:
+            捕获的图像路径列表
+        """
+        output = Path(output_dir)
+        output.mkdir(parents=True, exist_ok=True)
+        cap = cv2.VideoCapture(camera_id)
+
+        if resolution:
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
+
+        if not cap.isOpened():
+            raise ValueError(f"无法打开摄像头 {camera_id}")
+
+        paths = []
+        import time
+        for i in range(num_frames):
+            ok, frame = cap.read()
+            if not ok:
+                break
+            path = output / f"webcam_{camera_id}_frame_{i}.jpg"
+            cv2.imwrite(str(path), frame)
+            paths.append(str(path))
+            if i < num_frames - 1:
+                time.sleep(interval)
+
+        cap.release()
+        return paths
+
+    @staticmethod
+    def get_available_cameras(max_test: int = 5) -> list[int]:
+        """检测可用的摄像头 ID
+
+        Args:
+            max_test: 最大测试摄像头数量
+
+        Returns:
+            可用摄像头 ID 列表
+        """
+        available = []
+        for i in range(max_test):
+            cap = cv2.VideoCapture(i)
+            if cap.isOpened():
+                available.append(i)
+                cap.release()
+        return available
+
+    @staticmethod
+    def test_camera(camera_id: int) -> dict:
+        """测试摄像头是否可用并返回基本信息
+
+        Args:
+            camera_id: 摄像头 ID
+
+        Returns:
+            摄像头信息字典
+        """
+        cap = cv2.VideoCapture(camera_id)
+        if not cap.isOpened():
+            return {"available": False, "camera_id": camera_id}
+
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        cap.release()
+
+        return {
+            "available": True,
+            "camera_id": camera_id,
+            "width": width,
+            "height": height,
+            "fps": fps
+        }
 
 
 class Provider:
@@ -369,42 +508,114 @@ class ScenePilotFast:
 
 def build_api(app: ScenePilotFast):
     from fastapi import FastAPI
-    from pydantic import BaseModel
-    api = FastAPI(title="ScenePilot Fast")
-
-    class TextRequest(BaseModel):
-        text: str
-        stage: str = "director"
-
-    class MediaRequest(BaseModel):
-        text: str = ""
-        images: list[str] = []
-        frames: list[str] = []
-        videos: list[str] = []
+    from fastapi import HTTPException
+    from fastapi.middleware.cors import CORSMiddleware
+    api = FastAPI(title="ScenePilot Fast", version="1.0.0")
+    api.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    router = api.router
 
     @api.get("/health")
-    def health(): return {"ok": True}
+    @api.get("/api/v1/health")
+    def health():
+        return _envelope({"ok": True, "mode": app.director.provider.mode})
 
+    @api.get("/api/v1/media/info")
+    def media_info(path: str):
+        try:
+            return _envelope(MediaTools.inspect(path))
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail=str(exc))
+
+    @api.get("/api/v1/media/list")
+    def media_list(directory: str = str(MEDIA_DIR), type: str = "all"):
+        images = MediaTools.images(directory) if type in ("all", "images") else []
+        videos = MediaTools.videos(directory) if type in ("all", "videos") else []
+        return _envelope({"images": images, "videos": videos, "total": len(images) + len(videos)})
+
+    @api.post("/api/v1/media/extract-frames")
+    def extract_frames(req: ExtractFramesRequest):
+        if not Path(req.video_path).exists():
+            raise HTTPException(status_code=404, detail="video file not found")
+        frames = MediaTools.extract_frames(req.video_path, req.output_dir, req.every_seconds, req.max_frames)
+        return _envelope({"frames": frames, "total": len(frames)})
+
+    @api.post("/api/v1/media/capture-webcam")
+    def capture_webcam(req: CaptureWebcamRequest):
+        try:
+            frames = MediaTools.capture_webcam_frames(req.camera_id, req.num_frames, req.interval, req.output_dir, tuple(req.resolution) if req.resolution else None)
+            return _envelope({"frames": frames, "camera_id": req.camera_id, "total": len(frames)})
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail=str(exc))
+
+    @api.get("/api/v1/skills")
+    def list_skills(stage: str | None = None, limit: int = 20):
+        skills = app.skills.list()
+        if stage:
+            skills = [s for s in skills if s.get("stage") == stage or stage in s.get("stages", [])]
+        items = [{"id": s.get("id", s.get("skill_id")), "name": s.get("name_en", s.get("name", "")), "description": s.get("description", ""), "stage": s.get("stage", ""), "tags": s.get("tags", []), "path": s.get("_path", "")} for s in skills[:limit]]
+        return _envelope({"skills": items, "total": len(items)})
+
+    @api.get("/api/v1/skills/{skill_id}")
+    def skill_detail(skill_id: str):
+        skill = next((s for s in app.skills.list() if s.get("id") == skill_id or s.get("skill_id") == skill_id), None)
+        if not skill:
+            raise HTTPException(status_code=404, detail="skill not found")
+        return _envelope(skill)
+
+    @api.post("/api/v1/skills/select")
+    def select_skills(req: SelectSkillsRequest):
+        skills = app.skills.select(req.user_text, req.stage)[:req.limit or 3]
+        items = [{"id": s.get("id", s.get("skill_id")), "name": s.get("name_en", s.get("name", "")), "relevance_score": 1.0} for s in skills]
+        return _envelope({"skills": items, "total": len(items)}, "skills_manager")
+
+    @api.post("/api/v1/skills/interact")
+    def skills_interact(req: SelectSkillsRequest):
+        return _envelope(app.manager.interact(req.user_text, req.stage or "director"), "skills_manager")
+
+    @api.post("/api/v1/agents/director")
+    def director(req: DirectorRequest):
+        images, _ = _media_paths(req.media_input)
+        skills = app.skills.select(req.user_text, "director")[:req.skills_filter.limit if req.skills_filter and req.skills_filter.limit else 3]
+        return _envelope(app.director.run(req.user_text, skills, images), "director")
+
+    @api.post("/api/v1/agents/cinematographer")
+    def cinematographer(req: CinematographerRequest):
+        images, videos = _media_paths(req.media_input)
+        frames = images
+        if videos:
+            frames = MediaTools.extract_frames(videos[0], OUTPUT_DIR / "frames" / Path(videos[0]).stem)
+        skills = app.skills.select(req.user_text, "cinematographer")[:req.skills_filter.limit if req.skills_filter and req.skills_filter.limit else 3]
+        return _envelope(app.cinematographer.run(frames, skills, req.user_text), "cinematographer")
+
+    @api.post("/api/v1/agents/editor")
+    def editor(req: EditorRequest):
+        images, videos = _media_paths(req.media_input)
+        skills = app.skills.select(req.user_text, "editor")[:req.skills_filter.limit if req.skills_filter and req.skills_filter.limit else 3]
+        result = app.editor.run(videos, images, skills, Path(req.output_config.output_dir) if req.output_config and req.output_config.output_dir else OUTPUT_DIR)
+        return _envelope(result, "editor")
+
+    @api.post("/api/v1/agents/run-all")
+    def run_all(req: RunAllRequest):
+        result = app.run_all(req.user_text, req.media_dir)
+        return _envelope(result)
+
+    # Keep the short legacy routes used by the initial frontend prototype.
     @api.post("/skills/interact")
-    def skills_interact(req: TextRequest): return app.manager.interact(req.text, req.stage)
-
+    def legacy_skills(req: SelectSkillsRequest): return skills_interact(req)
     @api.post("/director")
-    def director(req: MediaRequest):
-        skills = app.skills.select(req.text, "director")
-        return app.director.run(req.text, skills, req.images)
-
+    def legacy_director(req: DirectorRequest): return director(req)
     @api.post("/cinematographer")
-    def cinematographer(req: MediaRequest):
-        skills = app.skills.select(req.text, "cinematographer")
-        return app.cinematographer.run(req.frames or req.images, skills, req.text)
-
+    def legacy_cinematographer(req: CinematographerRequest): return cinematographer(req)
     @api.post("/editor")
-    def editor(req: MediaRequest):
-        skills = app.skills.select(req.text, "editor")
-        return app.editor.run(req.videos, req.images, skills, OUTPUT_DIR)
-
+    def legacy_editor(req: EditorRequest): return editor(req)
     @api.post("/run")
-    def run(req: TextRequest): return app.run_all(req.text)
+    def legacy_run(req: RunAllRequest): return run_all(req)
 
     return api
 
