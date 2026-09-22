@@ -1,0 +1,23 @@
+{
+  "workspace_id": "189a1055",
+  "workspace": "outputs\\editor_workspace",
+  "inputs": {
+    "v1": "data\\video\\test_video3.mp4",
+    "v2": "data\\video\\test_video4.mp4",
+    "reference_frame": null
+  },
+  "frames": {
+    "v1_last": "outputs\\editor_workspace\\frames\\189a1055_v1_last.jpg",
+    "v2_first": "outputs\\editor_workspace\\frames\\189a1055_v2_first.jpg"
+  },
+  "transition": {
+    "used": false,
+    "fallback": "400 Client Error: Bad Request for url: https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis"
+  },
+  "output_video": "outputs\\editor_workspace\\renders\\189a1055_output.mp4",
+  "pieces": [
+    "outputs\\editor_workspace\\normalized\\189a1055_v1.mp4",
+    "outputs\\editor_workspace\\normalized\\189a1055_v2.mp4"
+  ],
+  "prompt": "smooth transition animation, 明日方舟能天使，从坐在铁丝网边喝饮料的休闲少女，平滑过渡到站姿持步枪的战斗立绘，五官保持不变，红短发橙眼睛，光环，画风从清新插画慢慢过渡到明日方舟官方原画，动态光影，流畅无缝过渡，masterpiece"
+}

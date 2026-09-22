@@ -25,6 +25,8 @@ from agents.skills_manager_agent import SkillManager, SkillsManagerAgent
 from agents.director_agent import DirectorAgent
 from agents.cinematographer_agent import CinematographerAgent
 from agents.editor_agent import EditorAgent
+from editor_workspace import EditorWorkspace
+from cinematographer_session import CinematographerSessionStore
 from api.schemas import (
     APIErrorEnvelope,
     APIEnvelope,
@@ -33,6 +35,10 @@ from api.schemas import (
     CreateSkillRequest,
     DirectorRequest,
     EditorRequest,
+    EditorWorkspaceRequest,
+    CinematographerFrameRequest,
+    CinematographerSessionStartRequest,
+    CinematographerSessionStopRequest,
     ExtractFramesRequest,
     MediaInput,
     MediaSourceType,
@@ -438,6 +444,7 @@ class ScenePilotFast:
         self.director = DirectorAgent(self.director_provider)
         self.cinematographer = CinematographerAgent(self.cinematographer_provider)
         self.editor = EditorAgent(self.editor_provider)
+        self.cinematographer_sessions = CinematographerSessionStore(OUTPUT_DIR / "cinematographer_sessions")
 
     def run_all(self, user_text: str, media_dir: str | None = None) -> dict:
         media_dir = media_dir or str(MEDIA_DIR)
@@ -593,12 +600,54 @@ def build_api(app: ScenePilotFast):
         skills = app.skills.select(req.user_text, "cinematographer")[:req.skills_filter.limit if req.skills_filter and req.skills_filter.limit else 3]
         return _envelope(app.cinematographer.run(frames, skills, req.user_text), "cinematographer")
 
+    @api.post("/api/v1/agents/cinematographer/session/start")
+    def start_cinematographer_session(req: CinematographerSessionStartRequest):
+        skills = app.skills.select(req.user_text, "cinematographer")[:req.skills_filter.limit if req.skills_filter and req.skills_filter.limit else 3]
+        session = app.cinematographer_sessions.start(req.user_text, skills, app.cinematographer_provider, OUTPUT_DIR / "cinematographer_sessions")
+        return _envelope({
+            "session_id": session["session_id"],
+            "active": True,
+            "interval_ms": 500,
+            "matched_skills": [s.get("id") for s in skills],
+            "skills_guidance": app.skills.explain(skills),
+            "message_zh": "拍摄会话已启动，首次帧分析会携带用户要求和 Skill；后续帧使用服务端会话记忆。",
+        }, "cinematographer")
+
+    @api.post("/api/v1/agents/cinematographer/session/{session_id}/frame")
+    def analyze_cinematographer_frame(session_id: str, req: CinematographerFrameRequest):
+        return _envelope(app.cinematographer_sessions.analyze_frame(session_id, req.frame_data), "cinematographer")
+
+    @api.post("/api/v1/agents/cinematographer/session/{session_id}/stop")
+    def stop_cinematographer_session(session_id: str):
+        return _envelope(app.cinematographer_sessions.stop(session_id), "cinematographer")
+
     @api.post("/api/v1/agents/editor")
     def editor(req: EditorRequest):
         images, videos = _media_paths(req.media_input)
         skills = app.skills.select(req.user_text, "editor")[:req.skills_filter.limit if req.skills_filter and req.skills_filter.limit else 3]
         result = app.editor.run(videos, images, skills, Path(req.output_config.output_dir) if req.output_config and req.output_config.output_dir else OUTPUT_DIR)
         return _envelope(result, "editor")
+
+    @api.post("/api/v1/editor/workspace")
+    def editor_workspace(req: EditorWorkspaceRequest):
+        payload = req
+        workspace = EditorWorkspace(payload.workspace_dir or str(OUTPUT_DIR / "editor_workspace"))
+        result = workspace.build(
+            payload.v1_path,
+            payload.v2_path,
+            payload.prompt,
+            payload.reference_frame,
+            payload.use_ai_transition,
+        )
+        return _envelope(result, "editor")
+
+    @api.get("/api/v1/editor/workspace/{workspace_id}")
+    def editor_workspace_result(workspace_id: str):
+        root = OUTPUT_DIR / "editor_workspace"
+        matches = list(root.rglob(f"{workspace_id}.json"))
+        if not matches:
+            raise HTTPException(status_code=404, detail="workspace result not found")
+        return _envelope(json.loads(matches[0].read_text(encoding="utf-8")), "editor")
 
     @api.post("/api/v1/agents/run-all")
     def run_all(req: RunAllRequest):

@@ -460,6 +460,53 @@ POST /api/v1/agents/cinematographer
 - `capture_frame` 或 `wait_and_recheck`。
 - 已保存的捕获帧路径。
 
+### 8.1 实时会话和未来设备流
+
+当前已经实现的实时会话接口是：
+
+```text
+POST /api/v1/agents/cinematographer/session/start
+POST /api/v1/agents/cinematographer/session/{session_id}/frame
+POST /api/v1/agents/cinematographer/session/{session_id}/stop
+```
+
+首次启动会话时发送：
+
+- 用户拍摄要求。
+- Cinematographer Skill。
+- 会话 ID。
+
+后续帧发送：
+
+- 当前图片。
+- 服务端保存的最近分析摘要。
+
+当前浏览器前端每 0.5 秒发送一帧，用户手动停止；这是一种测试输入方式，不是最终相机接入方式。
+
+最终 X4 Air/Link2 接入建议统一为：
+
+```json
+{
+  "stream_id": "link2_main",
+  "device_id": "link2_serial_001",
+  "timestamp_ms": 12400,
+  "sequence": 248,
+  "frame_data": "data:image/jpeg;base64,..."
+}
+```
+
+多个实时流必须拥有不同的 `stream_id`，并分别维护短记忆，不能把不同设备的上下文混在一起。
+
+当前代码状态：
+
+- 已实现浏览器单流测试。
+- 已实现本地图片/视频帧输入。
+- 尚未实现 X4 Air/Link2 设备适配器。
+- 尚未实现多流并发调度接口。
+- 尚未实现真实设备抓拍执行。
+
+所以当前 API 是“未来设备流的上层契约基础”，不是已经可以直接接入 X4 Air/Link2 的完整设备服务。
+
 ## 9. Editor Agent
 
 ### 请求
@@ -539,6 +586,69 @@ director
 filming
 editing
 ```
+
+## 10.1 Editor 工作区过渡 Demo
+
+这个接口用于验证一次完整的双视频工作区流程：
+
+```text
+v1.mp4 + v2.mp4
+  -> 提取 v1 最后一帧和 v2 第一帧
+  -> 可选 DashScope 首尾帧视频过渡
+  -> 统一为 1280x720、30fps、yuv420p、无音频
+  -> concat
+  -> output.mp4
+```
+
+接口：
+
+```http
+POST /api/v1/editor/workspace
+```
+
+请求：
+
+```json
+{
+  "v1_path": "data/video/test_video1.mp4",
+  "v2_path": "data/video/test_video2.mp4",
+  "reference_frame": "data/img/img1.jpg",
+  "prompt": "Smooth natural camera movement, preserve subject identity and lighting continuity.",
+  "use_ai_transition": true,
+  "workspace_dir": "outputs/editor_workspace"
+}
+```
+
+结果包含：
+
+- 工作区 ID。
+- v1 最后一帧路径。
+- v2 第一帧路径。
+- AI transition 任务状态。
+- 最终 `output_video` 路径。
+- 实际拼接片段列表。
+
+工作区目录结构：
+
+```text
+outputs/editor_workspace/
+  frames/
+  normalized/
+  transitions/
+  renders/
+  <workspace_id>.json
+```
+
+AI 过渡配置：
+
+```env
+DASHSCOPE_VIDEO_MODEL=your_available_first_last_frame_model
+DASHSCOPE_VIDEO_API_URL=your_dashscope_video_endpoint
+DASHSCOPE_VIDEO_STATUS_URL=your_dashscope_task_endpoint_prefix
+DASHSCOPE_VIDEO_TIMEOUT_SEC=300
+```
+
+如果 DashScope 任务失败、模型不可用、网络超时或没有配置视频模型，接口会自动降级为纯 FFmpeg 拼接，仍然生成最终视频。当前 Demo 只运行一次，不实现工作区历史版本和多轮剪辑对话。
 
 ## 11. 前端调用示例
 
@@ -783,6 +893,8 @@ Invoke-WebRequest http://127.0.0.1:8765/openapi.json
 - 图片输入。
 - 视频抽帧。
 - 本地摄像头帧捕获。
+- Cinematographer 单流会话：首次目标/Skill + 后续当前帧 + 本地短记忆。
+- 浏览器摄像头每 0.5 秒帧分析和手动停止。
 - Agent 独立调用。
 - Agent 串行调用。
 - 本地 Skill 查询和选择。
@@ -792,6 +904,8 @@ Invoke-WebRequest http://127.0.0.1:8765/openapi.json
 
 - 浏览器文件上传。
 - X4 Air/Link2 真实设备控制。
+- X4 Air/Link2 实时流适配器。
+- 多个 `stream_id` 的实时流调度和融合。
 - WebSocket 实时摄像头接口。
 - 云端 Skill 库。
 - Skill CRUD 的完整写接口。

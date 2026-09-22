@@ -121,6 +121,50 @@ python test_agents.py cinematographer --mode bailian --text "拍摄自然人像"
 - `capture_frame` 是结构化建议，当前会保存帧图片
 - 未来接入真实摄像机 SDK 时，可以触发实际的拍摄动作
 
+### 实时视频流接入边界
+
+当前浏览器摄像头只是测试输入源。最终目标是通过本地 Edge Adapter 接入 X4 Air/Link2：
+
+```text
+X4AirAdapter / Link2Adapter / BrowserAdapter
+                |
+                v
+        统一 VideoFrame
+                |
+                v
+      Cinematographer Session
+```
+
+统一帧格式建议：
+
+```json
+{
+  "stream_id": "link2_main",
+  "device_id": "link2_serial_001",
+  "timestamp_ms": 12400,
+  "sequence": 248,
+  "frame_data": "data:image/jpeg;base64,..."
+}
+```
+
+因此架构上可以支持非当前电脑前置摄像头、X4 Air、Link2 和多个视频流，但当前 Fast 版本已经实现的是：
+
+- 浏览器摄像头单流会话。
+- 本地图片/视频帧输入。
+- 首次会话加载用户目标和 Cinematographer Skill。
+- 后续帧使用本地短记忆摘要。
+- 手动停止和优质帧保存。
+
+当前尚未实现：
+
+- X4 Air Camera/Media SDK 适配器。
+- Link2 UVC/Link SDK 适配器。
+- 多个 `stream_id` 的并发调度。
+- 多流融合分析。
+- 真实设备抓拍执行。
+
+接入真实设备时不应修改 Cinematographer 的业务协议，只需让设备适配器输出统一 `VideoFrame`。
+
 ---
 
 ### ✂️ 4. Editor（剪辑 Agent）
@@ -203,6 +247,66 @@ python test_agents.py editor --mode bailian --video data/video/test_video1.mp4
 
 最终输出：outputs/run.json（完整结果汇总）
 ```
+
+## Editor 工作区过渡 Demo
+
+Editor 另提供一个双视频工作区接口，用于测试：
+
+```text
+v1.mp4 + v2.mp4
+  -> 读取 v1 最后一帧和 v2 第一帧
+  -> 调用 DashScope 首尾帧视频模型生成 transition.mp4
+  -> 统一视频规格
+  -> FFmpeg 拼接
+  -> output.mp4
+```
+
+接口：
+
+```text
+POST /api/v1/editor/workspace
+```
+
+前端页面中填写：
+
+- `v1` 视频路径。
+- `v2` 视频路径。
+- AI 过渡提示词。
+- 点击“生成 Editor 工作区视频”。
+
+默认示例：
+
+```text
+data/video/test_video1.mp4
+```
+
+工作区输出：
+
+```text
+outputs/editor_workspace/
+  frames/
+  normalized/
+  transitions/
+  renders/
+  <workspace_id>.json
+```
+
+AI 过渡配置不是普通 Qwen-VL 配置，必须额外确认百炼视频生成模型、提交 endpoint、状态查询 endpoint 和模型请求字段。可配置：
+
+```env
+DASHSCOPE_VIDEO_MODEL=your_available_first_last_frame_model
+DASHSCOPE_VIDEO_API_URL=your_video_generation_endpoint
+DASHSCOPE_VIDEO_STATUS_URL=your_task_status_endpoint_prefix
+DASHSCOPE_VIDEO_TIMEOUT_SEC=300
+```
+
+如果视频模型配置、权限、endpoint 或请求格式不正确，系统会在 `transition.fallback` 写入错误，并自动退化为：
+
+```text
+v1_normalized + v2_normalized -> output.mp4
+```
+
+因此最终拼接视频仍然应该能够生成。当前 Demo 只执行一次，不实现多轮工作区剪辑。
 
 ---
 

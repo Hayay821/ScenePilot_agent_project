@@ -215,12 +215,46 @@ class CinematographerResponse(BaseModel):
     user_summary_zh: str
 
 
+class CinematographerSessionStartRequest(BaseModel):
+    user_text: str
+    skills_filter: Optional[SkillsFilter] = None
+
+
+class CinematographerFrameRequest(BaseModel):
+    frame_data: str = Field(..., description="base64 image or data URL")
+
+
+class CinematographerSessionStopRequest(BaseModel):
+    session_id: str
+
+
 class EditorRequest(BaseModel):
     """Editor Agent 请求"""
     user_text: str = Field(..., description="用户意图描述")
     media_input: MediaInput = Field(..., description="媒体输入")
     skills_filter: Optional[SkillsFilter] = Field(default=None, description="技能筛选条件")
     output_config: Optional[OutputConfig] = Field(default=None, description="输出配置")
+
+
+class EditorWorkspaceRequest(BaseModel):
+    """One-shot workspace transition demo."""
+    v1_path: str
+    v2_path: str
+    reference_frame: Optional[str] = None
+    prompt: str = "Smooth natural camera movement between the two shots. Preserve subject identity, motion direction, lighting continuity, and use the active editing skill rules."
+    use_ai_transition: bool = True
+    workspace_dir: Optional[str] = None
+
+
+class EditorWorkspaceResponse(BaseModel):
+    workspace_id: str
+    workspace: str
+    inputs: Dict[str, Any]
+    frames: Dict[str, str]
+    transition: Dict[str, Any]
+    output_video: str
+    pieces: List[str]
+    prompt: str
 
 
 class TimelineItem(BaseModel):
