@@ -247,8 +247,12 @@ class CinematographerSessionStartRequest(BaseModel):
 
 
 class CinematographerFrameRequest(BaseModel):
+    """X5、Link 2 和浏览器共用的设备无关实时帧。"""
     frame_data: str = Field(..., description="base64 image or data URL")
     stream_id: str = "browser_main"
+    device_id: Optional[str] = None
+    source_type: str = "external"
+    mime_type: Literal["image/jpeg"] = "image/jpeg"
     timestamp_ms: Optional[int] = None
     sequence: Optional[int] = None
 

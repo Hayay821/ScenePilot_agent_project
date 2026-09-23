@@ -915,6 +915,9 @@ def build_api(app: ScenePilotFast):
 
     @api.post("/api/v1/agents/cinematographer/session/{session_id}/frame")
     def analyze_cinematographer_frame(session_id: str, req: CinematographerFrameRequest):
+        app.cinematographer_sessions.add_stream(
+            session_id, req.stream_id, req.source_type, req.device_id
+        )
         result = app.cinematographer_sessions.analyze_frame(
             session_id,
             req.frame_data,

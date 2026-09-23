@@ -515,7 +515,8 @@
         }
       }
     </style>
-  </head>
+    <link rel="stylesheet" href="./device-console.css?v=20260923-good1">
+</head>
   <body>
     <nav class="top-navigation" aria-label="主页面板选择">
       <a href="./home.html">仓库</a>
@@ -542,10 +543,14 @@
       <div class="asset-splitter" aria-label="调整素材库宽度"></div>
       <section class="create-empty-area" aria-label="中间创作区域">
         <section class="preview-panel" aria-label="视频和图片播放展示面板">
-          <div class="preview-frame">
-            <div class="preview-placeholder">
-              <span class="play-mark">▶</span>
-              <span>等待视频或图片素材</span>
+          <div id="preview-frame" class="preview-frame">
+            <div id="preview-media"><div class="preview-placeholder"><span class="play-mark">▶</span><span>等待视频或图片素材</span></div></div>
+            <div id="camera-live-layer" class="camera-preview-frame" hidden>
+              <div class="camera-preview-toolbar"><div><strong>实时画面</strong><span id="preview-source-label">尚未选择设备</span></div><button id="stop-preview-button" class="quiet-button" type="button">停止预览</button></div>
+              <video id="link2-preview" autoplay muted playsinline hidden></video>
+              <img id="x5-preview" alt="X5 实时预览" hidden>
+              <div id="preview-placeholder" class="preview-placeholder"><span class="play-mark">▶</span><span>连接设备后选择实时预览</span></div>
+              <span id="preview-live-badge" class="live-badge" hidden>实时</span>
             </div>
           </div>
         </section>
@@ -560,6 +565,11 @@
               <button id="export-workspace" type="button">导出到本地</button>
             </div>
           </header>
+          <div class="device-console-content">
+            <article class="camera-card" data-device-card="link2-main"><header><span><i class="status-dot"></i>Link 2</span><span class="device-card-state"><b id="link2-state">未连接</b><button class="disconnect-link" data-disconnect="link2-main" type="button">断开连接</button></span></header><div class="camera-actions"><button data-connect="link2-main" type="button">连接</button><button id="link2-browser-preview" type="button">实时预览</button><button id="link2-snapshot" type="button">拍照并保存</button><button id="link2-record-start" type="button">开始录像</button><button id="link2-record-stop" type="button" disabled>停止录像并保存</button><button data-action="set_privacy" data-device="link2-main" type="button">隐私模式</button></div><div class="secondary-actions"><button data-action="set_tracking" data-device="link2-main" type="button">开启人物追踪</button></div><div class="zoom-control"><div class="zoom-title"><span>变焦</span><b id="zoom-value">1.0×</b></div><input id="zoom-range" type="range" min="1" max="4" value="1" step="0.1"></div></article>
+            <article class="camera-card" data-device-card="x5-main"><header><span><i class="status-dot"></i>Insta360 X5</span><span class="device-card-state"><b id="x5-state">未连接</b><button class="disconnect-link" data-disconnect="x5-main" type="button">断开连接</button></span></header><div class="camera-actions"><button data-connect="x5-main" type="button">连接</button><button id="x5-stream-preview" type="button">实时预览</button><button data-action="capture_photo" data-device="x5-main" type="button">拍照并保存</button><button data-action="start_recording" data-device="x5-main" type="button">开始录像</button><button data-action="stop_recording" data-device="x5-main" type="button">停止录像并保存</button><button type="button" disabled title="X5 CameraSDK未提供隐私模式">隐私模式</button></div><p class="camera-note">X5 与 Link 2 实时帧会进入同一个摄影师 Session。</p></article>
+            <aside class="device-event-panel"><h3>设备执行记录</h3><span id="service-state" class="service-state">正在检查设备控制服务…</span><ol id="device-event-log"><li>等待操作</li></ol><div id="local-asset-list"></div></aside>
+          </div>
           <div class="device-content">
             <div class="workspace-bin">
               <h3 class="device-section-title">待处理区</h3>
@@ -680,10 +690,12 @@
       }
 
       function previewAsset(asset) {
-        const frame = document.querySelector('.preview-frame');
+        window.ovvStopLocalPreview?.();
+        const frame = document.getElementById('preview-media');
+        frame.hidden = false;
         const url = asset.url || publicUrl(asset.path);
-        if (!url) { frame.innerHTML = `<div class="preview-placeholder"><span>${asset.name}</span><small>${asset.path}</small></div>`; return; }
-        frame.innerHTML = asset.kind === 'video' ? `<video src="${url}" controls></video>` : `<img src="${url}" alt="${asset.name}">`;
+        if (!url) { frame.innerHTML = '<div class="preview-placeholder"><span>' + asset.name + '</span><small>' + asset.path + '</small></div>'; return; }
+        frame.innerHTML = asset.kind === 'video' ? '<video src="' + url + '" controls></video>' : '<img src="' + url + '" alt="' + asset.name + '">';
       }
 
       async function loadAssets() {
@@ -988,5 +1000,10 @@
       loadAssets().catch(error => console.error(error));
       renderWorkspace();
     </script>
+    <script src="./video-frame.js?v=20260923-good1"></script>
+    <script src="./cinematographer-session.js?v=20260923-good1"></script>
+    <script src="./device-api.js?v=20260923-good1"></script>
+    <script src="./device-console.js?v=20260923-good1"></script>
+    <script src="./cinematographer-ui.js?v=20260923-good1"></script>
   </body>
 </html>
