@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="BoldMaker 注册页面" />
+    <title>注册 | BoldMaker</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="auth-page register-page">
+      <section class="brand-panel" aria-label="BoldMaker 品牌介绍">
+        <div class="brand-mark" aria-hidden="true">B</div>
+        <p class="eyebrow">BOLDMAKER AI</p>
+        <h1>从此刻开始，<br /><em>创造你的作品。</em></h1>
+        <p class="brand-description">
+          建立你的创作者身份，进入面向新一代影像创作者的智能工作台。
+        </p>
+        <div class="brand-line" aria-hidden="true"></div>
+        <p class="brand-note">CREATE WITH PURPOSE</p>
+      </section>
+
+      <section class="form-panel" aria-labelledby="register-title">
+        <div class="form-wrap register-form-wrap">
+          <div class="mobile-brand" aria-hidden="true">
+            <span class="mobile-brand-mark">B</span>
+            <span>BOLDMAKER</span>
+          </div>
+          <p class="form-kicker">CREATE ACCOUNT</p>
+          <h2 id="register-title">创建账号</h2>
+          <p class="form-description">填写以下信息，开启你的创作者空间。</p>
+
+          <form class="login-form register-form">
+            <div class="field-group">
+              <label for="username">用户名</label>
+              <input id="username" name="username" type="text" placeholder="请输入用户名" autocomplete="name" />
+            </div>
+
+            <div class="field-group">
+              <label for="account">账号</label>
+              <input id="account" name="account" type="text" placeholder="请输入账号" autocomplete="username" />
+            </div>
+
+            <div class="field-group">
+              <label for="password">密码</label>
+              <input id="password" name="password" type="password" placeholder="请输入密码" autocomplete="new-password" />
+            </div>
+
+            <div class="field-group">
+              <label for="password-confirm">密码确认</label>
+              <input id="password-confirm" name="password-confirm" type="password" placeholder="请再次输入密码" autocomplete="new-password" />
+            </div>
+
+            <div class="field-group">
+              <label for="email">邮箱</label>
+              <div class="input-with-action">
+                <input id="email" name="email" type="email" placeholder="请输入邮箱" autocomplete="email" />
+                <button class="code-button" type="button">发送验证码</button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="verification-code">验证码</label>
+              <input id="verification-code" name="verification-code" type="text" placeholder="请输入验证码" inputmode="numeric" />
+            </div>
+
+            <button class="primary-button" type="button" onclick="window.location.href='./index.html'">确定</button>
+          </form>
+
+          <p class="copyright">© 2026 BoldMaker. All rights reserved.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

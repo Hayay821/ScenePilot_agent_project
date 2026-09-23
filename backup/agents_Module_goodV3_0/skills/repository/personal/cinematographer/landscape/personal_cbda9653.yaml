@@ -1,0 +1,71 @@
+name: Light-First Landscape Observation
+name_zh: "\u5149\u4F18\u5148\u98CE\u666F\u89C2\u5BDF\u6CD5"
+description: Prioritize light assessment before selecting subject and composition
+  in landscape photography.
+description_zh: "\u5728\u98CE\u5149\u6444\u5F71\u4E2D\uFF0C\u5148\u8BC4\u4F30\u5149\
+  \u7EBF\u6761\u4EF6\uFF08\u5982\u6668\u660F\u67D4\u5149\u3001\u9634\u5929\u6F2B\u5C04\
+  \u5149\uFF09\uFF0C\u518D\u786E\u5B9A\u4E3B\u4F53\u4E0E\u6784\u56FE\uFF1B\u5F3A\u8C03\
+  \u6162\u89C2\u5BDF\u3001\u505A\u51CF\u6CD5\u3001\u5C0A\u91CD\u81EA\u7136\uFF0C\u5E76\
+  \u901A\u8FC7\u6301\u7EED\u5B9E\u8DF5\u5F62\u6210\u4E2A\u4EBA\u89C6\u89D2\u3002"
+stage: cinematographer
+category: landscape
+tags:
+- light analysis
+- composition
+- patience
+- environmental ethics
+- visual storytelling
+rules:
+- condition: Golden hour (sunrise/sunset) is approaching or ongoing
+  condition_zh: "\u65E5\u51FA\u6216\u65E5\u843D\u7684\u9EC4\u91D1\u65F6\u523B\u6B63\
+    \u5728\u6765\u4E34\u6216\u8FDB\u884C\u4E2D"
+  action: Position yourself to capture side/back lighting, emphasize texture and depth
+    with long shadows
+  action_zh: "\u9009\u62E9\u4FA7\u5149\u6216\u9006\u5149\u4F4D\uFF0C\u5229\u7528\u957F\
+    \u9634\u5F71\u7A81\u51FA\u666F\u7269\u7EB9\u7406\u4E0E\u7A7A\u95F4\u5C42\u6B21"
+  reason: "\u6B64\u65F6\u5149\u7EBF\u67D4\u548C\u3001\u8272\u6E29\u6E29\u6696\u3001\
+    \u660E\u6697\u5BF9\u6BD4\u4E30\u5BCC\uFF0C\u80FD\u6781\u5927\u589E\u5F3A\u753B\
+    \u9762\u7ACB\u4F53\u611F\u4E0E\u60C5\u7EEA\u611F\u67D3\u529B"
+- condition: Overcast sky with diffused light
+  condition_zh: "\u9634\u5929\uFF0C\u5149\u7EBF\u5747\u5300\u6F2B\u5C04"
+  action: Focus on fine details, textures, and subtle tonal gradations; avoid high-contrast
+    subjects
+  action_zh: "\u805A\u7126\u7EC6\u8282\u3001\u8D28\u611F\u4E0E\u7EC6\u817B\u5F71\u8C03\
+    \u8FC7\u6E21\uFF1B\u907F\u514D\u4F9D\u8D56\u5F3A\u5BF9\u6BD4\u7684\u9898\u6750"
+  reason: "\u6F2B\u5C04\u5149\u51CF\u5C11\u786C\u9634\u5F71\uFF0C\u9002\u5408\u8868\
+    \u73B0\u9759\u8C27\u6C1B\u56F4\u4E0E\u5FAE\u5C0F\u7ED3\u6784\uFF0C\u5982\u82D4\
+    \u85D3\u3001\u6C34\u9762\u6D9F\u6F2A\u3001\u96FE\u4E2D\u8F6E\u5ED3"
+- condition: Scene appears cluttered or visually overwhelming
+  condition_zh: "\u753B\u9762\u5143\u7D20\u6742\u4E71\u3001\u89C6\u89C9\u4FE1\u606F\
+    \u8FC7\u8F7D"
+  action: 'Apply compositional subtraction: remove non-essential elements, use foreground
+    as visual guide'
+  action_zh: "\u6267\u884C\u6784\u56FE\u51CF\u6CD5\uFF1A\u5254\u9664\u975E\u5FC5\u8981\
+    \u5143\u7D20\uFF0C\u5229\u7528\u524D\u666F\u5F15\u5BFC\u89C6\u7EBF\u81F3\u4E3B\
+    \u4F53"
+  reason: "\u7B80\u5316\u6784\u56FE\u53EF\u63D0\u5347\u89C6\u89C9\u7126\u70B9\u6E05\
+    \u6670\u5EA6\uFF0C\u907F\u514D\u89C2\u4F17\u6CE8\u610F\u529B\u5206\u6563"
+- condition: Natural elements (wind, water, clouds) show dynamic movement
+  condition_zh: "\u98CE\u3001\u6C34\u3001\u4E91\u7B49\u81EA\u7136\u5143\u7D20\u5448\
+    \u73B0\u52A8\u6001\u53D8\u5316"
+  action: Pause, observe rhythm, and wait for the decisive moment of harmony or contrast
+  action_zh: "\u6682\u505C\u62CD\u6444\uFF0C\u89C2\u5BDF\u8FD0\u52A8\u8282\u594F\uFF0C\
+    \u7B49\u5F85\u548C\u8C10\u6216\u620F\u5267\u6027\u77AC\u95F4\u51FA\u73B0"
+  reason: "\u81EA\u7136\u52A8\u6001\u662F\u98CE\u5149\u6444\u5F71\u7684\u7075\u9B42\
+    \uFF0C\u8010\u5FC3\u7B49\u5F85\u80FD\u6355\u6349\u5230\u4E0D\u53EF\u590D\u5236\
+    \u7684\u77AC\u65F6\u7F8E\u611F"
+- condition: Photographer feels urge to alter environment (e.g., move rocks, trample
+    vegetation)
+  condition_zh: "\u6444\u5F71\u5E08\u4EA7\u751F\u6539\u53D8\u73AF\u5883\u7684\u51B2\
+    \u52A8\uFF08\u5982\u642C\u52A8\u77F3\u5757\u3001\u8E29\u8E0F\u690D\u88AB\uFF09"
+  action: Refrain from any interference; seek alternative angles or compositions instead
+  action_zh: "\u514B\u5236\u5E72\u9884\u884C\u4E3A\uFF0C\u8F6C\u800C\u5BFB\u627E\u66FF\
+    \u4EE3\u89D2\u5EA6\u6216\u6784\u56FE\u65B9\u6848"
+  reason: "\u5C0A\u91CD\u81EA\u7136\u751F\u6001\u662F\u804C\u4E1A\u4F26\u7406\u5E95\
+    \u7EBF\uFF0C\u771F\u5B9E\u3001\u672A\u88AB\u5E72\u6270\u7684\u573A\u666F\u66F4\
+    \u5177\u957F\u671F\u4EF7\u503C\u4E0E\u827A\u672F\u771F\u8BDA\u6027"
+confidence: 0.85
+skill_id: personal_cbda9653
+id: personal_cbda9653
+status: active
+created_at: '2026-09-23T01:00:32.695452'

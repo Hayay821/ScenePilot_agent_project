@@ -1,0 +1,52 @@
+skill_id: action_sports_cinematographer
+name: Action Sports Tracking
+description: Real-time tracking and capture guidance for fast-moving sports subjects
+language: en
+author: builtin
+status: active
+stage: cinematographer
+category: sports
+tags:
+  - sports
+  - action
+  - tracking
+  - fast_motion
+
+agent_bindings:
+  cinematographer: true
+
+rules:
+  - condition: subject_moving_fast
+    action: use_continuous_autofocus
+    priority: high
+    reason: Fast-moving subjects require continuous AF tracking to maintain focus
+
+  - condition: predictable_path
+    action: pre_frame_motion_path
+    priority: high
+    reason: Pre-framing the path allows subject to enter and exit frame dynamically
+
+  - condition: peak_action_moment
+    action: capture_frame_immediately
+    priority: critical
+    reason: Peak moments (jump apex, ball contact) happen in split seconds
+
+  - condition: motion_blur_detected
+    action: increase_shutter_speed
+    priority: high
+    reason: Sports photography needs frozen motion unless intentional blur for effect
+
+  - condition: background_cluttered
+    action: use_shallow_depth_of_field
+    priority: medium
+    reason: Shallow DOF isolates athlete from distracting backgrounds
+
+  - condition: multiple_subjects
+    action: track_primary_athlete
+    priority: high
+    reason: Focus on primary subject even when multiple athletes are in frame
+
+metadata:
+  created_at: "2024-01-15T11:00:00Z"
+  updated_at: "2024-01-15T11:00:00Z"
+  version: "1.0"

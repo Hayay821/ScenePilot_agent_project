@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BoldMaker</title>
+    <style>
+      :root {
+        --home-ink: #20252b;
+        --home-line: #e1e3e1;
+        --home-paper: #f8f8f5;
+        --asset-width: 260px;
+        --agent-width: 320px;
+        --device-height: 180px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        color: var(--home-ink);
+        background: var(--home-paper);
+        font-family: 'Microsoft YaHei', sans-serif;
+      }
+
+      .top-navigation {
+        display: grid;
+        width: 100%;
+        height: 58px;
+        grid-template-columns: repeat(4, 1fr);
+        border-bottom: 1px solid var(--home-line);
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .top-navigation span,
+      .top-navigation a {
+        display: grid;
+        min-width: 0;
+        place-items: center;
+        color: #60676a;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .top-navigation .selected {
+        color: var(--home-paper);
+        background: var(--home-ink);
+      }
+
+      .create-workspace {
+        display: grid;
+        height: calc(100vh - 58px);
+        min-height: 0;
+        grid-template-columns: var(--asset-width) 10px minmax(0, 1fr) 10px var(--agent-width);
+      }
+
+      .asset-panel {
+        min-width: 0;
+        overflow: hidden;
+        border-right: 1px solid var(--home-line);
+        background: #fbfbf9;
+      }
+
+      .asset-header {
+        display: flex;
+        height: 52px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--home-line);
+      }
+
+      .asset-title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .asset-add-button {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 0;
+        color: #687173;
+        background: transparent;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+      }
+
+      .asset-content {
+        height: calc(100% - 52px);
+        overflow: auto;
+        padding: 16px 12px;
+      }
+
+      .asset-group-title {
+        margin: 10px 8px 8px;
+        color: #7b8284;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+      }
+
+      .asset-empty {
+        margin: 0 8px 24px;
+        color: #a1a8a7;
+        font-size: 12px;
+        line-height: 1.8;
+      }
+
+      .asset-item {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 8px;
+        border: 0;
+        border-radius: 2px;
+        color: #596365;
+        background: transparent;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 12px;
+        text-align: left;
+      }
+
+      .asset-item:hover {
+        background: #eef0ed;
+      }
+
+      .asset-symbol {
+        display: grid;
+        width: 26px;
+        height: 22px;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid #c2c9c6;
+        border-radius: 2px;
+        color: #8a9391;
+        font-size: 9px;
+      }
+
+      .asset-splitter {
+        position: relative;
+        z-index: 2;
+        cursor: col-resize;
+        background: var(--home-line);
+        touch-action: none;
+        user-select: none;
+      }
+
+      .asset-splitter:hover,
+      .asset-splitter.dragging {
+        background: #de6943;
+      }
+
+      .create-empty-area {
+        display: grid;
+        grid-column: 3;
+        grid-template-rows: minmax(0, 1fr) 10px var(--device-height);
+        min-width: 0;
+        background: var(--home-paper);
+      }
+
+      .preview-panel,
+      .device-panel {
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .preview-panel {
+        display: grid;
+        place-items: center;
+        background: #edf0ec;
+      }
+
+      .preview-placeholder {
+        display: grid;
+        justify-items: center;
+        gap: 12px;
+        color: #8d9895;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+      }
+
+      .preview-frame {
+        display: grid;
+        width: min(78%, 700px);
+        aspect-ratio: 16 / 9;
+        place-items: center;
+        border: 1px solid #3f494b;
+        background: #2d3539;
+      }
+
+      .play-mark {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border: 1px solid #a6b0ad;
+        border-radius: 50%;
+        color: #a6b0ad;
+        font-size: 17px;
+      }
+
+      .center-splitter {
+        z-index: 2;
+        cursor: row-resize;
+        background: var(--home-line);
+        touch-action: none;
+        user-select: none;
+      }
+
+      .center-splitter:hover,
+      .center-splitter.dragging {
+        background: #de6943;
+      }
+
+      .device-panel {
+        border-top: 1px solid var(--home-line);
+        background: #fbfbf9;
+      }
+
+      .device-header {
+        display: flex;
+        height: 44px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--home-line);
+      }
+
+      .device-title {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .device-content {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        padding: 12px 16px;
+      }
+
+      .device-section-title {
+        margin: 0 0 8px;
+        color: #7b8284;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .device-row {
+        display: flex;
+        min-height: 25px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: #596365;
+        font-size: 12px;
+      }
+
+      .device-name {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #bfc5c3;
+      }
+
+      .device-state,
+      .parameter-value {
+        color: #7b8284;
+        font-size: 11px;
+      }
+
+      .agent-splitter {
+        position: relative;
+        z-index: 2;
+        grid-column: 4;
+        cursor: col-resize;
+        background: var(--home-line);
+        touch-action: none;
+        user-select: none;
+      }
+
+      .agent-splitter:hover,
+      .agent-splitter.dragging {
+        background: #de6943;
+      }
+
+      .agent-panel {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        grid-column: 5;
+        min-width: 0;
+        overflow: hidden;
+        background: #fbfbf9;
+      }
+
+      .agent-menu,
+      .agent-screen {
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+      }
+
+      .agent-menu {
+        gap: 8px;
+        padding: 18px 14px;
+      }
+
+      .agent-screen {
+        height: 100%;
+      }
+
+      .agent-screen[hidden],
+      .agent-menu[hidden] {
+        display: none;
+      }
+
+      .agent-option {
+        width: 100%;
+        min-height: 44px;
+        padding: 0 12px;
+        border: 1px solid var(--home-line);
+        border-radius: 2px;
+        color: #596365;
+        background: #ffffff;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .agent-option:hover {
+        border-color: var(--home-ink);
+        color: var(--home-ink);
+      }
+
+      .agent-screen-header {
+        display: flex;
+        min-height: 48px;
+        align-items: center;
+        gap: 10px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--home-line);
+      }
+
+      .agent-back-button {
+        padding: 5px 0;
+        border: 0;
+        color: #7b8284;
+        background: transparent;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 12px;
+      }
+
+      .agent-back-button:hover {
+        color: var(--home-ink);
+      }
+
+      .agent-screen-title {
+        min-width: 0;
+        margin: 0;
+        overflow: hidden;
+        font-size: 13px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .new-conversation-button {
+        min-height: 40px;
+        margin: 14px;
+        border: 1px dashed #abb4b1;
+        border-radius: 2px;
+        color: #596365;
+        background: transparent;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 12px;
+      }
+
+      .new-conversation-button:hover {
+        border-color: #de6943;
+        color: #bd5132;
+      }
+
+      .conversation-list {
+        flex: 1;
+        overflow: auto;
+        padding: 0 14px 14px;
+      }
+
+      .empty-conversations {
+        margin: 26px 8px;
+        color: #a1a8a7;
+        font-size: 12px;
+        line-height: 1.7;
+        text-align: center;
+      }
+
+      .chat-messages {
+        flex: 1;
+        min-height: 0;
+      }
+
+      .chat-input-bar {
+        display: flex;
+        gap: 8px;
+        padding: 12px 14px;
+        border-top: 1px solid var(--home-line);
+      }
+
+      .chat-input {
+        width: 100%;
+        min-width: 0;
+        height: 36px;
+        padding: 0 10px;
+        border: 1px solid var(--home-line);
+        outline: none;
+        color: var(--home-ink);
+        background: #ffffff;
+        font-family: inherit;
+        font-size: 12px;
+      }
+
+      .chat-send {
+        width: 36px;
+        flex: 0 0 auto;
+        border: 0;
+        color: var(--home-paper);
+        background: var(--home-ink);
+        cursor: pointer;
+      }
+
+      .create-workspace.is-resizing {
+        user-select: none;
+      }
+
+      @media (max-width: 480px) {
+        .top-navigation {
+          height: 52px;
+        }
+
+        .top-navigation span,
+        .top-navigation a {
+          font-size: 12px;
+        }
+
+        .create-workspace {
+          height: calc(100vh - 52px);
+          grid-template-columns: minmax(180px, 46vw) 10px minmax(0, 1fr) 10px minmax(220px, 42vw);
+        }
+
+        .device-content {
+          grid-template-columns: 1fr;
+          gap: 8px;
+          overflow: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="top-navigation" aria-label="主页面板选择">
+      <a href="./home.html">仓库</a>
+      <span class="selected" aria-current="page">创作</span>
+      <a href="./skills.html">skills</a>
+      <a href="./settings.html">用户设置</a>
+    </nav>
+
+    <main class="create-workspace">
+      <aside class="asset-panel" aria-label="素材库面板">
+        <header class="asset-header">
+          <h1 class="asset-title">素材库</h1>
+          <button class="asset-add-button" type="button" aria-label="添加素材">+</button>
+        </header>
+        <div class="asset-content">
+          <p class="asset-group-title">本地素材</p>
+          <p class="asset-empty">暂无素材<br />可从仓库页面添加图片或视频。</p>
+          <p class="asset-group-title">项目文件</p>
+          <button class="asset-item" type="button">
+            <span class="asset-symbol">DIR</span>
+            <span>当前创作项目</span>
+          </button>
+        </div>
+      </aside>
+
+      <div class="asset-splitter" aria-label="调整素材库宽度"></div>
+      <section class="create-empty-area" aria-label="中间创作区域">
+        <section class="preview-panel" aria-label="视频和图片播放展示面板">
+          <div class="preview-frame">
+            <div class="preview-placeholder">
+              <span class="play-mark">▶</span>
+              <span>等待视频或图片素材</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="center-splitter" aria-label="调整视频和设备面板高度"></div>
+
+        <section class="device-panel" aria-label="设备连接面板">
+          <header class="device-header">
+            <h2 class="device-title">设备连接</h2>
+            <span class="device-state">未连接设备</span>
+          </header>
+          <div class="device-content">
+            <div>
+              <h3 class="device-section-title">可用设备</h3>
+              <div class="device-row">
+                <span class="device-name"><span class="status-dot"></span>Link 2</span>
+                <span class="device-state">未连接</span>
+              </div>
+              <div class="device-row">
+                <span class="device-name"><span class="status-dot"></span>X4 Air</span>
+                <span class="device-state">未连接</span>
+              </div>
+            </div>
+            <div>
+              <h3 class="device-section-title">连接参数</h3>
+              <div class="device-row"><span>连接方式</span><span class="parameter-value">USB / Wi-Fi</span></div>
+              <div class="device-row"><span>状态</span><span class="parameter-value">等待连接</span></div>
+            </div>
+            <div>
+              <h3 class="device-section-title">设备模式</h3>
+              <div class="device-row"><span>拍摄模式</span><span class="parameter-value">待机</span></div>
+              <div class="device-row"><span>追踪模式</span><span class="parameter-value">关闭</span></div>
+            </div>
+          </div>
+        </section>
+      </section>
+      <div class="agent-splitter" aria-label="调整 Agent 面板宽度"></div>
+      <aside class="agent-panel" aria-label="Agent 对话面板">
+        <div id="agent-menu" class="agent-menu">
+          <button class="agent-option" type="button" data-agent="skills管理师">skills管理师</button>
+          <button class="agent-option" type="button" data-agent="导演">导演</button>
+          <button class="agent-option" type="button" data-agent="摄影师">摄影师</button>
+          <button class="agent-option" type="button" data-agent="剪辑师">剪辑师</button>
+        </div>
+
+        <div id="conversation-list-screen" class="agent-screen" hidden>
+          <header class="agent-screen-header">
+            <button id="conversation-list-back" class="agent-back-button" type="button">返回</button>
+            <h2 id="conversation-list-title" class="agent-screen-title"></h2>
+          </header>
+          <button id="new-conversation-button" class="new-conversation-button" type="button">+ 新建对话</button>
+          <div class="conversation-list">
+            <p class="empty-conversations">暂无历史对话</p>
+          </div>
+        </div>
+
+        <div id="chat-screen" class="agent-screen" hidden>
+          <header class="agent-screen-header">
+            <button id="chat-back-button" class="agent-back-button" type="button">返回</button>
+            <h2 id="chat-title" class="agent-screen-title"></h2>
+          </header>
+          <div class="chat-messages" aria-label="对话内容"></div>
+          <div class="chat-input-bar">
+            <input class="chat-input" type="text" placeholder="输入消息" />
+            <button class="chat-send" type="button" aria-label="发送">↑</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <script>
+      const createWorkspace = document.querySelector('.create-workspace');
+      const centerPanel = document.querySelector('.create-empty-area');
+      const assetSplitter = document.querySelector('.asset-splitter');
+      const agentSplitter = document.querySelector('.agent-splitter');
+      const centerSplitter = document.querySelector('.center-splitter');
+      let activePanel = null;
+      let startPosition = 0;
+      let startWidth = 0;
+
+      function startResize(panel, event) {
+        activePanel = panel;
+        startPosition = panel === 'center' ? event.clientY : event.clientX;
+        const property = panel === 'asset' ? '--asset-width' : panel === 'agent' ? '--agent-width' : '--device-height';
+        const target = panel === 'center' ? centerPanel : createWorkspace;
+        startWidth = parseFloat(getComputedStyle(target).getPropertyValue(property));
+        document.querySelector(`.${panel}-splitter`).classList.add('dragging');
+        createWorkspace.classList.add('is-resizing');
+        event.preventDefault();
+      }
+
+      assetSplitter.addEventListener('pointerdown', event => startResize('asset', event));
+      agentSplitter.addEventListener('pointerdown', event => startResize('agent', event));
+      centerSplitter.addEventListener('pointerdown', event => startResize('center', event));
+
+      document.addEventListener('pointermove', event => {
+        if (!activePanel) return;
+        const currentPosition = activePanel === 'center' ? event.clientY : event.clientX;
+        const delta = currentPosition - startPosition;
+        const nextSize = activePanel === 'asset' ? startWidth + delta : startWidth - delta;
+        const limits = activePanel === 'center' ? [120, 360] : activePanel === 'agent' ? [220, 460] : [180, 460];
+        const property = activePanel === 'asset' ? '--asset-width' : activePanel === 'agent' ? '--agent-width' : '--device-height';
+        const target = activePanel === 'center' ? centerPanel : createWorkspace;
+        target.style.setProperty(property, `${Math.min(limits[1], Math.max(limits[0], nextSize))}px`);
+      });
+
+      document.addEventListener('pointerup', () => {
+        if (!activePanel) return;
+        document.querySelector(`.${activePanel}-splitter`).classList.remove('dragging');
+        activePanel = null;
+        createWorkspace.classList.remove('is-resizing');
+      });
+
+      const agentMenu = document.getElementById('agent-menu');
+      const conversationListScreen = document.getElementById('conversation-list-screen');
+      const chatScreen = document.getElementById('chat-screen');
+      const conversationListTitle = document.getElementById('conversation-list-title');
+      const chatTitle = document.getElementById('chat-title');
+      const chatInput = document.querySelector('.chat-input');
+      const chatDrafts = new Map();
+      let selectedAgent = '';
+      let activeConversationKey = '';
+      let conversationCounter = 0;
+
+      function showAgentScreen(screen) {
+        agentMenu.hidden = screen !== 'menu';
+        conversationListScreen.hidden = screen !== 'list';
+        chatScreen.hidden = screen !== 'chat';
+      }
+
+      function openConversation(title, conversationKey) {
+        activeConversationKey = conversationKey || `${selectedAgent}:conversation:${++conversationCounter}`;
+        chatTitle.textContent = `${selectedAgent} · ${title}`;
+        chatInput.value = chatDrafts.get(activeConversationKey) || '';
+        showAgentScreen('chat');
+      }
+
+      document.querySelectorAll('.agent-option').forEach(option => {
+        option.addEventListener('click', () => {
+          selectedAgent = option.dataset.agent;
+          conversationListTitle.textContent = `${selectedAgent} · 对话列表`;
+          showAgentScreen('list');
+        });
+      });
+
+      document.getElementById('conversation-list-back').addEventListener('click', () => showAgentScreen('menu'));
+      document.getElementById('new-conversation-button').addEventListener('click', () => openConversation('新建对话'));
+      document.getElementById('chat-back-button').addEventListener('click', () => showAgentScreen('list'));
+      chatInput.addEventListener('input', () => {
+        if (activeConversationKey) chatDrafts.set(activeConversationKey, chatInput.value);
+      });
+
+      document.querySelector('.conversation-list').addEventListener('click', event => {
+        const conversation = event.target.closest('[data-conversation]');
+        if (conversation) openConversation(conversation.dataset.conversation, conversation.dataset.conversationKey);
+      });
+    </script>
+  </body>
+</html>

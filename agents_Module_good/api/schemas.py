@@ -135,6 +135,29 @@ class CaptureWebcamResponse(BaseModel):
     total: int
 
 
+class MediaUploadRequest(BaseModel):
+    filename: str
+    kind: Literal["image", "video"]
+    data_url: str = Field(..., description="base64 data URL")
+
+
+class MediaImportRequest(BaseModel):
+    source_path: str
+    kind: Optional[Literal["image", "video"]] = None
+    filename: Optional[str] = None
+
+
+class AgentChatStartRequest(BaseModel):
+    agent_type: Literal["skills_manager", "director", "cinematographer", "editor"]
+    user_text: str = ""
+    media_paths: List[str] = Field(default_factory=list)
+
+
+class AgentChatMessageRequest(BaseModel):
+    text: str
+    media_paths: List[str] = Field(default_factory=list)
+
+
 # ==================== Agent API Models ====================
 
 class DirectorRequest(BaseModel):
@@ -292,11 +315,19 @@ class EditorResponse(BaseModel):
 
 class RunAllRequest(BaseModel):
     """完整流程请求"""
-    user_text: str = Field(..., description="用户意图描述")
+    user_text: str = Field(..., description="用户意图描述；兼容旧客户端字段 text")
     media_input: Optional[MediaInput] = Field(default=None, description="媒体输入")
     media_dir: Optional[str] = Field(default=None, description="媒体目录")
     output_config: Optional[OutputConfig] = Field(default=None, description="输出配置")
     controls: Dict[str, Any] = Field(default_factory=dict, description="User-editable creative controls")
+
+    @model_validator(mode="before")
+    @classmethod
+    def accept_legacy_text(cls, values):
+        if isinstance(values, dict) and "user_text" not in values and "text" in values:
+            values = dict(values)
+            values["user_text"] = values["text"]
+        return values
 
 
 class RunAllResponse(BaseModel):

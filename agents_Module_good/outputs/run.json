@@ -620,70 +620,6 @@
       "stage": "cinematographer"
     },
     {
-      "skill_id": "action_sports_cinematographer",
-      "name": "Action Sports Tracking",
-      "description": "Real-time tracking and capture guidance for fast-moving sports subjects",
-      "language": "en",
-      "author": "builtin",
-      "status": "active",
-      "stage": "cinematographer",
-      "category": "sports",
-      "tags": [
-        "sports",
-        "action",
-        "tracking",
-        "fast_motion"
-      ],
-      "agent_bindings": {
-        "cinematographer": true
-      },
-      "rules": [
-        {
-          "condition": "subject_moving_fast",
-          "action": "use_continuous_autofocus",
-          "priority": "high",
-          "reason": "Fast-moving subjects require continuous AF tracking to maintain focus"
-        },
-        {
-          "condition": "predictable_path",
-          "action": "pre_frame_motion_path",
-          "priority": "high",
-          "reason": "Pre-framing the path allows subject to enter and exit frame dynamically"
-        },
-        {
-          "condition": "peak_action_moment",
-          "action": "capture_frame_immediately",
-          "priority": "critical",
-          "reason": "Peak moments (jump apex, ball contact) happen in split seconds"
-        },
-        {
-          "condition": "motion_blur_detected",
-          "action": "increase_shutter_speed",
-          "priority": "high",
-          "reason": "Sports photography needs frozen motion unless intentional blur for effect"
-        },
-        {
-          "condition": "background_cluttered",
-          "action": "use_shallow_depth_of_field",
-          "priority": "medium",
-          "reason": "Shallow DOF isolates athlete from distracting backgrounds"
-        },
-        {
-          "condition": "multiple_subjects",
-          "action": "track_primary_athlete",
-          "priority": "high",
-          "reason": "Focus on primary subject even when multiple athletes are in frame"
-        }
-      ],
-      "metadata": {
-        "created_at": "2024-01-15T11:00:00Z",
-        "updated_at": "2024-01-15T11:00:00Z",
-        "version": "1.0"
-      },
-      "_path": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\cinematographer\\sports\\action_sports_tracking.yaml",
-      "id": "action_sports_cinematographer"
-    },
-    {
       "schema_version": "1.0",
       "skill_id": "portrait_reel_editor",
       "version": "0.1.0",
@@ -1002,7 +938,7 @@
     }
   ],
   "director": {
-    "goal": "自然人像，保留环境和反应",
+    "goal": "拍摄自然人像",
     "matched_skills": [
       "portrait_story_director"
     ],
@@ -1031,62 +967,62 @@
   "filming": {
     "source_frames": [
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000000.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000000.jpg",
         "index": 0,
         "timestamp_ms": 0
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000060.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000060.jpg",
         "index": 1,
         "timestamp_ms": 2000
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000120.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000120.jpg",
         "index": 2,
         "timestamp_ms": 4000
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000180.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000180.jpg",
         "index": 3,
         "timestamp_ms": 6000
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000240.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000240.jpg",
         "index": 4,
         "timestamp_ms": 8000
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000300.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000300.jpg",
         "index": 5,
         "timestamp_ms": 10000
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000360.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000360.jpg",
         "index": 6,
         "timestamp_ms": 12000
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000420.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000420.jpg",
         "index": 7,
         "timestamp_ms": 14000
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000480.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000480.jpg",
         "index": 8,
         "timestamp_ms": 16000
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000540.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000540.jpg",
         "index": 9,
         "timestamp_ms": 18000
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000600.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000600.jpg",
         "index": 10,
         "timestamp_ms": 20000
       },
       {
-        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000660.jpg",
+        "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000660.jpg",
         "index": 11,
         "timestamp_ms": 22000
       }
@@ -1106,14 +1042,67 @@
     },
     "captured_frame": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\captures\\frame_000000.jpg",
     "matched_skills": [
-      "portrait_composition_coach",
-      "action_sports_cinematographer"
+      "portrait_composition_coach"
     ],
     "skills_guidance": "",
     "user_summary_zh": "已分析当前画面并标记拍摄建议。"
   },
   "editing": {
     "timeline": [
+      {
+        "source": "data\\video\\15fd8604e6d5f5045b9bdf8f3b0fca03.mp4",
+        "role": "portrait_source",
+        "reason": "主视频素材",
+        "keep": true
+      },
+      {
+        "source": "data\\video\\1b76d06da63b4c9083bedf6239624321.mp4",
+        "role": "portrait_source",
+        "reason": "主视频素材",
+        "keep": true
+      },
+      {
+        "source": "data\\video\\251bb795e6e21e414113c55f2935d84e.mp4",
+        "role": "portrait_source",
+        "reason": "主视频素材",
+        "keep": true
+      },
+      {
+        "source": "data\\video\\2718b4a98aaa468281fccd73ea4acff7.mp4",
+        "role": "portrait_source",
+        "reason": "主视频素材",
+        "keep": true
+      },
+      {
+        "source": "data\\video\\5a976d0bb8c6069d8679466ebbdf302e.mp4",
+        "role": "portrait_source",
+        "reason": "主视频素材",
+        "keep": true
+      },
+      {
+        "source": "data\\video\\608ff7496109a8f08ad5fed1d1bdefa8.mp4",
+        "role": "portrait_source",
+        "reason": "主视频素材",
+        "keep": true
+      },
+      {
+        "source": "data\\video\\aa8432bbdbb5a0dd7d0f7b7b4fe94aac.mp4",
+        "role": "portrait_source",
+        "reason": "主视频素材",
+        "keep": true
+      },
+      {
+        "source": "data\\video\\e79f1c412589ece6ab33005aa1237b16.mp4",
+        "role": "portrait_source",
+        "reason": "主视频素材",
+        "keep": true
+      },
+      {
+        "source": "data\\video\\f629112d9db8cfa2be3a8a0deccdc4d3.mp4",
+        "role": "portrait_source",
+        "reason": "主视频素材",
+        "keep": true
+      },
       {
         "source": "data\\video\\test_video1.mp4",
         "role": "portrait_source",
@@ -1139,19 +1128,19 @@
         "keep": true
       },
       {
-        "source": "data\\img\\img1.jpg",
-        "role": "reference_frame",
-        "reason": "参考图片",
-        "keep": true
-      },
-      {
         "source": "data\\img\\img2.jpg",
         "role": "reference_frame",
         "reason": "参考图片",
         "keep": true
       },
       {
-        "source": "data\\img\\微信图片_20260922013228_909_27.jpg",
+        "source": "data\\img\\微信图片_20260922013228_908_27.jpg",
+        "role": "reference_frame",
+        "reason": "参考图片",
+        "keep": true
+      },
+      {
+        "source": "data\\img\\微信图片_20260922013228_909_27(1).jpg",
         "role": "reference_frame",
         "reason": "参考图片",
         "keep": true
@@ -1170,26 +1159,59 @@
     "user_summary_zh": "已生成剪辑时间线和预览视频。Mock analysis: a person is visible; keep the subject clear and leave directional space."
   },
   "decision_trace": {
-    "user_intent": "自然人像，保留环境和反应",
+    "user_intent": "拍摄自然人像",
     "input_media": {
       "images": [
-        "data\\img\\img1.jpg",
         "data\\img\\img2.jpg",
+        "data\\img\\微信图片_20260922013228_908_27.jpg",
+        "data\\img\\微信图片_20260922013228_909_27(1).jpg",
         "data\\img\\微信图片_20260922013228_909_27.jpg",
+        "data\\img\\微信图片_20260922013228_910_27(1).jpg",
         "data\\img\\微信图片_20260922013228_910_27.jpg",
+        "data\\img\\微信图片_20260922013228_911_27(1).jpg",
         "data\\img\\微信图片_20260922013228_911_27.jpg",
+        "data\\img\\微信图片_20260922013228_912_27(1).jpg",
         "data\\img\\微信图片_20260922013228_912_27.jpg",
+        "data\\img\\微信图片_20260922013228_913_27(1).jpg",
         "data\\img\\微信图片_20260922013228_913_27.jpg",
+        "data\\img\\微信图片_20260922013228_914_27(1).jpg",
         "data\\img\\微信图片_20260922013228_914_27.jpg",
+        "data\\img\\微信图片_20260922013228_915_27(1).jpg",
         "data\\img\\微信图片_20260922013228_915_27.jpg",
+        "data\\img\\微信图片_20260922013228_916_27(1).jpg",
         "data\\img\\微信图片_20260922013228_916_27.jpg",
+        "data\\img\\微信图片_20260922013228_917_27(1).jpg",
         "data\\img\\微信图片_20260922013228_917_27.jpg",
+        "data\\img\\微信图片_20260922013228_918_27(1).jpg",
         "data\\img\\微信图片_20260922013228_918_27.jpg",
+        "data\\img\\微信图片_20260922013228_919_27(1).jpg",
         "data\\img\\微信图片_20260922013228_919_27.jpg",
+        "data\\img\\微信图片_20260922013228_920_27(1).jpg",
         "data\\img\\微信图片_20260922013228_920_27.jpg",
-        "data\\img\\微信图片_20260922013228_921_27.jpg"
+        "data\\img\\微信图片_20260922013228_921_27(1).jpg",
+        "data\\img\\微信图片_20260922013228_921_27.jpg",
+        "data\\img\\微信图片_20260922013228_922_27.jpg",
+        "data\\img\\微信图片_20260923113842_923_27.jpg",
+        "data\\img\\微信图片_20260923113842_924_27.jpg",
+        "data\\img\\微信图片_20260923113842_925_27.jpg",
+        "data\\img\\微信图片_20260923113842_926_27.jpg",
+        "data\\img\\微信图片_20260923113842_927_27.jpg",
+        "data\\video\\微信图片_20260923113842_923_27.jpg",
+        "data\\video\\微信图片_20260923113842_924_27.jpg",
+        "data\\video\\微信图片_20260923113842_925_27.jpg",
+        "data\\video\\微信图片_20260923113842_926_27.jpg",
+        "data\\video\\微信图片_20260923113842_927_27.jpg"
       ],
       "videos": [
+        "data\\video\\15fd8604e6d5f5045b9bdf8f3b0fca03.mp4",
+        "data\\video\\1b76d06da63b4c9083bedf6239624321.mp4",
+        "data\\video\\251bb795e6e21e414113c55f2935d84e.mp4",
+        "data\\video\\2718b4a98aaa468281fccd73ea4acff7.mp4",
+        "data\\video\\5a976d0bb8c6069d8679466ebbdf302e.mp4",
+        "data\\video\\608ff7496109a8f08ad5fed1d1bdefa8.mp4",
+        "data\\video\\aa8432bbdbb5a0dd7d0f7b7b4fe94aac.mp4",
+        "data\\video\\e79f1c412589ece6ab33005aa1237b16.mp4",
+        "data\\video\\f629112d9db8cfa2be3a8a0deccdc4d3.mp4",
         "data\\video\\test_video1.mp4",
         "data\\video\\test_video2.mp4",
         "data\\video\\test_video3.mp4",
@@ -1438,12 +1460,6 @@
         ]
       },
       {
-        "skill_id": "action_sports_cinematographer",
-        "stage": "cinematographer",
-        "source": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\cinematographer\\sports\\action_sports_tracking.yaml",
-        "rules": []
-      },
-      {
         "skill_id": "portrait_reel_editor",
         "stage": "editor",
         "source": "F:\\BoldMaker\\project00\\agents_Module_good\\skills\\repository\\builtin\\editor\\portrait_reel_editor.yaml",
@@ -1597,62 +1613,62 @@
         "summary": "已分析当前画面并标记拍摄建议。",
         "evidence": [
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000000.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000000.jpg",
             "index": 0,
             "timestamp_ms": 0
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000060.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000060.jpg",
             "index": 1,
             "timestamp_ms": 2000
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000120.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000120.jpg",
             "index": 2,
             "timestamp_ms": 4000
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000180.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000180.jpg",
             "index": 3,
             "timestamp_ms": 6000
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000240.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000240.jpg",
             "index": 4,
             "timestamp_ms": 8000
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000300.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000300.jpg",
             "index": 5,
             "timestamp_ms": 10000
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000360.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000360.jpg",
             "index": 6,
             "timestamp_ms": 12000
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000420.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000420.jpg",
             "index": 7,
             "timestamp_ms": 14000
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000480.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000480.jpg",
             "index": 8,
             "timestamp_ms": 16000
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000540.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000540.jpg",
             "index": 9,
             "timestamp_ms": 18000
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000600.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000600.jpg",
             "index": 10,
             "timestamp_ms": 20000
           },
           {
-            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\test_video1\\frame_000660.jpg",
+            "path": "F:\\BoldMaker\\project00\\agents_Module_good\\outputs\\frames\\15fd8604e6d5f5045b9bdf8f3b0fca03\\frame_000660.jpg",
             "index": 11,
             "timestamp_ms": 22000
           }
@@ -1667,6 +1683,60 @@
         "agent": "editor",
         "summary": "已生成剪辑时间线和预览视频。Mock analysis: a person is visible; keep the subject clear and leave directional space.",
         "evidence": [
+          {
+            "source": "data\\video\\15fd8604e6d5f5045b9bdf8f3b0fca03.mp4",
+            "role": "portrait_source",
+            "reason": "主视频素材",
+            "keep": true
+          },
+          {
+            "source": "data\\video\\1b76d06da63b4c9083bedf6239624321.mp4",
+            "role": "portrait_source",
+            "reason": "主视频素材",
+            "keep": true
+          },
+          {
+            "source": "data\\video\\251bb795e6e21e414113c55f2935d84e.mp4",
+            "role": "portrait_source",
+            "reason": "主视频素材",
+            "keep": true
+          },
+          {
+            "source": "data\\video\\2718b4a98aaa468281fccd73ea4acff7.mp4",
+            "role": "portrait_source",
+            "reason": "主视频素材",
+            "keep": true
+          },
+          {
+            "source": "data\\video\\5a976d0bb8c6069d8679466ebbdf302e.mp4",
+            "role": "portrait_source",
+            "reason": "主视频素材",
+            "keep": true
+          },
+          {
+            "source": "data\\video\\608ff7496109a8f08ad5fed1d1bdefa8.mp4",
+            "role": "portrait_source",
+            "reason": "主视频素材",
+            "keep": true
+          },
+          {
+            "source": "data\\video\\aa8432bbdbb5a0dd7d0f7b7b4fe94aac.mp4",
+            "role": "portrait_source",
+            "reason": "主视频素材",
+            "keep": true
+          },
+          {
+            "source": "data\\video\\e79f1c412589ece6ab33005aa1237b16.mp4",
+            "role": "portrait_source",
+            "reason": "主视频素材",
+            "keep": true
+          },
+          {
+            "source": "data\\video\\f629112d9db8cfa2be3a8a0deccdc4d3.mp4",
+            "role": "portrait_source",
+            "reason": "主视频素材",
+            "keep": true
+          },
           {
             "source": "data\\video\\test_video1.mp4",
             "role": "portrait_source",
@@ -1692,19 +1762,19 @@
             "keep": true
           },
           {
-            "source": "data\\img\\img1.jpg",
-            "role": "reference_frame",
-            "reason": "参考图片",
-            "keep": true
-          },
-          {
             "source": "data\\img\\img2.jpg",
             "role": "reference_frame",
             "reason": "参考图片",
             "keep": true
           },
           {
-            "source": "data\\img\\微信图片_20260922013228_909_27.jpg",
+            "source": "data\\img\\微信图片_20260922013228_908_27.jpg",
+            "role": "reference_frame",
+            "reason": "参考图片",
+            "keep": true
+          },
+          {
+            "source": "data\\img\\微信图片_20260922013228_909_27(1).jpg",
             "role": "reference_frame",
             "reason": "参考图片",
             "keep": true
