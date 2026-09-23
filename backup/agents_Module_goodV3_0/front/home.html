@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BoldMaker</title>
+    <style>
+      :root {
+        --home-ink: #20252b;
+        --home-line: #e1e3e1;
+        --home-paper: #f8f8f5;
+        --home-muted: #7b8284;
+        --home-accent: #de6943;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        color: var(--home-ink);
+        background: var(--home-paper);
+        font-family: 'Microsoft YaHei', sans-serif;
+      }
+
+      .top-navigation {
+        display: grid;
+        width: 100%;
+        height: 58px;
+        grid-template-columns: repeat(4, 1fr);
+        border-bottom: 1px solid var(--home-line);
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .top-navigation span {
+        display: grid;
+        min-width: 0;
+        place-items: center;
+        color: #60676a;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .top-navigation a {
+        display: grid;
+        min-width: 0;
+        place-items: center;
+        color: #60676a;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .top-navigation .selected {
+        color: var(--home-paper);
+        background: var(--home-ink);
+      }
+
+      .repository-page {
+        min-height: calc(100vh - 58px);
+        padding: 34px clamp(24px, 5vw, 72px) 64px;
+      }
+
+      .repository-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 34px;
+      }
+
+      .repository-heading {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      .repository-caption {
+        margin: 9px 0 0;
+        color: var(--home-muted);
+        font-size: 13px;
+      }
+
+      .cloud-button,
+      .add-material {
+        border: 1px solid var(--home-ink);
+        color: var(--home-paper);
+        background: var(--home-ink);
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      .cloud-button {
+        flex: 0 0 auto;
+        min-height: 40px;
+        padding: 0 18px;
+        border-radius: 2px;
+        font-size: 13px;
+      }
+
+      .material-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 18px;
+      }
+
+      .material-card {
+        position: relative;
+        display: grid;
+        min-width: 0;
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+        border: 1px solid var(--home-line);
+        border-radius: 3px;
+        background: #ffffff;
+      }
+
+      .material-preview {
+        display: grid;
+        min-height: 0;
+        place-items: center;
+        color: var(--home-muted);
+        background: #e9ece9;
+      }
+
+      .material-preview img,
+      .material-preview video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .material-video-placeholder {
+        font-size: 32px;
+      }
+
+      .material-name {
+        width: 100%;
+        min-height: 34px;
+        padding: 7px 34px 7px 9px;
+        overflow: hidden;
+        border: 0;
+        border-top: 1px solid var(--home-line);
+        outline: none;
+        color: var(--home-ink);
+        background: #ffffff;
+        font-family: inherit;
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .material-name:focus {
+        box-shadow: inset 0 0 0 2px var(--home-accent);
+      }
+
+      .delete-material,
+      .cloud-material {
+        position: absolute;
+        z-index: 1;
+        border: 0;
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      .delete-material {
+        top: 7px;
+        right: 7px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        color: #ffffff;
+        background: rgba(32, 37, 43, 0.72);
+        font-size: 17px;
+        line-height: 20px;
+      }
+
+      .cloud-material {
+        right: 7px;
+        bottom: 7px;
+        padding: 5px 7px;
+        color: #ffffff;
+        background: rgba(32, 37, 43, 0.72);
+        font-size: 10px;
+      }
+
+      .material-error {
+        grid-column: 1 / -1;
+        padding: 12px;
+        color: #bd5132;
+        font-size: 13px;
+      }
+
+      .add-material {
+        min-width: 0;
+        aspect-ratio: 4 / 3;
+        border-radius: 3px;
+      }
+
+      .add-material {
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        border-style: dashed;
+        border-color: #b9bfbe;
+        color: var(--home-muted);
+        background: transparent;
+        font-size: 13px;
+      }
+
+      .add-material-inner {
+        display: grid;
+        justify-items: center;
+        gap: 10px;
+      }
+
+      .add-symbol {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border: 1px solid #b9bfbe;
+        border-radius: 50%;
+        color: var(--home-ink);
+        font-size: 23px;
+        font-weight: 300;
+        line-height: 1;
+      }
+
+      .upload-dialog {
+        width: min(90vw, 520px);
+        padding: 0;
+        border: 0;
+        border-radius: 4px;
+        color: var(--home-ink);
+        background: var(--home-paper);
+        box-shadow: 0 18px 60px rgba(32, 37, 43, 0.22);
+      }
+
+      .upload-dialog::backdrop {
+        background: rgba(32, 37, 43, 0.42);
+      }
+
+      .upload-dialog-content {
+        padding: 28px;
+      }
+
+      .upload-dialog-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .upload-dialog-title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .upload-dialog-caption {
+        margin: 7px 0 0;
+        color: var(--home-muted);
+        font-size: 12px;
+      }
+
+      .close-dialog {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 1px solid var(--home-line);
+        border-radius: 50%;
+        color: var(--home-muted);
+        background: transparent;
+        cursor: pointer;
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .drop-zone {
+        display: grid;
+        min-height: 180px;
+        place-items: center;
+        border: 1px dashed #b9bfbe;
+        border-radius: 2px;
+        color: var(--home-muted);
+        background: #ffffff;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .drop-zone span {
+        display: block;
+        margin-top: 8px;
+        color: #a2a8a8;
+        font-size: 11px;
+      }
+
+      @media (max-width: 480px) {
+        .top-navigation {
+          height: 52px;
+        }
+
+        .top-navigation span,
+        .top-navigation a {
+          font-size: 12px;
+        }
+
+        .repository-page {
+          min-height: calc(100vh - 52px);
+          padding: 24px 18px 42px;
+        }
+
+        .repository-header {
+          display: block;
+          margin-bottom: 26px;
+        }
+
+        .cloud-button {
+          margin-top: 20px;
+        }
+
+        .material-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+
+        .upload-dialog-content {
+          padding: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="top-navigation" aria-label="主页面板选择">
+      <span class="selected" aria-current="page">仓库</span>
+      <a href="./create.html">创作</a>
+      <a href="./skills.html">skills</a>
+      <a href="./settings.html">用户设置</a>
+    </nav>
+
+    <main class="repository-page">
+      <header class="repository-header">
+        <div>
+          <h1 class="repository-heading">素材仓库</h1>
+          <p class="repository-caption">管理你的图片与视频素材</p>
+        </div>
+        <button class="cloud-button" type="button" onclick="window.location.href='./cloud.html'">进入云仓库</button>
+      </header>
+
+      <section class="material-grid" aria-label="视频和图片素材">
+        <button class="add-material" type="button" onclick="document.getElementById('upload-dialog').showModal()">
+          <span class="add-material-inner">
+            <span class="add-symbol" aria-hidden="true">+</span>
+            <span>添加素材</span>
+          </span>
+        </button>
+      </section>
+
+      <dialog id="upload-dialog" class="upload-dialog" aria-labelledby="upload-dialog-title">
+        <div class="upload-dialog-content">
+          <div class="upload-dialog-header">
+            <div>
+              <h2 id="upload-dialog-title" class="upload-dialog-title">上传素材</h2>
+              <p class="upload-dialog-caption">将图片或视频拖拽到下方区域</p>
+            </div>
+            <button class="close-dialog" type="button" aria-label="关闭上传窗口" onclick="document.getElementById('upload-dialog').close()">&times;</button>
+          </div>
+           <label class="drop-zone" for="material-file">
+             <div>
+               拖拽文件到这里
+               <span>支持图片与视频素材</span>
+             </div>
+           </label>
+           <input id="material-file" type="file" accept="image/*,video/*" hidden />
+        </div>
+      </dialog>
+    </main>
+
+    <script>
+      const apiBase = window.location.protocol === 'file:' ? 'http://127.0.0.1:8010' : '';
+      const currentUid = localStorage.getItem('boldmaker_uid') || localStorage.getItem('boldmaker_account') || 'test';
+      const materialGrid = document.querySelector('.material-grid');
+      const uploadDialog = document.getElementById('upload-dialog');
+      const materialFile = document.getElementById('material-file');
+
+      function apiHeaders(extra = {}) {
+        return { 'X-User-Id': currentUid, ...extra };
+      }
+
+      function showError(message) {
+        const oldError = materialGrid.querySelector('.material-error');
+        if (oldError) oldError.remove();
+        const error = document.createElement('div');
+        error.className = 'material-error';
+        error.textContent = message;
+        materialGrid.prepend(error);
+      }
+
+      async function responseError(response) {
+        let message = `操作失败（${response.status}）`;
+        try {
+          const body = await response.json();
+          if (body.detail) message = body.detail;
+        } catch (_) {
+          // Keep the status message when the server response is not JSON.
+        }
+        return message;
+      }
+
+      async function loadPreview(item, preview) {
+        const response = await fetch(`${apiBase}/api/resources/${item.id}/content`, { headers: apiHeaders() });
+        if (!response.ok) throw new Error(await responseError(response));
+        const objectUrl = URL.createObjectURL(await response.blob());
+        const media = document.createElement(item.kind === 'video' ? 'video' : 'img');
+        media.src = objectUrl;
+        if (item.kind === 'video') {
+          media.controls = true;
+          media.preload = 'metadata';
+        }
+        media.alt = item.original_name;
+        preview.replaceChildren(media);
+      }
+
+      function createMaterialCard(item) {
+        const card = document.createElement('article');
+        card.className = 'material-card';
+        card.dataset.id = item.id;
+
+        const preview = document.createElement('div');
+        preview.className = 'material-preview';
+        if (item.kind === 'video') {
+          const mark = document.createElement('span');
+          mark.className = 'material-video-placeholder';
+          mark.textContent = '▶';
+          preview.append(mark);
+        }
+
+        const name = document.createElement('input');
+        name.className = 'material-name';
+        name.type = 'text';
+        name.value = item.original_name;
+        name.title = '点击编辑文件名，按 Enter 或移开输入框保存';
+        let originalName = item.original_name;
+        async function rename() {
+          const nextName = name.value.trim();
+          if (!nextName || nextName === originalName) {
+            name.value = originalName;
+            return;
+          }
+          const response = await fetch(`${apiBase}/api/resources/${item.id}`, {
+            method: 'PUT',
+            headers: apiHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ original_name: nextName }),
+          });
+          if (!response.ok) {
+            name.value = originalName;
+            showError(await responseError(response));
+            return;
+          }
+          const updated = await response.json();
+          originalName = updated.original_name;
+          item.original_name = originalName;
+          name.value = originalName;
+        }
+        name.addEventListener('blur', rename);
+        name.addEventListener('keydown', event => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            name.blur();
+          }
+        });
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-material';
+        deleteButton.type = 'button';
+        deleteButton.textContent = '×';
+        deleteButton.title = '删除本地文件';
+        deleteButton.addEventListener('click', async () => {
+          if (!window.confirm(`确定删除“${originalName}”吗？`)) return;
+          const response = await fetch(`${apiBase}/api/resources/${item.id}`, { method: 'DELETE', headers: apiHeaders() });
+          if (!response.ok) {
+            showError(await responseError(response));
+            return;
+          }
+          card.remove();
+        });
+
+        const cloudButton = document.createElement('button');
+        cloudButton.className = 'cloud-material';
+        cloudButton.type = 'button';
+        cloudButton.textContent = '上传到云端';
+        cloudButton.title = '云端服务尚未开放';
+        cloudButton.addEventListener('click', () => showError('云端服务尚未开放，暂不能上传。'));
+
+        card.append(preview, name, deleteButton, cloudButton);
+        loadPreview(item, preview).catch(error => showError(error.message));
+        return card;
+      }
+
+      async function loadMaterials() {
+        const response = await fetch(`${apiBase}/api/resources`, { headers: apiHeaders() });
+        if (!response.ok) {
+          showError(await responseError(response));
+          return;
+        }
+        materialGrid.querySelectorAll('.material-card, .material-error').forEach(element => element.remove());
+        const items = (await response.json()).items;
+        items.forEach(item => materialGrid.append(createMaterialCard(item)));
+      }
+
+      materialFile.addEventListener('change', async () => {
+        const file = materialFile.files[0];
+        if (!file) return;
+        const kind = file.type.startsWith('video/') ? 'video' : file.type.startsWith('image/') ? 'image' : '';
+        if (!kind) {
+          showError('只支持图片或视频文件。');
+          materialFile.value = '';
+          return;
+        }
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await fetch(`${apiBase}/api/resources?kind=${kind}`, {
+          method: 'POST',
+          headers: apiHeaders(),
+          body: formData,
+        });
+        if (!response.ok) showError(await responseError(response));
+        else {
+          uploadDialog.close();
+          await loadMaterials();
+        }
+        materialFile.value = '';
+      });
+
+      const dropZone = document.querySelector('.drop-zone');
+      dropZone.addEventListener('dragover', event => {
+        event.preventDefault();
+        dropZone.style.borderColor = 'var(--home-accent)';
+      });
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.style.borderColor = '';
+      });
+      dropZone.addEventListener('drop', event => {
+        event.preventDefault();
+        dropZone.style.borderColor = '';
+        materialFile.files = event.dataTransfer.files;
+        materialFile.dispatchEvent(new Event('change'));
+      });
+
+      loadMaterials().catch(error => showError(error.message));
+    </script>
+  </body>
+</html>

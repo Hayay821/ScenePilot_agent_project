@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="BoldMaker 密码找回页面" />
+    <title>密码找回 | BoldMaker</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="auth-page recover-page">
+      <section class="brand-panel" aria-label="BoldMaker 品牌介绍">
+        <div class="brand-mark" aria-hidden="true">B</div>
+        <p class="eyebrow">BOLDMAKER AI</p>
+        <h1>找回你的账号，<br /><em>继续创作旅程。</em></h1>
+        <p class="brand-description">
+          验证你的账号信息，重新设置密码，回到属于你的创作者空间。
+        </p>
+        <div class="brand-line" aria-hidden="true"></div>
+        <p class="brand-note">CREATE WITH PURPOSE</p>
+      </section>
+
+      <section class="form-panel" aria-labelledby="recover-title">
+        <div class="form-wrap register-form-wrap">
+          <div class="mobile-brand" aria-hidden="true">
+            <span class="mobile-brand-mark">B</span>
+            <span>BOLDMAKER</span>
+          </div>
+          <p class="form-kicker">RESET PASSWORD</p>
+          <h2 id="recover-title">密码找回</h2>
+          <p class="form-description">填写验证信息，重新设置你的登录密码。</p>
+
+          <form class="login-form recover-form">
+            <div class="field-group">
+              <label for="email">邮箱</label>
+              <div class="input-with-action">
+                <input id="email" name="email" type="email" placeholder="请输入邮箱" autocomplete="email" />
+                <button class="code-button" type="button">发送</button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="verification-code">验证码</label>
+              <input id="verification-code" name="verification-code" type="text" placeholder="请输入验证码" inputmode="numeric" />
+            </div>
+
+            <div class="field-group">
+              <label for="new-password">新密码</label>
+              <input id="new-password" name="new-password" type="password" placeholder="请输入新密码" autocomplete="new-password" />
+            </div>
+
+            <div class="field-group">
+              <label for="new-password-confirm">确认新密码</label>
+              <input id="new-password-confirm" name="new-password-confirm" type="password" placeholder="请再次输入新密码" autocomplete="new-password" />
+            </div>
+
+            <button class="primary-button" type="button" onclick="window.location.href='./index.html'">确定</button>
+          </form>
+
+          <p class="copyright">© 2026 BoldMaker. All rights reserved.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

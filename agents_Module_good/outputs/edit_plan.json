@@ -1,6 +1,60 @@
 {
   "timeline": [
     {
+      "source": "data\\video\\15fd8604e6d5f5045b9bdf8f3b0fca03.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\1b76d06da63b4c9083bedf6239624321.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\251bb795e6e21e414113c55f2935d84e.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\2718b4a98aaa468281fccd73ea4acff7.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\5a976d0bb8c6069d8679466ebbdf302e.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\608ff7496109a8f08ad5fed1d1bdefa8.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\aa8432bbdbb5a0dd7d0f7b7b4fe94aac.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\e79f1c412589ece6ab33005aa1237b16.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
+      "source": "data\\video\\f629112d9db8cfa2be3a8a0deccdc4d3.mp4",
+      "role": "portrait_source",
+      "reason": "主视频素材",
+      "keep": true
+    },
+    {
       "source": "data\\video\\test_video1.mp4",
       "role": "portrait_source",
       "reason": "主视频素材",
@@ -25,19 +79,19 @@
       "keep": true
     },
     {
-      "source": "data\\img\\img1.jpg",
-      "role": "reference_frame",
-      "reason": "参考图片",
-      "keep": true
-    },
-    {
       "source": "data\\img\\img2.jpg",
       "role": "reference_frame",
       "reason": "参考图片",
       "keep": true
     },
     {
-      "source": "data\\img\\微信图片_20260922013228_909_27.jpg",
+      "source": "data\\img\\微信图片_20260922013228_908_27.jpg",
+      "role": "reference_frame",
+      "reason": "参考图片",
+      "keep": true
+    },
+    {
+      "source": "data\\img\\微信图片_20260922013228_909_27(1).jpg",
       "role": "reference_frame",
       "reason": "参考图片",
       "keep": true

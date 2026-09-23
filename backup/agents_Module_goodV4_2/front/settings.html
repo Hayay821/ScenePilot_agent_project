@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BoldMaker</title>
+    <style>
+      :root {
+        --home-ink: #20252b;
+        --home-line: #e1e3e1;
+        --home-paper: #f8f8f5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        color: var(--home-ink);
+        background: var(--home-paper);
+        font-family: 'Microsoft YaHei', sans-serif;
+      }
+
+      .top-navigation {
+        display: grid;
+        width: 100%;
+        height: 58px;
+        grid-template-columns: repeat(4, 1fr);
+        border-bottom: 1px solid var(--home-line);
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .top-navigation span {
+        display: grid;
+        min-width: 0;
+        place-items: center;
+        color: #60676a;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .top-navigation a {
+        display: grid;
+        min-width: 0;
+        place-items: center;
+        color: #60676a;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .top-navigation .selected {
+        color: var(--home-paper);
+        background: var(--home-ink);
+      }
+
+      .settings-page {
+        min-height: calc(100vh - 58px);
+        padding: 42px clamp(24px, 7vw, 104px) 64px;
+      }
+
+      .settings-heading {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 600;
+      }
+
+      .settings-caption {
+        margin: 10px 0 30px;
+        color: #7b8284;
+        font-size: 13px;
+      }
+
+      .profile-panel {
+        width: min(100%, 680px);
+        border: 1px solid var(--home-line);
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.64);
+      }
+
+      .profile-panel-title {
+        margin: 0;
+        padding: 22px 24px;
+        border-bottom: 1px solid var(--home-line);
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .profile-list {
+        margin: 0;
+        padding: 0 24px;
+      }
+
+      .profile-row {
+        display: grid;
+        min-height: 76px;
+        grid-template-columns: 120px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 20px;
+        border-bottom: 1px solid var(--home-line);
+      }
+
+      .profile-row:last-child {
+        border-bottom: 0;
+      }
+
+      .profile-label {
+        color: #7b8284;
+        font-size: 13px;
+      }
+
+      .profile-value {
+        min-width: 0;
+        color: var(--home-ink);
+        font-size: 14px;
+        overflow-wrap: anywhere;
+      }
+
+      .edit-button {
+        padding: 6px 0;
+        border: 0;
+        color: #bd5132;
+        background: transparent;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      .edit-button:hover {
+        color: var(--home-ink);
+      }
+
+      .logout-button {
+        min-height: 40px;
+        margin-top: 24px;
+        padding: 0 18px;
+        border: 1px solid #bd5132;
+        border-radius: 2px;
+        color: #bd5132;
+        background: transparent;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 13px;
+      }
+
+      .logout-button:hover {
+        color: var(--home-paper);
+        background: #bd5132;
+      }
+
+      @media (max-width: 480px) {
+        .top-navigation {
+          height: 52px;
+        }
+
+        .top-navigation span,
+        .top-navigation a {
+          font-size: 12px;
+        }
+
+        .settings-page {
+          min-height: calc(100vh - 52px);
+          padding: 30px 18px 42px;
+        }
+
+        .profile-panel-title,
+        .profile-list {
+          padding-right: 18px;
+          padding-left: 18px;
+        }
+
+        .profile-row {
+          grid-template-columns: 76px minmax(0, 1fr) auto;
+          gap: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="top-navigation" aria-label="主页面板选择">
+      <a href="./home.html">仓库</a>
+      <a href="./create.html">创作</a>
+      <a href="./skills.html">skills</a>
+      <span class="selected" aria-current="page">用户设置</span>
+    </nav>
+
+    <main class="settings-page">
+      <h1 class="settings-heading">用户设置</h1>
+      <p class="settings-caption">查看和管理你的基础账户信息</p>
+
+      <section class="profile-panel" aria-labelledby="profile-panel-title">
+        <h2 id="profile-panel-title" class="profile-panel-title">基础信息</h2>
+        <dl class="profile-list">
+          <div class="profile-row">
+            <dt class="profile-label">用户名</dt>
+            <dd class="profile-value">BoldMaker 用户</dd>
+            <button class="edit-button" type="button">修改</button>
+          </div>
+          <div class="profile-row">
+            <dt class="profile-label">账号</dt>
+            <dd id="account-value" class="profile-value">未登录</dd>
+            <button class="edit-button" type="button">修改</button>
+          </div>
+          <div class="profile-row">
+            <dt class="profile-label">绑定邮箱</dt>
+            <dd class="profile-value">tes***com</dd>
+          </div>
+        </dl>
+      </section>
+      <button class="logout-button" type="button" onclick="localStorage.clear(); sessionStorage.clear(); window.location.href='./index.html'">退出登录</button>
+    </main>
+
+    <script>
+      document.getElementById('account-value').textContent = localStorage.getItem('boldmaker_account') || '未登录';
+    </script>
+  </body>
+</html>

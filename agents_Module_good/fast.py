@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import sys
 import time
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -33,6 +34,10 @@ from api.schemas import (
     APIErrorEnvelope,
     APIEnvelope,
     CaptureWebcamRequest,
+    MediaUploadRequest,
+    MediaImportRequest,
+    AgentChatStartRequest,
+    AgentChatMessageRequest,
     CinematographerRequest,
     CreateSkillRequest,
     DirectorRequest,
@@ -73,11 +78,15 @@ def _envelope(data: Any, agent_type: str | None = None) -> dict:
 
 
 def _media_paths(media_input: MediaInput | None, default_dir: str | None = None) -> tuple[list[str], list[str]]:
+    def resolve(path: str) -> Path:
+        candidate = Path(path)
+        return candidate if candidate.is_absolute() else ROOT / candidate
+
     if media_input is None:
         root = default_dir or str(MEDIA_DIR)
         return MediaTools.images(root), MediaTools.videos(root)
     if media_input.source_type == MediaSourceType.FILE:
-        paths = [str(Path(p)) for p in (media_input.paths or [])]
+        paths = [str(resolve(p)) for p in (media_input.paths or [])]
         missing = [p for p in paths if not Path(p).exists()]
         if missing:
             raise FileNotFoundError(f"Media files not found: {missing}")
@@ -503,6 +512,48 @@ class ScenePilotFast:
         self.cinematographer = CinematographerAgent(self.cinematographer_provider)
         self.editor = EditorAgent(self.editor_provider)
         self.cinematographer_sessions = CinematographerSessionStore(OUTPUT_DIR / "cinematographer_sessions")
+        self.chat_sessions: dict[str, dict] = {}
+
+    def start_chat(self, agent_type: str, user_text: str = "", media_paths: list[str] | None = None) -> dict:
+        session_id = f"chat_{uuid.uuid4().hex[:10]}"
+        self.chat_sessions[session_id] = {
+            "session_id": session_id,
+            "agent_type": agent_type,
+            "media_paths": media_paths or [],
+            "history": [],
+        }
+        if user_text:
+            return self.chat_message(session_id, user_text)
+        return {"session_id": session_id, "agent_type": agent_type, "history": []}
+
+    def chat_message(self, session_id: str, text: str, media_paths: list[str] | None = None) -> dict:
+        session = self.chat_sessions.get(session_id)
+        if not session:
+            raise ValueError("chat session not found")
+        for path in media_paths or []:
+            if path not in session["media_paths"]:
+                session["media_paths"].append(path)
+        history = session["history"][-4:]
+        context_text = text if not history else f"当前用户消息：{text}\n之前交互摘要：{json.dumps(history, ensure_ascii=False)}"
+        paths = session["media_paths"]
+        images = [p for p in paths if Path(p).suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}]
+        videos = [p for p in paths if Path(p).suffix.lower() in {".mp4", ".mov", ".avi", ".mkv", ".insv"}]
+        agent_type = session["agent_type"]
+        if agent_type == "skills_manager":
+            result = self.manager.interact(context_text, "director")
+        elif agent_type == "director":
+            result = self.director.run(context_text, self.skills.select(text, "director"), images[:6])
+        elif agent_type == "cinematographer":
+            frames = images[:6]
+            if videos:
+                frames = MediaTools.extract_frames(videos[0], OUTPUT_DIR / "chat_frames" / Path(videos[0]).stem, max_frames=6)
+            result = self.cinematographer.run(frames, self.skills.select(text, "cinematographer"), context_text)
+        elif agent_type == "editor":
+            result = self.editor.run(videos, images, self.skills.select(text, "editor"), OUTPUT_DIR / "front_chat_editor")
+        else:
+            raise ValueError("unsupported agent_type")
+        session["history"].append({"user": text, "assistant": result.get("user_summary_zh") or result.get("explanation_zh") or "completed"})
+        return {"session_id": session_id, "agent_type": agent_type, "result": result, "history": session["history"]}
 
     def run_all(self, user_text: str, media_dir: str | None = None, controls: dict | None = None) -> dict:
         media_dir = media_dir or str(MEDIA_DIR)
@@ -649,6 +700,8 @@ def build_api(app: ScenePilotFast):
     from fastapi import FastAPI
     from fastapi import HTTPException
     from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.responses import RedirectResponse
+    from fastapi.staticfiles import StaticFiles
     api = FastAPI(title="ScenePilot Fast", version="1.0.0")
     api.add_middleware(
         CORSMiddleware,
@@ -658,6 +711,14 @@ def build_api(app: ScenePilotFast):
         allow_headers=["*"],
     )
     router = api.router
+
+    @api.get("/", include_in_schema=False)
+    def root():
+        return RedirectResponse(url="/app/")
+
+    api.mount("/app", StaticFiles(directory=str(ROOT / "front"), html=True), name="front")
+    api.mount("/media-files", StaticFiles(directory=str(MEDIA_DIR)), name="media-files")
+    api.mount("/output-files", StaticFiles(directory=str(OUTPUT_DIR)), name="output-files")
 
     @api.get("/health")
     @api.get("/api/v1/health")
@@ -692,6 +753,58 @@ def build_api(app: ScenePilotFast):
         except Exception as exc:
             raise HTTPException(status_code=400, detail=str(exc))
 
+    @api.post("/api/v1/media/upload")
+    def upload_media(req: MediaUploadRequest):
+        try:
+            encoded = req.data_url.split(",", 1)[1] if "," in req.data_url else req.data_url
+            safe_name = Path(req.filename).name
+            target_dir = MEDIA_DIR / ("img" if req.kind == "image" else "video")
+            target_dir.mkdir(parents=True, exist_ok=True)
+            target = target_dir / safe_name
+            target.write_bytes(base64.b64decode(encoded))
+            relative = target.relative_to(ROOT).as_posix()
+            return _envelope({"path": relative, "preview_url": f"/media-files/{target.relative_to(MEDIA_DIR).as_posix()}", "kind": req.kind})
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail=f"upload failed: {exc}")
+
+    @api.post("/api/v1/media/import-output")
+    def import_output(req: MediaImportRequest):
+        try:
+            source = Path(req.source_path)
+            if not source.is_absolute():
+                source = ROOT / source
+            source = source.resolve()
+            if not source.exists() or not source.is_file():
+                raise FileNotFoundError("source output not found")
+            if ROOT.resolve() not in source.parents:
+                raise ValueError("only project files can be imported")
+            suffix = source.suffix.lower()
+            kind = req.kind or ("video" if suffix in {".mp4", ".mov", ".avi", ".mkv"} else "image")
+            target_dir = MEDIA_DIR / ("video" if kind == "video" else "img")
+            target_dir.mkdir(parents=True, exist_ok=True)
+            target = target_dir / (Path(req.filename).name if req.filename else source.name)
+            if target.exists():
+                target = target_dir / f"{target.stem}_{uuid.uuid4().hex[:6]}{target.suffix}"
+            shutil.copy2(source, target)
+            relative = target.relative_to(ROOT).as_posix()
+            return _envelope({"path": relative, "kind": kind, "preview_url": f"/media-files/{target.relative_to(MEDIA_DIR).as_posix()}"})
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail=f"import failed: {exc}")
+
+    @api.post("/api/v1/chats")
+    def start_chat(req: AgentChatStartRequest):
+        try:
+            return _envelope(app.start_chat(req.agent_type, req.user_text, req.media_paths), req.agent_type)
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail=str(exc))
+
+    @api.post("/api/v1/chats/{session_id}/messages")
+    def chat_message(session_id: str, req: AgentChatMessageRequest):
+        try:
+            return _envelope(app.chat_message(session_id, req.text, req.media_paths), app.chat_sessions.get(session_id, {}).get("agent_type"))
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail=str(exc))
+
     @api.get("/api/v1/skills")
     def list_skills(stage: str | None = None, limit: int = 20):
         skills = app.skills.list()
@@ -712,6 +825,50 @@ def build_api(app: ScenePilotFast):
         skills = app.skills.select(req.user_text, req.stage)[:req.limit or 3]
         items = [{"id": s.get("id", s.get("skill_id")), "name": s.get("name_en", s.get("name", "")), "relevance_score": 1.0} for s in skills]
         return _envelope({"skills": items, "total": len(items)}, "skills_manager")
+
+    @api.post("/api/v1/skills")
+    def create_skill(req: CreateSkillRequest):
+        skill_id = f"personal_{uuid.uuid4().hex[:8]}"
+        stage = req.stage if req.stage in {"director", "cinematographer", "editor"} else "director"
+        rules = [{
+            "id": rule.rule_id,
+            "when": {},
+            "advice": {"instruction": rule.content},
+            "priority": 60,
+            "explanation": rule.description,
+        } for rule in req.rules] or [{
+            "id": "personal_rule",
+            "when": {},
+            "advice": {"instruction": req.description},
+            "priority": 60,
+            "explanation": req.description,
+        }]
+        payload = {
+            "schema_version": "1.0",
+            "skill_id": skill_id,
+            "version": "0.1.0",
+            "name_en": req.name,
+            "description": req.description,
+            "status": "draft",
+            "visibility": "local",
+            "agent_bindings": {
+                "director": stage == "director",
+                "cinematographer": stage == "cinematographer",
+                "editor": stage == "editor",
+                "skills_manager": True,
+            },
+            "tags": req.tags or ["personal"],
+            "rules": rules,
+            "safety": {
+                "allowed_actions": ["suggest_instruction"],
+                "forbidden_actions": ["direct_device_control", "delete_media"],
+            },
+        }
+        target = SKILLS_DIR / "personal" / stage / f"{skill_id}.yaml"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(yaml.safe_dump(payload, allow_unicode=True, sort_keys=False), encoding="utf-8")
+        app.skills._rebuild_index()
+        return _envelope({"id": skill_id, "path": str(target), "message": "Skill saved locally"}, "skills_manager")
 
     @api.post("/api/v1/skills/interact")
     def skills_interact(req: SelectSkillsRequest):

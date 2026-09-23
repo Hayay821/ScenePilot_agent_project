@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BoldMaker</title>
+    <style>
+      :root {
+        --home-ink: #20252b;
+        --home-line: #e1e3e1;
+        --home-paper: #f8f8f5;
+        --asset-width: 260px;
+        --agent-width: 320px;
+        --workspace-height: 220px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        color: var(--home-ink);
+        background: var(--home-paper);
+        font-family: 'Microsoft YaHei', sans-serif;
+      }
+
+      .top-navigation {
+        display: grid;
+        width: 100%;
+        height: 58px;
+        grid-template-columns: repeat(4, 1fr);
+        border-bottom: 1px solid var(--home-line);
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .top-navigation span,
+      .top-navigation a {
+        display: grid;
+        min-width: 0;
+        place-items: center;
+        color: #60676a;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .top-navigation .selected {
+        color: var(--home-paper);
+        background: var(--home-ink);
+      }
+
+      .create-workspace {
+        display: grid;
+        height: calc(100vh - 58px);
+        min-height: 0;
+        grid-template-columns: var(--asset-width) 10px minmax(0, 1fr) 10px var(--agent-width);
+      }
+
+      .asset-panel {
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+        min-width: 0;
+        overflow: hidden;
+        border-right: 1px solid var(--home-line);
+        background: #fbfbf9;
+      }
+
+      .asset-header {
+        display: flex;
+        height: 52px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--home-line);
+      }
+
+      .asset-title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .asset-add-button {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 0;
+        color: #687173;
+        background: transparent;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+      }
+
+      .asset-content {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+        padding: 16px 12px;
+      }
+
+      .asset-group-title {
+        margin: 10px 8px 8px;
+        color: #7b8284;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+      }
+
+      .asset-empty {
+        margin: 0 8px 24px;
+        color: #a1a8a7;
+        font-size: 12px;
+        line-height: 1.8;
+      }
+
+      .asset-item {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 8px;
+        border: 0;
+        border-radius: 2px;
+        color: #596365;
+        background: transparent;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 12px;
+        text-align: left;
+      }
+
+      .asset-item:hover {
+        background: #eef0ed;
+      }
+
+      .asset-symbol {
+        display: grid;
+        width: 26px;
+        height: 22px;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid #c2c9c6;
+        border-radius: 2px;
+        color: #8a9391;
+        font-size: 9px;
+      }
+
+      .asset-splitter {
+        position: relative;
+        z-index: 2;
+        cursor: col-resize;
+        background: var(--home-line);
+        touch-action: none;
+        user-select: none;
+      }
+
+      .asset-splitter:hover,
+      .asset-splitter.dragging {
+        background: #de6943;
+      }
+
+      .create-empty-area {
+        display: grid;
+        grid-column: 3;
+        grid-template-rows: minmax(0, 1fr) 10px var(--workspace-height);
+        min-width: 0;
+        background: var(--home-paper);
+      }
+
+      .preview-panel,
+      .device-panel {
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .preview-panel {
+        display: grid;
+        place-items: center;
+        min-height: 0;
+        overflow: auto;
+        background: #edf0ec;
+      }
+
+      .preview-frame { position: relative; overflow: hidden; }
+      .preview-frame img, .preview-frame video { width:100%; height:100%; object-fit:contain; }
+
+      .preview-placeholder {
+        display: grid;
+        justify-items: center;
+        gap: 12px;
+        color: #8d9895;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+      }
+
+      .preview-frame {
+        display: grid;
+        width: min(78%, 700px);
+        aspect-ratio: 16 / 9;
+        place-items: center;
+        border: 1px solid #3f494b;
+        background: #2d3539;
+      }
+
+      .play-mark {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border: 1px solid #a6b0ad;
+        border-radius: 50%;
+        color: #a6b0ad;
+        font-size: 17px;
+      }
+
+      .center-splitter {
+        z-index: 2;
+        cursor: row-resize;
+        background: var(--home-line);
+        touch-action: none;
+        user-select: none;
+      }
+
+      .center-splitter:hover,
+      .center-splitter.dragging {
+        background: #de6943;
+      }
+
+      .device-panel {
+        display:flex;
+        min-height:0;
+        flex-direction:column;
+        border-top: 1px solid var(--home-line);
+        background: #fbfbf9;
+      }
+
+      .device-header {
+        display: flex;
+        height: 44px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--home-line);
+      }
+
+      .device-title {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .device-content {
+        display: grid;
+        min-height:0;
+        flex:1;
+        grid-template-columns: minmax(100px, 0.7fr) minmax(0, 2fr);
+        gap: 10px;
+        padding: 8px 10px;
+        overflow:auto;
+      }
+
+      .workspace-bin, .workspace-tracks { min-width:0; overflow:auto; }
+      .workspace-bin { border-right:1px solid var(--home-line); padding-right:8px; }
+      .workspace-track { min-height:45px; margin:5px 0; padding:5px; border:1px dashed #c6ccca; border-radius:3px; background:#fff; }
+      .workspace-track.drag-over { border-color:#de6943; background:#fff5f0; }
+      .workspace-track-title { color:#7b8284; font-size:10px; margin-bottom:4px; }
+      .workspace-clip { display:inline-flex; align-items:center; gap:5px; margin:2px; padding:4px 6px; border:1px solid #d9dedb; border-radius:3px; background:#f6f7f4; font-size:10px; cursor:grab; }
+      .workspace-actions { display:flex; gap:5px; }
+      .workspace-actions button { padding:4px 7px; border:1px solid #d4d8d5; background:white; color:#384044; font:inherit; cursor:pointer; }
+      .asset-file { cursor:grab; }
+      .asset-preview { width:100%; max-height:130px; object-fit:contain; background:#e9ece9; }
+      .context-menu { position:fixed; z-index:30; min-width:140px; padding:5px; border:1px solid var(--home-line); background:#fff; box-shadow:0 8px 24px rgba(32,37,43,.18); }
+      .context-menu button { display:block; width:100%; padding:7px 9px; border:0; background:#fff; color:#384044; text-align:left; cursor:pointer; }
+      .context-menu button:hover { background:#eef0ed; }
+
+      .device-section-title {
+        margin: 0 0 8px;
+        color: #7b8284;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .device-row {
+        display: flex;
+        min-height: 25px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: #596365;
+        font-size: 12px;
+      }
+
+      .device-name {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #bfc5c3;
+      }
+
+      .device-state,
+      .parameter-value {
+        color: #7b8284;
+        font-size: 11px;
+      }
+
+      .agent-splitter {
+        position: relative;
+        z-index: 2;
+        grid-column: 4;
+        cursor: col-resize;
+        background: var(--home-line);
+        touch-action: none;
+        user-select: none;
+      }
+
+      .agent-splitter:hover,
+      .agent-splitter.dragging {
+        background: #de6943;
+      }
+
+      .agent-panel {
+        display: flex;
+        flex-direction: column;
+        height:100%;
+        min-height: 0;
+        grid-column: 5;
+        min-width: 0;
+        overflow: hidden;
+        background: #fbfbf9;
+      }
+
+      .agent-menu,
+      .agent-screen {
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+      }
+
+      .agent-menu {
+        gap: 8px;
+        padding: 18px 14px;
+      }
+
+      .agent-screen {
+        height: 100%;
+        flex:1;
+        overflow:hidden;
+      }
+
+      .agent-screen[hidden],
+      .agent-menu[hidden] {
+        display: none;
+      }
+
+      .agent-option {
+        width: 100%;
+        min-height: 44px;
+        padding: 0 12px;
+        border: 1px solid var(--home-line);
+        border-radius: 2px;
+        color: #596365;
+        background: #ffffff;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .agent-option:hover {
+        border-color: var(--home-ink);
+        color: var(--home-ink);
+      }
+
+      .agent-screen-header {
+        display: flex;
+        min-height: 48px;
+        align-items: center;
+        gap: 10px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--home-line);
+      }
+
+      .agent-back-button {
+        padding: 5px 0;
+        border: 0;
+        color: #7b8284;
+        background: transparent;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 12px;
+      }
+
+      .agent-back-button:hover {
+        color: var(--home-ink);
+      }
+
+      .agent-screen-title {
+        min-width: 0;
+        margin: 0;
+        overflow: hidden;
+        font-size: 13px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .new-conversation-button {
+        min-height: 40px;
+        margin: 14px;
+        border: 1px dashed #abb4b1;
+        border-radius: 2px;
+        color: #596365;
+        background: transparent;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 12px;
+      }
+
+      .new-conversation-button:hover {
+        border-color: #de6943;
+        color: #bd5132;
+      }
+
+      .conversation-list {
+        flex: 1;
+        overflow: auto;
+        padding: 0 14px 14px;
+      }
+
+      .empty-conversations {
+        margin: 26px 8px;
+        color: #a1a8a7;
+        font-size: 12px;
+        line-height: 1.7;
+        text-align: center;
+      }
+
+      .chat-messages {
+        flex: 1;
+        min-height: 0;
+        overflow-y:auto;
+        overscroll-behavior:contain;
+        padding:8px 0;
+      }
+      .chat-messages.drag-over { outline:2px dashed #de6943; outline-offset:-6px; background:#fff5f0; }
+      .chat-attachments { display:flex; min-height:34px; gap:5px; padding:5px 14px; overflow-x:auto; border-top:1px solid var(--home-line); }
+      .chat-attachment { flex:0 0 auto; padding:4px 7px; border:1px solid #d4d8d5; background:#f6f7f4; font-size:10px; cursor:pointer; }
+
+      .chat-input-bar {
+        display: flex;
+        gap: 8px;
+        padding: 12px 14px;
+        border-top: 1px solid var(--home-line);
+      }
+
+      .chat-input {
+        width: 100%;
+        min-width: 0;
+        height: 36px;
+        padding: 0 10px;
+        border: 1px solid var(--home-line);
+        outline: none;
+        color: var(--home-ink);
+        background: #ffffff;
+        font-family: inherit;
+        font-size: 12px;
+      }
+
+      .chat-send {
+        width: 36px;
+        flex: 0 0 auto;
+        border: 0;
+        color: var(--home-paper);
+        background: var(--home-ink);
+        cursor: pointer;
+      }
+
+      .create-workspace.is-resizing {
+        user-select: none;
+      }
+
+      @media (max-width: 480px) {
+        .top-navigation {
+          height: 52px;
+        }
+
+        .top-navigation span,
+        .top-navigation a {
+          font-size: 12px;
+        }
+
+        .create-workspace {
+          height: calc(100vh - 52px);
+          grid-template-columns: minmax(180px, 46vw) 10px minmax(0, 1fr) 10px minmax(220px, 42vw);
+        }
+
+        .device-content {
+          grid-template-columns: 1fr;
+          gap: 8px;
+          overflow: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="top-navigation" aria-label="主页面板选择">
+      <a href="./home.html">仓库</a>
+      <span class="selected" aria-current="page">创作</span>
+      <a href="./skills.html">skills</a>
+      <a href="./settings.html">用户设置</a>
+    </nav>
+
+    <main class="create-workspace">
+      <aside class="asset-panel" aria-label="素材库面板">
+        <header class="asset-header">
+          <h1 class="asset-title">素材库</h1>
+          <button id="asset-upload-button" class="asset-add-button" type="button" aria-label="添加素材">+</button>
+          <input id="asset-file-input" type="file" accept="image/*,video/*" multiple hidden>
+        </header>
+        <div class="asset-content">
+          <button id="local-assets-toggle" class="asset-item" type="button"><span class="asset-symbol">DIR</span><span>本地素材</span></button>
+          <div id="local-assets"><p class="asset-empty">正在读取 data...</p></div>
+          <button id="project-assets-toggle" class="asset-item" type="button"><span class="asset-symbol">PRJ</span><span>项目文件</span></button>
+          <div id="project-assets"><p class="asset-empty">暂无工作区输出</p></div>
+        </div>
+      </aside>
+
+      <div class="asset-splitter" aria-label="调整素材库宽度"></div>
+      <section class="create-empty-area" aria-label="中间创作区域">
+        <section class="preview-panel" aria-label="视频和图片播放展示面板">
+          <div class="preview-frame">
+            <div class="preview-placeholder">
+              <span class="play-mark">▶</span>
+              <span>等待视频或图片素材</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="center-splitter" aria-label="调整视频和设备面板高度"></div>
+
+        <section class="device-panel" aria-label="工作区面板">
+          <header class="device-header">
+            <h2 class="device-title">工作区</h2>
+            <div class="workspace-actions">
+              <button id="save-workspace" type="button">保存到仓库</button>
+              <button id="export-workspace" type="button">导出到本地</button>
+            </div>
+          </header>
+          <div class="device-content">
+            <div class="workspace-bin">
+              <h3 class="device-section-title">待处理区</h3>
+              <div id="workspace-bin" class="workspace-track" data-track="bin"><div class="workspace-track-title">拖拽素材到这里</div></div>
+            </div>
+            <div class="workspace-tracks">
+              <div id="video-track" class="workspace-track" data-track="video"><div class="workspace-track-title">V1 视频轨</div></div>
+              <div id="image-track" class="workspace-track" data-track="image"><div class="workspace-track-title">V2 图片 / 叠加轨</div></div>
+              <div id="agent-track" class="workspace-track" data-track="agent"><div class="workspace-track-title">AI 输出轨</div></div>
+            </div>
+          </div>
+        </section>
+      </section>
+      <div class="agent-splitter" aria-label="调整 Agent 面板宽度"></div>
+      <aside class="agent-panel" aria-label="Agent 对话面板">
+        <div id="agent-menu" class="agent-menu">
+          <button class="agent-option" type="button" data-agent="skills管理师">skills管理师</button>
+          <button class="agent-option" type="button" data-agent="导演">导演</button>
+          <button class="agent-option" type="button" data-agent="摄影师">摄影师</button>
+          <button class="agent-option" type="button" data-agent="剪辑师">剪辑师</button>
+        </div>
+
+        <div id="conversation-list-screen" class="agent-screen" hidden>
+          <header class="agent-screen-header">
+            <button id="conversation-list-back" class="agent-back-button" type="button">返回</button>
+            <h2 id="conversation-list-title" class="agent-screen-title"></h2>
+          </header>
+          <button id="new-conversation-button" class="new-conversation-button" type="button">+ 新建对话</button>
+          <div class="conversation-list">
+            <p class="empty-conversations">暂无历史对话</p>
+          </div>
+        </div>
+
+        <div id="chat-screen" class="agent-screen" hidden>
+          <header class="agent-screen-header">
+            <button id="chat-back-button" class="agent-back-button" type="button">返回</button>
+            <h2 id="chat-title" class="agent-screen-title"></h2>
+          </header>
+          <div class="chat-messages" aria-label="对话内容"></div>
+          <div id="chat-attachments" class="chat-attachments"><span class="asset-empty">拖拽素材或工作区片段到对话框</span></div>
+          <div class="chat-input-bar">
+            <input class="chat-input" type="text" placeholder="输入消息" />
+            <button class="chat-send" type="button" aria-label="发送">↑</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+    <div id="asset-context-menu" class="context-menu" hidden><button id="save-as-asset" type="button">另存为...</button><button id="save-to-library" type="button">保存到素材库</button></div>
+
+    <script>
+      const createWorkspace = document.querySelector('.create-workspace');
+      const centerPanel = document.querySelector('.create-empty-area');
+      const assetSplitter = document.querySelector('.asset-splitter');
+      const agentSplitter = document.querySelector('.agent-splitter');
+      const centerSplitter = document.querySelector('.center-splitter');
+      let activePanel = null;
+      let startPosition = 0;
+      let startWidth = 0;
+      const apiBase = 'http://127.0.0.1:8765/api/v1';
+      let workspace;
+      try { workspace = JSON.parse(localStorage.getItem('boldmaker_workspace') || '{}'); } catch (_) { workspace = {}; }
+      for (const track of ['bin','video','image','agent']) if (!Array.isArray(workspace[track])) workspace[track] = [];
+      let mediaCatalog = [];
+      let contextAsset = null;
+      let activeDragAsset = null;
+
+      function writeDragAsset(event, asset) {
+        activeDragAsset = asset;
+        const payload = JSON.stringify(asset);
+        event.dataTransfer.effectAllowed = asset.fromTrack ? 'move' : 'copy';
+        try { event.dataTransfer.setData('application/json', payload); } catch (_) {}
+        event.dataTransfer.setData('text/plain', payload);
+      }
+
+      function readDragAsset(event) {
+        if (activeDragAsset) return {...activeDragAsset};
+        const payload = event.dataTransfer.getData('application/json') || event.dataTransfer.getData('text/plain');
+        if (!payload) return null;
+        try { return JSON.parse(payload); } catch (_) { return null; }
+      }
+
+      document.addEventListener('dragend', () => { activeDragAsset = null; });
+
+      function ensureAsset(asset, newInstance = false) {
+        const copy = {...asset};
+        copy.asset_id = newInstance || !copy.asset_id ? `asset_${Date.now()}_${Math.random().toString(16).slice(2)}` : copy.asset_id;
+        copy.kind = copy.kind || mediaKind(copy.path || copy.name || '');
+        copy.name = copy.name || String(copy.path || 'asset').split(/[\\/]/).pop();
+        return copy;
+      }
+
+      function publicUrl(path) {
+        const normalized = String(path).replace(/\\/g, '/');
+        const dataPart = normalized.match(/(?:^|\/)data\/(.+)$/);
+        if (dataPart) return `${location.origin}/media-files/${dataPart[1]}`;
+        const outputPart = normalized.match(/(?:^|\/)outputs\/(.+)$/);
+        if (outputPart) return `${location.origin}/output-files/${outputPart[1]}`;
+        return '';
+      }
+
+      function mediaKind(path) {
+        return /\.(mp4|mov|avi|mkv|insv)$/i.test(path) ? 'video' : /\.(jpg|jpeg|png|webp)$/i.test(path) ? 'image' : 'json';
+      }
+
+      function createAssetButton(asset) {
+        asset = ensureAsset(asset);
+        const button = document.createElement('button');
+        button.className = 'asset-item asset-file';
+        button.type = 'button';
+        button.draggable = true;
+        button.innerHTML = `<span class="asset-symbol">${asset.kind === 'video' ? 'VID' : asset.kind === 'image' ? 'IMG' : 'AI'}</span><span>${asset.name}</span>`;
+        button.addEventListener('dragstart', event => {
+          writeDragAsset(event, {...asset, librarySource:true});
+        });
+        button.addEventListener('click', () => previewAsset(asset));
+        button.addEventListener('contextmenu', event => openContextMenu(event, asset));
+        return button;
+      }
+
+      function previewAsset(asset) {
+        const frame = document.querySelector('.preview-frame');
+        const url = asset.url || publicUrl(asset.path);
+        if (!url) { frame.innerHTML = `<div class="preview-placeholder"><span>${asset.name}</span><small>${asset.path}</small></div>`; return; }
+        frame.innerHTML = asset.kind === 'video' ? `<video src="${url}" controls></video>` : `<img src="${url}" alt="${asset.name}">`;
+      }
+
+      async function loadAssets() {
+        const response = await fetch(`${apiBase}/media/list?directory=data&type=all`);
+        const body = await response.json();
+        if (!response.ok) throw new Error(body.detail || '素材读取失败');
+        mediaCatalog = [
+          ...(body.data.images || []).map(path => ensureAsset({path, name:path.split(/[\\/]/).pop(), kind:'image'})),
+          ...(body.data.videos || []).map(path => ensureAsset({path, name:path.split(/[\\/]/).pop(), kind:'video'})),
+        ];
+        const container = document.getElementById('local-assets');
+        container.replaceChildren(...mediaCatalog.map(createAssetButton));
+      }
+
+      function renderWorkspace() {
+        for (const track of ['bin','video','image','agent']) {
+          const target = document.querySelector(`[data-track="${track}"]`);
+          target.querySelectorAll('.workspace-clip').forEach(node => node.remove());
+          workspace[track] = (workspace[track] || []).map(asset => ensureAsset(asset));
+          workspace[track].forEach(asset => {
+            const chip = document.createElement('button');
+            chip.className = 'workspace-clip'; chip.type = 'button';
+            chip.draggable = true;
+            chip.addEventListener('dragstart', event => writeDragAsset(event, {...asset, fromTrack:track}));
+            chip.textContent = asset.name; chip.onclick = () => previewAsset(asset);
+            chip.addEventListener('contextmenu', event => openContextMenu(event, asset));
+            target.append(chip);
+          });
+        }
+        const project = document.getElementById('project-assets');
+        project.replaceChildren(...(workspace.agent || []).map(createAssetButton));
+      }
+
+      document.querySelectorAll('.workspace-track').forEach(track => {
+        track.addEventListener('dragover', event => { event.preventDefault(); track.classList.add('drag-over'); });
+        track.addEventListener('dragleave', () => track.classList.remove('drag-over'));
+        track.addEventListener('drop', event => {
+          event.preventDefault(); track.classList.remove('drag-over');
+          let asset = readDragAsset(event);
+          if (!asset) return;
+          const name = track.dataset.track;
+          if (asset.librarySource) asset = ensureAsset(asset, true);
+          if (asset.fromTrack && workspace[asset.fromTrack]) workspace[asset.fromTrack] = workspace[asset.fromTrack].filter(item => item.asset_id !== asset.asset_id);
+          delete asset.fromTrack;
+          delete asset.librarySource;
+          if (!(workspace[name] || []).some(item => item.asset_id === asset.asset_id)) workspace[name].push(asset);
+          renderWorkspace();
+        });
+      });
+
+      document.getElementById('asset-upload-button').addEventListener('click', () => document.getElementById('asset-file-input').click());
+      document.getElementById('asset-file-input').addEventListener('change', async event => {
+        for (const file of event.target.files) {
+          const kind = file.type.startsWith('video/') ? 'video' : 'image';
+          const dataUrl = await new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.readAsDataURL(file); });
+          await fetch(`${apiBase}/media/upload`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({filename:file.name, kind, data_url:dataUrl})});
+        }
+        event.target.value = ''; await loadAssets();
+      });
+
+      document.getElementById('local-assets-toggle').addEventListener('click', () => document.getElementById('local-assets').hidden = !document.getElementById('local-assets').hidden);
+      document.getElementById('project-assets-toggle').addEventListener('click', () => document.getElementById('project-assets').hidden = !document.getElementById('project-assets').hidden);
+      document.getElementById('local-assets').addEventListener('dragover', event => event.preventDefault());
+      document.getElementById('local-assets').addEventListener('drop', async event => {
+        event.preventDefault();
+        const asset = readDragAsset(event);
+        if (!asset) return;
+        if (!asset.path || asset.kind === 'json') return;
+        const response = await fetch(`${apiBase}/media/import-output`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({source_path:asset.path, kind:asset.kind, filename:asset.name})});
+        const body = await response.json();
+        if (!response.ok) return alert(body.detail || '保存到素材库失败');
+        await loadAssets(); alert('AI 输出已保存到素材库。');
+      });
+      document.getElementById('save-workspace').addEventListener('click', () => {
+        localStorage.setItem('boldmaker_workspace', JSON.stringify(workspace));
+        localStorage.setItem('boldmaker_selected_media', JSON.stringify([...workspace.video, ...workspace.image, ...workspace.bin].map(item => item.path)));
+        alert('工作区结构已保存到素材仓库浏览器状态。');
+      });
+
+      document.getElementById('export-workspace').addEventListener('click', async () => {
+        if (!window.showDirectoryPicker) { alert('当前浏览器不支持目录导出，请使用新版 Chrome/Edge。'); return; }
+        const directory = await window.showDirectoryPicker({mode:'readwrite'});
+        const manifest = await directory.getFileHandle('workspace.json', {create:true});
+        const writable = await manifest.createWritable(); await writable.write(JSON.stringify(workspace, null, 2)); await writable.close();
+        for (const asset of [...workspace.video, ...workspace.image, ...workspace.agent]) {
+          const url = asset.url || publicUrl(asset.path); if (!url) continue;
+          const response = await fetch(url); if (!response.ok) continue;
+          const handle = await directory.getFileHandle(asset.name, {create:true});
+          const out = await handle.createWritable(); await out.write(await response.blob()); await out.close();
+        }
+        alert('工作区结构和可访问媒体已导出。');
+      });
+
+      function openContextMenu(event, asset) {
+        event.preventDefault(); contextAsset = asset;
+        const menu = document.getElementById('asset-context-menu');
+        menu.style.left = `${event.clientX}px`; menu.style.top = `${event.clientY}px`; menu.hidden = false;
+      }
+      document.addEventListener('click', () => document.getElementById('asset-context-menu').hidden = true);
+
+      async function saveAssetAs(asset) {
+        if (!asset) return;
+        const url = asset.url || publicUrl(asset.path);
+        if (!url) {
+          const blob = new Blob([JSON.stringify(asset.data || asset, null, 2)], {type:'application/json'});
+          const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = asset.name || 'agent-output.json'; link.click(); URL.revokeObjectURL(link.href); return;
+        }
+        const response = await fetch(url); if (!response.ok) throw new Error('文件读取失败');
+        if (window.showSaveFilePicker) {
+          const handle = await window.showSaveFilePicker({suggestedName:asset.name});
+          const writable = await handle.createWritable(); await writable.write(await response.blob()); await writable.close();
+        } else {
+          const link = document.createElement('a'); link.href = URL.createObjectURL(await response.blob()); link.download = asset.name; link.click(); URL.revokeObjectURL(link.href);
+        }
+      }
+
+      document.getElementById('save-as-asset').addEventListener('click', () => saveAssetAs(contextAsset).catch(error => alert(error.message)));
+      document.getElementById('save-to-library').addEventListener('click', async () => {
+        if (!contextAsset?.path || contextAsset.kind === 'json') return;
+        const response = await fetch(`${apiBase}/media/import-output`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({source_path:contextAsset.path, kind:contextAsset.kind, filename:contextAsset.name})});
+        const body = await response.json(); if (!response.ok) return alert(body.detail || '保存失败');
+        await loadAssets(); alert('已复制到素材库。');
+      });
+
+      function startResize(panel, event) {
+        activePanel = panel;
+        startPosition = panel === 'center' ? event.clientY : event.clientX;
+        const property = panel === 'asset' ? '--asset-width' : panel === 'agent' ? '--agent-width' : '--workspace-height';
+        const target = panel === 'center' ? centerPanel : createWorkspace;
+        startWidth = parseFloat(getComputedStyle(target).getPropertyValue(property));
+        document.querySelector(`.${panel}-splitter`).classList.add('dragging');
+        createWorkspace.classList.add('is-resizing');
+        event.preventDefault();
+      }
+
+      assetSplitter.addEventListener('pointerdown', event => startResize('asset', event));
+      agentSplitter.addEventListener('pointerdown', event => startResize('agent', event));
+      centerSplitter.addEventListener('pointerdown', event => startResize('center', event));
+
+      document.addEventListener('pointermove', event => {
+        if (!activePanel) return;
+        const currentPosition = activePanel === 'center' ? event.clientY : event.clientX;
+        const delta = currentPosition - startPosition;
+        const nextSize = activePanel === 'asset' ? startWidth + delta : startWidth - delta;
+        const limits = activePanel === 'center' ? [120, 360] : activePanel === 'agent' ? [220, 460] : [180, 460];
+        const property = activePanel === 'asset' ? '--asset-width' : activePanel === 'agent' ? '--agent-width' : '--workspace-height';
+        const target = activePanel === 'center' ? centerPanel : createWorkspace;
+        target.style.setProperty(property, `${Math.min(limits[1], Math.max(limits[0], nextSize))}px`);
+      });
+
+      document.addEventListener('pointerup', () => {
+        if (!activePanel) return;
+        document.querySelector(`.${activePanel}-splitter`).classList.remove('dragging');
+        activePanel = null;
+        createWorkspace.classList.remove('is-resizing');
+      });
+
+      const agentMenu = document.getElementById('agent-menu');
+      const conversationListScreen = document.getElementById('conversation-list-screen');
+      const chatScreen = document.getElementById('chat-screen');
+      const conversationListTitle = document.getElementById('conversation-list-title');
+      const chatTitle = document.getElementById('chat-title');
+      const chatInput = document.querySelector('.chat-input');
+      const chatMessages = document.querySelector('.chat-messages');
+      const chatAttachments = document.getElementById('chat-attachments');
+      const agentRoutes = {
+        'skills管理师': 'skills_manager',
+        '导演': 'director',
+        '摄影师': 'cinematographer',
+        '剪辑师': 'editor',
+      };
+      const chatDrafts = new Map();
+      let selectedAgent = '';
+      let activeConversationKey = '';
+      let conversationCounter = 0;
+      const conversationAttachments = new Map();
+
+      function showAgentScreen(screen) {
+        agentMenu.hidden = screen !== 'menu';
+        conversationListScreen.hidden = screen !== 'list';
+        chatScreen.hidden = screen !== 'chat';
+      }
+
+      function openConversation(title, conversationKey) {
+        activeConversationKey = conversationKey || `${selectedAgent}:conversation:${++conversationCounter}`;
+        chatTitle.textContent = `${selectedAgent} · ${title}`;
+        chatInput.value = chatDrafts.get(activeConversationKey) || '';
+        renderChatAttachments();
+        showAgentScreen('chat');
+      }
+
+      function appendMessage(role, text) {
+        const item = document.createElement('div');
+        item.style.cssText = 'margin:10px 14px;padding:9px 10px;border:1px solid #e1e3e1;background:#fff;color:#596365;font-size:12px;white-space:pre-wrap;';
+        item.textContent = `${role}: ${text}`;
+        chatMessages.append(item);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function currentAttachments() {
+        return conversationAttachments.get(activeConversationKey) || [];
+      }
+
+      function renderChatAttachments() {
+        const attachments = currentAttachments();
+        if (!attachments.length) {
+          chatAttachments.innerHTML = '<span class="asset-empty">拖拽素材或工作区片段到对话框</span>';
+          return;
+        }
+        chatAttachments.replaceChildren(...attachments.map(asset => {
+          const chip = document.createElement('button');
+          chip.className = 'chat-attachment'; chip.type = 'button';
+          chip.textContent = `${asset.kind === 'video' ? 'VID' : 'IMG'} ${asset.name}`;
+          chip.onclick = () => previewAsset(asset);
+          return chip;
+        }));
+      }
+
+      chatMessages.addEventListener('dragover', event => { event.preventDefault(); chatMessages.classList.add('drag-over'); });
+      chatMessages.addEventListener('dragleave', () => chatMessages.classList.remove('drag-over'));
+      chatMessages.addEventListener('drop', event => {
+        event.preventDefault(); chatMessages.classList.remove('drag-over');
+        const asset = readDragAsset(event);
+        if (!activeConversationKey || !asset.path) return;
+        const list = currentAttachments();
+        if (!list.some(item => item.path === asset.path)) list.push(asset);
+        conversationAttachments.set(activeConversationKey, list);
+        renderChatAttachments();
+      });
+
+      function readMediaPaths() {
+        const tracked = [...workspace.bin, ...workspace.video, ...workspace.image].map(item => item.path).filter(Boolean);
+        if (tracked.length) return [...new Set(tracked)];
+        return JSON.parse(localStorage.getItem('boldmaker_selected_media') || 'null') || [
+          'data/img/img2.jpg',
+          'data/video/test_video1.mp4',
+        ];
+      }
+
+      function addAgentOutputs(agentType, result) {
+        const paths = [result?.captured_frame, result?.rendered_preview, result?.output_video].filter(Boolean);
+        paths.forEach(path => {
+          const asset = ensureAsset({path, name:path.split(/[\\/]/).pop(), kind:mediaKind(path), source:agentType}, true);
+          if (!workspace.agent.some(item => item.path === path)) workspace.agent.push(asset);
+        });
+        workspace.agent.push(ensureAsset({name:`${agentType}-${Date.now()}.json`, kind:'json', source:agentType, data:result}, true));
+        renderWorkspace();
+      }
+
+      async function sendAgentMessage() {
+        const text = chatInput.value.trim();
+        if (!text || !selectedAgent) return;
+        appendMessage('你', text);
+        chatInput.value = '';
+        const route = agentRoutes[selectedAgent];
+        try {
+          const selectedMedia = readMediaPaths();
+          const attachments = currentAttachments().map(item => item.path).filter(Boolean);
+          const messageMedia = [...new Set([...selectedMedia, ...attachments])];
+          let response;
+          if (!activeConversationKey.includes('chat_')) {
+            response = await fetch(`${apiBase}/chats`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({agent_type:route, user_text:text, media_paths:messageMedia}) });
+          } else {
+            response = await fetch(`${apiBase}/chats/${activeConversationKey}/messages`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({text, media_paths:attachments}) });
+          }
+          const payload = await response.json();
+          if (!response.ok) throw new Error(payload.detail || `HTTP ${response.status}`);
+          if (payload.data?.session_id) activeConversationKey = payload.data.session_id;
+          addAgentOutputs(route, payload.data?.result || payload.data);
+          appendMessage('ScenePilot', JSON.stringify(payload.data, null, 2));
+        } catch (error) {
+          appendMessage('错误', error.message);
+        }
+      }
+
+      document.querySelectorAll('.agent-option').forEach(option => {
+        option.addEventListener('click', () => {
+          selectedAgent = option.dataset.agent;
+          conversationListTitle.textContent = `${selectedAgent} · 对话列表`;
+          showAgentScreen('list');
+        });
+      });
+
+      document.getElementById('conversation-list-back').addEventListener('click', () => showAgentScreen('menu'));
+      document.getElementById('new-conversation-button').addEventListener('click', () => openConversation('新建对话'));
+      document.getElementById('chat-back-button').addEventListener('click', () => showAgentScreen('list'));
+      document.querySelector('.chat-send').addEventListener('click', sendAgentMessage);
+      chatInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          sendAgentMessage();
+        }
+      });
+      chatInput.addEventListener('input', () => {
+        if (activeConversationKey) chatDrafts.set(activeConversationKey, chatInput.value);
+      });
+
+      document.querySelector('.conversation-list').addEventListener('click', event => {
+        const conversation = event.target.closest('[data-conversation]');
+        if (conversation) openConversation(conversation.dataset.conversation, conversation.dataset.conversationKey);
+      });
+      loadAssets().catch(error => console.error(error));
+      renderWorkspace();
+    </script>
+  </body>
+</html>

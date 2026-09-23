@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ScenePilot Fast Tester</title>
+  <style>
+    :root { color-scheme: light; --ink:#17202a; --muted:#667085; --line:#d9dee7; --brand:#315efb; --bg:#f6f8fb; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    .app { max-width:1180px; margin:0 auto; padding:24px; }
+    header { display:flex; justify-content:space-between; align-items:end; gap:16px; margin-bottom:18px; }
+    h1,h2,h3,p { margin:0; } h1 { font-size:25px; letter-spacing:-.03em; } h2 { font-size:15px; margin-bottom:12px; }
+    .muted { color:var(--muted); margin-top:4px; }
+    .status { display:flex; align-items:center; gap:8px; color:var(--muted); white-space:nowrap; }
+    .dot { width:9px; height:9px; border-radius:50%; background:#98a2b3; } .dot.ok { background:#12b76a; } .dot.bad { background:#f04438; }
+    .layout { display:grid; grid-template-columns:340px 1fr; gap:16px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; box-shadow:0 2px 8px #1018280a; }
+    label { display:block; font-weight:650; margin:12px 0 5px; } label:first-of-type { margin-top:0; }
+    input, textarea, select { width:100%; border:1px solid var(--line); border-radius:8px; padding:9px 10px; font:inherit; color:inherit; background:#fff; }
+    textarea { resize:vertical; min-height:84px; }
+    .row { display:flex; gap:8px; } .row > * { flex:1; }
+    button { border:0; border-radius:8px; padding:9px 12px; background:var(--brand); color:#fff; font:inherit; cursor:pointer; }
+    button.secondary { background:#eef2ff; color:#3048a8; } button.ghost { background:#f2f4f7; color:#344054; }
+    button:disabled { opacity:.55; cursor:wait; }
+    .buttons { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px; }
+    .buttons button:last-child { grid-column:1/-1; }
+    .hint { color:var(--muted); font-size:12px; margin-top:5px; }
+    .result-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    pre { margin:0; min-height:330px; max-height:560px; overflow:auto; padding:14px; border-radius:8px; background:#101828; color:#d1fadf; white-space:pre-wrap; word-break:break-word; }
+    .trace { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:10px 0 14px; }
+    .trace-card { border:1px solid var(--line); border-radius:8px; padding:10px; background:#fff; }
+    .trace-card strong { display:block; font-size:12px; color:#315efb; margin-bottom:4px; }
+    .trace-card span { color:var(--muted); font-size:12px; }
+    .skill-chips { display:flex; gap:6px; flex-wrap:wrap; margin:8px 0; }
+    .skill-chip { background:#eef2ff; color:#3048a8; border-radius:999px; padding:3px 8px; font-size:12px; }
+    .controls { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:10px 0; }
+    .controls label { font-size:12px; color:var(--muted); }
+    .rule-box { background:#f8fafc; border:1px solid var(--line); border-radius:8px; padding:10px; margin-bottom:10px; font-size:12px; max-height:160px; overflow:auto; }
+    .history { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+    .history button { padding:5px 8px; font-size:12px; background:#f2f4f7; color:#344054; }
+    video { width:100%; margin-top:10px; border-radius:8px; background:#101828; }
+    #cameraPreview { width:100%; max-height:280px; object-fit:contain; background:#101828; border-radius:8px; display:none; }
+    @media (max-width:760px) { .app { padding:14px; } .layout { grid-template-columns:1fr; } header { align-items:start; flex-direction:column; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div><h1>ScenePilot Fast Tester</h1><p class="muted">轻量测试台：Skill、Director、摄影指导、Editor 和完整流程</p></div>
+      <div class="status"><span id="dot" class="dot"></span><span id="status">未连接</span></div>
+    </header>
+
+    <div class="layout">
+      <section class="card">
+        <h2>请求配置</h2>
+        <label for="base">API Base URL</label>
+        <input id="base" value="http://127.0.0.1:8765/api/v1">
+
+        <label for="text">用户需求</label>
+        <textarea id="text">请拍摄一组自然的人像短片，保留人物和环境关系，不要明显摆拍。</textarea>
+
+        <label for="stage">Skill 阶段</label>
+        <select id="stage"><option value="director">Director</option><option value="cinematographer">Cinematographer</option><option value="editor">Editor</option></select>
+
+        <label for="paths">媒体路径，每行一个</label>
+        <textarea id="paths">data/img/img1.jpg
+data/video/test_video1.mp4</textarea>
+        <div class="hint">路径是服务端路径。也可以使用绝对路径。</div>
+
+        <label for="v1">Editor 工作区：v1 视频</label>
+        <input id="v1" value="data/video/test_video1.mp4">
+        <label for="v2">Editor 工作区：v2 视频</label>
+        <input id="v2" value="data/video/test_video2.mp4">
+        <label for="transitionPrompt">AI 过渡提示词</label>
+        <input id="transitionPrompt" value="Smooth natural camera movement, preserve subject identity and lighting continuity.">
+        <label for="controls">可编程创作规则 JSON</label>
+        <textarea id="controls">{
+  "priority": "environment_and_reaction",
+  "avoid": ["forced_pose", "rapid_cut"],
+  "output_ratio": "9:16"
+}</textarea>
+        <div class="hint">修改后重新运行，观察 Director、Cinematographer 和 Editor 的结果变化。</div>
+
+        <div class="buttons">
+          <button onclick="health()" class="secondary">连接检查</button>
+          <button onclick="listSkills()" class="secondary">列出 Skills</button>
+          <button onclick="selectSkills()">匹配 Skill</button>
+          <button onclick="callAgent('director')">导演 Agent</button>
+          <button onclick="callAgent('cinematographer')">摄影指导</button>
+          <button onclick="callAgent('editor')">Editor</button>
+          <button onclick="buildWorkspace()">生成 Editor 工作区视频</button>
+          <button onclick="runAll()">运行完整流程</button>
+        </div>
+        <h2 style="margin-top:18px">摄影指导实时会话</h2>
+        <label for="cameraStreamId">当前视频流 ID</label>
+        <input id="cameraStreamId" value="browser_main">
+        <video id="cameraPreview" autoplay muted playsinline></video>
+        <div class="row">
+          <button onclick="startCameraSession()" class="secondary">启动摄像头会话</button>
+          <button onclick="stopCameraSession()" class="ghost">手动停止</button>
+        </div>
+        <div class="hint">浏览器每 0.5 秒发送一帧；停止由用户控制，capture_frame 会保存到服务端 outputs。</div>
+        <div id="history" class="history"></div>
+      </section>
+
+      <section class="card">
+        <div class="result-head"><h2>导演决策与证据</h2><button class="ghost" onclick="copyResult()">复制 JSON</button></div>
+        <div id="skillChips" class="skill-chips"></div>
+        <div id="ruleBox" class="rule-box">运行完整流程后显示当前 Skill 规则。</div>
+        <div class="controls">
+          <label>可编程修改：在左侧修改用户需求后再次运行<br><button onclick="runAll()">重新运行导演流程</button></label>
+          <label>对比当前输出和上次输出<br><button class="secondary" onclick="showPrevious()">查看上次结果</button></label>
+        </div>
+        <div id="trace" class="trace"></div>
+        <div class="result-head"><h2>完整接口响应</h2></div>
+        <pre id="output">点击左侧按钮开始测试。</pre>
+        <div id="preview"></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const paths = () => $('paths').value.split(/\r?\n/).map(v => v.trim()).filter(Boolean);
+    const base = () => $('base').value.replace(/\/$/, '');
+    const mediaInput = () => ({ source_type:'FILE', paths:paths() });
+    let busy = false;
+    let cameraStream = null;
+    let cameraTimer = null;
+    let cameraSessionId = null;
+    const cameraCanvas = document.createElement('canvas');
+    let previousResult = null;
+
+    function show(data) {
+      previousResult = window.currentResult || previousResult;
+      window.currentResult = data;
+      $('output').textContent = JSON.stringify(data, null, 2);
+      const payload = data?.data || data;
+      const trace = payload?.decision_trace;
+      $('skillChips').innerHTML = (trace?.skill_trace || payload?.skills || []).map(s => `<span class="skill-chip">${s.skill_id || s.id || 'skill'}</span>`).join('');
+      $('ruleBox').innerHTML = (trace?.skill_trace || []).flatMap(s => (s.rules || []).slice(0, 4).map(r => `<div><b>${s.skill_id}</b> / ${r.rule_id}: ${JSON.stringify(r.advice)}</div>`)).join('') || '当前响应没有规则追踪。';
+      $('trace').innerHTML = (trace?.agent_decisions || []).map(item => `<div class="trace-card"><strong>${item.agent}</strong><span>${item.summary || 'Decision recorded'}</span></div>`).join('');
+      const video = payload?.output_video || payload?.editing?.rendered_preview || payload?.rendered_preview;
+      $('preview').innerHTML = video ? `<video controls src="${video}"></video><div class="hint">工作区输出：${video}</div>` : '';
+      const item = document.createElement('button');
+      item.textContent = new Date().toLocaleTimeString();
+      item.onclick = () => $('output').textContent = JSON.stringify(data, null, 2);
+      $('history').prepend(item);
+    }
+    function showPrevious() {
+      if (previousResult) $('output').textContent = JSON.stringify(previousResult, null, 2);
+    }
+
+    async function request(path, options = {}) {
+      if (busy) return;
+      busy = true; $('status').textContent = '请求中...'; $('dot').className = 'dot';
+      try {
+        const response = await fetch(base() + path, { headers:{'Content-Type':'application/json'}, ...options });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`);
+        show(data); $('status').textContent = '连接正常'; $('dot').className = 'dot ok';
+      } catch (error) {
+        show({success:false, error:String(error)}); $('status').textContent = '请求失败'; $('dot').className = 'dot bad';
+      } finally { busy = false; }
+    }
+
+    function health() { request('/health'); }
+    function listSkills() { request('/skills?limit=20'); }
+    function selectSkills() {
+      request('/skills/select', {method:'POST', body:JSON.stringify({user_text:$('text').value, stage:$('stage').value, limit:3})});
+    }
+    function callAgent(agent) {
+      const body = { user_text:$('text').value, media_input:mediaInput(), skills_filter:{stage:agent, limit:3}, output_config:{output_dir:'outputs', save_intermediate:true} };
+      request('/agents/' + agent, {method:'POST', body:JSON.stringify(body)});
+    }
+    function runAll() {
+      let controls = {};
+      try { controls = JSON.parse($('controls').value || '{}'); } catch (e) { show({success:false, error:'创作规则 JSON 格式错误'}); return; }
+      request('/agents/run-all', {method:'POST', body:JSON.stringify({user_text:$('text').value, media_dir:'data', controls, output_config:{output_dir:'outputs', save_intermediate:true}})});
+    }
+    function buildWorkspace() {
+      request('/editor/workspace', {method:'POST', body:JSON.stringify({
+        v1_path:$('v1').value,
+        v2_path:$('v2').value,
+        prompt:$('transitionPrompt').value,
+        use_ai_transition:true,
+        workspace_dir:'outputs/editor_workspace'
+      })});
+    }
+    async function startCameraSession() {
+      if (cameraTimer) return;
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+        const video = $('cameraPreview');
+        video.srcObject = cameraStream; video.style.display = 'block';
+        const start = await fetch(base() + '/agents/cinematographer/session/start', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({user_text:$('text').value, stream_id:$('cameraStreamId').value, source_type:'browser_test', skills_filter:{stage:'cinematographer', limit:3}})
+        });
+        const body = await start.json();
+        if (!start.ok || !body.success) throw new Error(body.detail || 'session start failed');
+        cameraSessionId = body.data.session_id;
+        $('status').textContent = '摄影会话运行中'; $('dot').className = 'dot ok';
+        cameraTimer = setInterval(sendCameraFrame, 500);
+      } catch (error) {
+        $('status').textContent = '摄像头启动失败'; $('dot').className = 'dot bad';
+        show({success:false, error:String(error)});
+      }
+    }
+    async function sendCameraFrame() {
+      if (!cameraSessionId) return;
+      const video = $('cameraPreview');
+      if (video.readyState < 2) return;
+      cameraCanvas.width = video.videoWidth || 640; cameraCanvas.height = video.videoHeight || 480;
+      cameraCanvas.getContext('2d').drawImage(video, 0, 0, cameraCanvas.width, cameraCanvas.height);
+      const response = await fetch(base() + `/agents/cinematographer/session/${cameraSessionId}/frame`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({stream_id:$('cameraStreamId').value, frame_data:cameraCanvas.toDataURL('image/jpeg', 0.72), timestamp_ms:Date.now(), sequence:Math.floor(Date.now()/500)})
+      });
+      const body = await response.json();
+      if (response.ok) show(body); else show({success:false, error:body.detail || 'frame analysis failed'});
+    }
+    async function stopCameraSession() {
+      if (cameraTimer) clearInterval(cameraTimer); cameraTimer = null;
+      if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
+      cameraStream = null; $('cameraPreview').style.display = 'none';
+      if (cameraSessionId) {
+        const id = cameraSessionId; cameraSessionId = null;
+        const response = await fetch(base() + `/agents/cinematographer/session/${id}/stop`, {method:'POST'});
+        show(await response.json());
+      }
+      $('status').textContent = '摄影会话已停止'; $('dot').className = 'dot';
+    }
+    async function copyResult() { await navigator.clipboard?.writeText($('output').textContent); }
+  </script>
+</body>
+</html>

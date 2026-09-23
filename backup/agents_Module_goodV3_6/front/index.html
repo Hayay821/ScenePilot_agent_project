@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="BoldMaker 登录页面" />
+    <title>登录 | BoldMaker</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="login-page">
+      <section class="brand-panel" aria-label="BoldMaker 品牌介绍">
+        <div class="brand-mark" aria-hidden="true">B</div>
+        <p class="eyebrow">BOLDMAKER AI</p>
+        <h1>让每一次记录，<br /><em>都更有力量。</em></h1>
+        <p class="brand-description">
+          面向新一代创作者的智能影像工作台，让灵感从拍摄现场延伸到每一个精彩瞬间。
+        </p>
+        <div class="brand-line" aria-hidden="true"></div>
+        <p class="brand-note">CREATE WITH PURPOSE</p>
+      </section>
+
+      <section class="form-panel" aria-labelledby="login-title">
+        <div class="form-wrap">
+          <div class="mobile-brand" aria-hidden="true">
+            <span class="mobile-brand-mark">B</span>
+            <span>BOLDMAKER</span>
+          </div>
+          <p class="form-kicker">WELCOME BACK</p>
+          <h2 id="login-title">欢迎回来</h2>
+          <p class="form-description">登录你的创作者空间，继续你的创作旅程。</p>
+
+          <form class="login-form">
+            <div class="field-group">
+              <label for="account">账号</label>
+              <input id="account" name="account" type="text" placeholder="请输入账号" autocomplete="username" />
+            </div>
+
+            <div class="field-group">
+              <label for="password">密码</label>
+              <input id="password" name="password" type="password" placeholder="请输入密码" autocomplete="current-password" />
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-button" type="button" onclick="if (document.getElementById('account').value === 'test' && document.getElementById('password').value === 'test') { localStorage.setItem('boldmaker_account', document.getElementById('account').value); window.location.href='./home.html'; }">登录</button>
+              <div class="secondary-actions">
+                <button class="text-button" type="button" onclick="window.location.href='./recover.html'">密码找回</button>
+                <span class="action-divider" aria-hidden="true"></span>
+                <button class="text-button" type="button" onclick="window.location.href='./register.html'">注册</button>
+              </div>
+            </div>
+          </form>
+
+          <p class="copyright">© 2026 BoldMaker. All rights reserved.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -612,7 +612,7 @@ agents_Module_fast/
 
 ```bash
 conda activate base  # 或你的 Python 环境
-cd F:\BoldMaker\project00\agents_Module_fast
+cd F:\BoldMaker\project00\agents_Module_good
 pip install -r requirements.txt
 ```
 
@@ -789,6 +789,19 @@ python fast.py serve
 - `POST /run` - 完整流程
 
 详细 API 文档请查看代码中的 FastAPI 接口定义。
+
+访问地址说明：
+
+```text
+http://127.0.0.1:8765/
+  -> 自动跳转到 Swagger UI
+
+http://127.0.0.1:8765/docs
+  -> Swagger 接口测试页面
+
+http://127.0.0.1:5500
+  -> 前端测试工作台（需要另启静态文件服务）
+```
 
 ---
 
