@@ -29,6 +29,58 @@ SUCCESS_STATUSES = {"completed", "success", "succeeded"}
 FAILURE_STATUSES = {"failed", "error", "canceled", "cancelled"}
 TERMINAL_STATUSES = SUCCESS_STATUSES | FAILURE_STATUSES
 
+# 视频间转场效果 ID（官方枚举）。默认不传时接口为硬切，即没有转场。
+TRANSITIONS = {
+    "交替出场": "1182359",
+    "旋转放大": "1182360",
+    "泛开": "1182358",
+    "六角形": "1182365",
+    "故障转换": "1182367",
+    "飞眼": "1182368",
+    "梦幻放大": "1182369",
+    "开门展现": "1182370",
+    "立方转换": "1182373",
+    "透镜变换": "1182374",
+    "晚霞转场": "1182375",
+    "圆形交替": "1182378",
+}
+TRANSITION_ALIASES = {
+    "alternating": "1182359",
+    "rotate-zoom": "1182360",
+    "spread": "1182358",
+    "hexagon": "1182365",
+    "glitch": "1182367",
+    "fly-eye": "1182368",
+    "dream-zoom": "1182369",
+    "door-open": "1182370",
+    "cube": "1182373",
+    "lens": "1182374",
+    "sunset": "1182375",
+    "circle": "1182378",
+}
+
+
+def resolve_transitions(values: Optional[Iterable[str]]) -> List[str]:
+    """把转场名称/别名/ID 解析为接口需要的 ID 列表。"""
+    ids: List[str] = []
+    valid_ids = set(TRANSITIONS.values())
+    for raw in values or []:
+        for token in str(raw).split(","):
+            token = token.strip()
+            if not token:
+                continue
+            if token in TRANSITIONS:
+                ids.append(TRANSITIONS[token])
+            elif token.lower() in TRANSITION_ALIASES:
+                ids.append(TRANSITION_ALIASES[token.lower()])
+            elif token in valid_ids:
+                ids.append(token)
+            else:
+                raise ValueError(
+                    f"未知转场：{token}。可用：{'、'.join(TRANSITIONS)}（或直接填 ID）。"
+                )
+    return ids
+
 
 class MediaKitError(RuntimeError):
     """MediaKit 接口返回错误时抛出。"""
@@ -66,12 +118,16 @@ class MediaKitClient:
         self,
         video_urls: Iterable[str],
         project: Optional[str] = None,
+        transitions: Optional[Iterable[str]] = None,
         extra: Optional[Dict[str, Any]] = None,
     ) -> str:
         urls = [str(url) for url in video_urls]
         if len(urls) < 2:
             raise ValueError("至少需要两个输入素材（视频或图片 URL）。")
         payload: Dict[str, Any] = {"video_urls": urls, "Project": project or self.project}
+        transition_ids = [str(item) for item in (transitions or [])]
+        if transition_ids:
+            payload["transitions"] = transition_ids
         if extra:
             payload.update(extra)
         response = requests.post(
@@ -131,13 +187,16 @@ def concat_videos(
     config: Optional[Dict[str, Any]] = None,
     config_path: Optional[Path] = None,
     project: Optional[str] = None,
+    transitions: Optional[Iterable[str]] = None,
     extra: Optional[Dict[str, Any]] = None,
     on_progress: Optional[Callable[[Dict[str, Any]], None]] = None,
 ) -> Dict[str, Any]:
     """提交拼接任务并等待完成，返回任务结果字典（含 result.video_url）。"""
     config = config or load_config(config_path or DEFAULT_CONFIG_PATH)
     client = MediaKitClient(config)
-    task_id = client.create_concat_task(video_urls, project=project, extra=extra)
+    task_id = client.create_concat_task(
+        video_urls, project=project, transitions=transitions, extra=extra
+    )
     return client.wait_for_task(task_id, on_progress=on_progress)
 
 
@@ -162,6 +221,81 @@ def download_video(url: str, dest: Path, timeout: float = 600) -> Path:
     return dest
 
 
+def _extract_upload_url(payload: Any) -> Optional[str]:
+    if isinstance(payload, str):
+        return payload.strip() or None
+    if isinstance(payload, list) and payload:
+        return _extract_upload_url(payload[0])
+    if isinstance(payload, dict):
+        for key in ("url", "download_url", "video_url"):
+            value = payload.get(key)
+            if isinstance(value, str) and value:
+                return value
+        for key in ("data", "file", "files", "result"):
+            if key in payload:
+                found = _extract_upload_url(payload[key])
+                if found:
+                    return found
+    return None
+
+
+def _get_by_path(payload: Any, path: str) -> Any:
+    current = payload
+    for part in path.split("."):
+        if isinstance(current, list):
+            try:
+                current = current[int(part)]
+            except (ValueError, IndexError):
+                return None
+        elif isinstance(current, dict):
+            current = current.get(part)
+        else:
+            return None
+    return current
+
+
+def upload_file(path: Path, uploader: Dict[str, Any], timeout: float = 120) -> str:
+    """把本地文件上传到配置的文件托管服务，返回可公网访问的 URL。
+
+    MediaKit 的 concat-video 只接受公网 URL，本地文件必须先上传。
+    """
+    path = Path(path)
+    if not path.is_file():
+        raise FileNotFoundError(f"本地文件不存在：{path}")
+    endpoint = uploader.get("url")
+    if not endpoint:
+        raise MediaKitError("未配置上传服务地址 uploader.url。")
+    field = uploader.get("file_field", "fileToUpload")
+    data = uploader.get("extra_fields") or {}
+    with path.open("rb") as handle:
+        response = requests.post(
+            endpoint,
+            files={field: (path.name, handle)},
+            data=data,
+            timeout=timeout,
+        )
+    response.raise_for_status()
+    payload: Any = None
+    try:
+        payload = response.json()
+    except ValueError:
+        payload = None
+    url: Optional[str] = None
+    response_path = uploader.get("response_path")
+    if response_path and payload is not None:
+        value = _get_by_path(payload, str(response_path))
+        if isinstance(value, str) and value:
+            url = value
+    if not url:
+        url = _extract_upload_url(payload if payload is not None else response.text)
+    if not url:
+        raise MediaKitError(f"上传服务返回无法解析的响应：{response.text[:300]}")
+    replacement = uploader.get("url_replace")
+    if isinstance(replacement, list) and len(replacement) == 2:
+        url = url.replace(str(replacement[0]), str(replacement[1]), 1)
+    return url
+
+
 def _looks_like_url(value: str) -> bool:
     return value.startswith("http://") or value.startswith("https://")
 
@@ -183,30 +317,62 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="调用火山引擎 MediaKit，将两个及以上视频/图片拼接为一个带转场的视频。"
     )
-    parser.add_argument("inputs", nargs="+", help="两个及以上素材 URL（视频或图片）。")
+    parser.add_argument("inputs", nargs="*", help="两个及以上素材：公网 URL，或本地视频/图片路径（会自动上传）。")
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH), help="配置文件路径，默认 edit_tool/config.json")
     parser.add_argument("--project", help="覆盖配置中的 Project。")
+    parser.add_argument("--transition", action="append", help="转场名称/别名/ID，可多次或用逗号分隔，如 交替出场 / sunset / 1182359。")
+    parser.add_argument("--no-transition", action="store_true", help="强制使用硬切（不添加转场）。")
+    parser.add_argument("--list-transitions", action="store_true", help="列出所有可用转场后退出。")
     parser.add_argument("--output", help="将结果视频下载到该路径。")
     parser.add_argument("--param", action="append", help="透传额外请求参数，格式 key=value，可多次。")
+    parser.add_argument("--no-upload", action="store_true", help="禁止自动上传本地文件。")
     parser.add_argument("--quiet", action="store_true", help="不输出轮询进度。")
     args = parser.parse_args(argv)
 
-    for value in args.inputs:
-        if not _looks_like_url(value):
-            parser.error(
-                f"输入必须是可公网访问的 http(s) URL：{value}（云端无法访问本地文件）。"
-            )
+    if args.list_transitions:
+        for name, transition_id in TRANSITIONS.items():
+            print(f"{name}\t{transition_id}")
+        return 0
+
+    if len(args.inputs) < 2:
+        parser.error("至少需要两个输入素材。")
 
     try:
         config = load_config(Path(args.config))
+        uploader = config.get("uploader") or {}
+        inputs: List[str] = []
+        for value in args.inputs:
+            if _looks_like_url(value):
+                inputs.append(value)
+                continue
+            if args.no_upload or not uploader.get("enabled"):
+                raise MediaKitError(f"输入 {value} 不是公网 URL，且未启用本地文件上传（见 config.json 的 uploader）。")
+            uploaded = upload_file(value, uploader, timeout=float(config.get("timeout_seconds", 120)))
+            if not args.quiet:
+                print(f"已上传 {value} -> {uploaded}", file=sys.stderr)
+            inputs.append(uploaded)
         extra = _parse_extra(args.param)
+
+        if args.no_transition:
+            transition_values: List[str] = []
+        elif args.transition:
+            transition_values = args.transition
+        else:
+            configured = config.get("transitions")
+            if configured is None and config.get("default_transition"):
+                configured = [config["default_transition"]]
+            transition_values = list(configured or [])
+        transitions = resolve_transitions(transition_values)
+        if transitions and not args.quiet:
+            names = {value: name for name, value in TRANSITIONS.items()}
+            print("转场：" + "、".join(names.get(tid, tid) for tid in transitions), file=sys.stderr)
 
         def progress(data: Dict[str, Any]) -> None:
             if not args.quiet:
                 print(f"[{data.get('status')}] task={data.get('task_id')}", file=sys.stderr)
 
         video_url = concat_videos_to_url(
-            args.inputs, config=config, project=args.project, extra=extra, on_progress=progress
+            inputs, config=config, project=args.project, transitions=transitions, extra=extra, on_progress=progress
         )
         print(video_url)
         if args.output:

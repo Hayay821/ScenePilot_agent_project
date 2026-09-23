@@ -2,7 +2,15 @@
   "api_key": "YOUR_VOLCENGINE_MEDIAKIT_API_KEY",
   "base_url": "https://mediakit.cn-beijing.volces.com",
   "project": "default",
-  "timeout_seconds": 60,
+  "transitions": ["交替出场"],
+  "timeout_seconds": 120,
   "poll_interval_seconds": 5,
-  "poll_timeout_seconds": 600
+  "poll_timeout_seconds": 600,
+  "uploader": {
+    "enabled": true,
+    "url": "https://uguu.se/upload.php",
+    "file_field": "files[]",
+    "extra_fields": {},
+    "response_path": "files.0.url"
+  }
 }
