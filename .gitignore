@@ -293,6 +293,9 @@ credentials/
 *.p12
 *.pfx
 
+# edit_tool: 本地 API key 配置（config.example.json 模板会提交）
+edit_tool/config.json
+
 # ================================
 # Database
 # ================================

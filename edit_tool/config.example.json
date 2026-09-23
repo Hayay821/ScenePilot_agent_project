@@ -1,0 +1,8 @@
+{
+  "api_key": "YOUR_VOLCENGINE_MEDIAKIT_API_KEY",
+  "base_url": "https://mediakit.cn-beijing.volces.com",
+  "project": "default",
+  "timeout_seconds": 60,
+  "poll_interval_seconds": 5,
+  "poll_timeout_seconds": 600
+}
