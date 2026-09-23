@@ -30,19 +30,20 @@
           <h2 id="login-title">欢迎回来</h2>
           <p class="form-description">登录你的创作者空间，继续你的创作旅程。</p>
 
-          <form class="login-form">
+          <form class="login-form" id="login-form">
             <div class="field-group">
               <label for="account">账号</label>
-              <input id="account" name="account" type="text" placeholder="请输入账号" autocomplete="username" />
+              <input id="account" name="account" type="text" placeholder="请输入账号" autocomplete="username" required />
             </div>
 
             <div class="field-group">
               <label for="password">密码</label>
-              <input id="password" name="password" type="password" placeholder="请输入密码" autocomplete="current-password" />
+              <input id="password" name="password" type="password" placeholder="请输入密码" autocomplete="current-password" required />
             </div>
 
+            <p class="form-error" id="login-error" role="alert" hidden></p>
             <div class="form-actions">
-              <button class="primary-button" type="button" onclick="if (document.getElementById('account').value === 'test' && document.getElementById('password').value === 'test') { localStorage.setItem('boldmaker_account', document.getElementById('account').value); window.location.href='./home.html'; }">登录</button>
+              <button class="primary-button" id="login-button" type="submit">登录</button>
               <div class="secondary-actions">
                 <button class="text-button" type="button" onclick="window.location.href='./recover.html'">密码找回</button>
                 <span class="action-divider" aria-hidden="true"></span>
@@ -55,5 +56,52 @@
         </div>
       </section>
     </main>
+
+    <script>
+      const cloudApiBase = localStorage.getItem('boldmaker_cloud_api') || 'http://120.26.152.99:8000';
+      const loginForm = document.getElementById('login-form');
+      const loginButton = document.getElementById('login-button');
+      const loginError = document.getElementById('login-error');
+
+      async function responseError(response) {
+        try {
+          const body = await response.json();
+          return body.detail || `登录失败（${response.status}）`;
+        } catch (_) {
+          return `登录失败（${response.status}）`;
+        }
+      }
+
+      loginForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        loginError.hidden = true;
+        loginButton.disabled = true;
+        loginButton.textContent = '登录中...';
+
+        const form = new URLSearchParams();
+        form.set('username', document.getElementById('account').value.trim());
+        form.set('password', document.getElementById('password').value);
+
+        try {
+          const response = await fetch(`${cloudApiBase}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: form,
+          });
+          if (!response.ok) throw new Error(await responseError(response));
+
+          const session = await response.json();
+          localStorage.setItem('boldmaker_cloud_token', session.access_token);
+          localStorage.setItem('boldmaker_uid', String(session.user_id));
+          localStorage.setItem('boldmaker_account', session.username);
+          window.location.href = './home.html';
+        } catch (error) {
+          loginError.textContent = error.message === 'Failed to fetch' ? '无法连接云端服务器，请稍后重试。' : error.message;
+          loginError.hidden = false;
+          loginButton.disabled = false;
+          loginButton.textContent = '登录';
+        }
+      });
+    </script>
   </body>
 </html>

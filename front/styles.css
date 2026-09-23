@@ -249,6 +249,17 @@ input {
   background: var(--accent-dark);
 }
 
+.primary-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.form-error {
+  margin: -8px 0 0;
+  color: #bd5132;
+  font-size: 13px;
+}
+
 .secondary-actions {
   display: flex;
   align-items: center;

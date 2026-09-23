@@ -31,9 +31,20 @@ def headers(token):
     return {"Authorization": f"Bearer {token}"}
 
 
-def test_test_login_and_resource_crud_isolated(client):
+def test_test_login_and_resource_crud_isolated(client, monkeypatch):
     token_a = login(client)
-    token_b = client.post("/api/auth/cloud-login", json={"uid": "user-b"}).json()["access_token"]
+    import main
+
+    def cloud_profile(url, headers, timeout):
+        assert url.endswith("/me")
+        assert headers["Authorization"] == "Bearer cloud-token"
+        return main.httpx.Response(200, json={"user_id": 2, "username": "user-b", "email": "user-b@example.com"})
+
+    monkeypatch.setattr(main.httpx, "get", cloud_profile)
+    cloud_login = client.post("/api/auth/cloud-login", headers={"Authorization": "Bearer cloud-token"})
+    assert cloud_login.status_code == 200
+    assert cloud_login.json()["uid"] == "2"
+    token_b = cloud_login.json()["access_token"]
 
     uploaded = client.post(
         "/api/resources?kind=image&description=portrait",

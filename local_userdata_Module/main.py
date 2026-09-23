@@ -3,10 +3,11 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+import httpx
 from fastapi import Depends, FastAPI, File, Header, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 try:
     from .config import settings
@@ -26,10 +27,6 @@ sessions: Dict[str, Dict[str, Any]] = {}
 class LoginRequest(BaseModel):
     account: str
     password: str
-
-
-class CloudLoginRequest(BaseModel):
-    uid: str = Field(min_length=1, max_length=128)
 
 
 class UpdateModel(BaseModel):
@@ -85,8 +82,32 @@ def login(payload: LoginRequest) -> Dict[str, str]:
 
 
 @app.post("/api/auth/cloud-login")
-def cloud_login(payload: CloudLoginRequest) -> Dict[str, str]:
-    return _session(_validate_uid(payload.uid))
+def cloud_login(authorization: Optional[str] = Header(None)) -> Dict[str, str]:
+    if not authorization or not authorization.lower().startswith("bearer "):
+        raise HTTPException(401, "缺少云端登录令牌")
+    try:
+        response = httpx.get(
+            f"{settings.cloud_api_base.rstrip('/')}/me",
+            headers={"Authorization": authorization},
+            timeout=settings.cloud_timeout_seconds,
+        )
+    except httpx.RequestError as error:
+        raise HTTPException(503, "无法连接云端用户服务") from error
+    if response.status_code in {401, 403}:
+        raise HTTPException(401, "云端登录已失效，请重新登录")
+    if response.status_code != 200:
+        raise HTTPException(502, "云端用户服务响应异常")
+    try:
+        profile = response.json()
+        user_id = profile["user_id"]
+    except (ValueError, KeyError, TypeError) as error:
+        raise HTTPException(502, "云端用户信息格式异常") from error
+    if type(user_id) is not int:
+        raise HTTPException(502, "云端用户信息格式异常")
+    session = _session(_validate_uid(str(user_id)))
+    session["username"] = str(profile.get("username", ""))
+    session["email"] = str(profile.get("email", ""))
+    return session
 
 
 @app.post("/api/auth/logout")

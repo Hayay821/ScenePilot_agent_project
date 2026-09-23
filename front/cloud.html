@@ -112,6 +112,64 @@
         gap: 18px;
       }
 
+      .material-card {
+        display: grid;
+        min-width: 0;
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+        grid-template-rows: minmax(0, 1fr) auto;
+        border: 1px solid var(--home-line);
+        border-radius: 3px;
+        background: #ffffff;
+      }
+
+      .material-preview {
+        display: grid;
+        min-height: 0;
+        place-items: center;
+        color: var(--home-muted);
+        background: #e9ece9;
+      }
+
+      .material-preview img,
+      .material-preview video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .material-info {
+        min-width: 0;
+        padding: 8px 10px;
+        border-top: 1px solid var(--home-line);
+      }
+
+      .material-name {
+        overflow: hidden;
+        margin: 0;
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .material-meta {
+        margin: 4px 0 0;
+        color: var(--home-muted);
+        font-size: 10px;
+      }
+
+      .material-error,
+      .material-empty {
+        grid-column: 1 / -1;
+        padding: 12px;
+        color: var(--home-muted);
+        font-size: 13px;
+      }
+
+      .material-error {
+        color: #bd5132;
+      }
+
       .add-material {
         min-width: 0;
         aspect-ratio: 4 / 3;
@@ -288,14 +346,184 @@
             </div>
             <button class="close-dialog" type="button" aria-label="关闭上传窗口" onclick="document.getElementById('upload-dialog').close()">&times;</button>
           </div>
-          <div class="drop-zone">
+          <label class="drop-zone" for="cloud-material-file">
             <div>
               拖拽文件到这里
-              <span>支持图片与视频素材</span>
+              <span>支持 JPG、PNG、GIF、WebP、MP4、MOV 与 WebM，最大 200MB</span>
             </div>
-          </div>
+          </label>
+          <input id="cloud-material-file" type="file" accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime,video/webm" hidden />
         </div>
       </dialog>
     </main>
+
+    <script>
+      const cloudApiBase = localStorage.getItem('boldmaker_cloud_api') || 'http://120.26.152.99:8000';
+      const materialGrid = document.querySelector('.material-grid');
+      const uploadDialog = document.getElementById('upload-dialog');
+      const materialFile = document.getElementById('cloud-material-file');
+      const dropZone = document.querySelector('.drop-zone');
+      const objectUrls = new Set();
+
+      function cloudHeaders() {
+        return { Authorization: `Bearer ${localStorage.getItem('boldmaker_cloud_token')}` };
+      }
+
+      function redirectToLogin() {
+        localStorage.removeItem('boldmaker_cloud_token');
+        localStorage.removeItem('boldmaker_local_token');
+        localStorage.removeItem('boldmaker_uid');
+        window.location.replace('./index.html');
+      }
+
+      async function responseError(response) {
+        try {
+          const body = await response.json();
+          return body.detail || `操作失败（${response.status}）`;
+        } catch (_) {
+          return `操作失败（${response.status}）`;
+        }
+      }
+
+      function showError(message) {
+        materialGrid.querySelectorAll('.material-error').forEach(element => element.remove());
+        const error = document.createElement('div');
+        error.className = 'material-error';
+        error.textContent = message;
+        materialGrid.prepend(error);
+      }
+
+      function formatSize(bytes) {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+      }
+
+      async function authenticatedFetch(url, options = {}) {
+        const response = await fetch(url, { ...options, headers: { ...cloudHeaders(), ...options.headers } });
+        if (response.status === 401 || response.status === 403) {
+          redirectToLogin();
+          throw new Error('登录已失效');
+        }
+        return response;
+      }
+
+      async function loadPreview(item, preview) {
+        const response = await authenticatedFetch(`${cloudApiBase}${item.url}`);
+        if (!response.ok) throw new Error(await responseError(response));
+        const objectUrl = URL.createObjectURL(await response.blob());
+        objectUrls.add(objectUrl);
+        const media = document.createElement(item.content_type.startsWith('video/') ? 'video' : 'img');
+        media.src = objectUrl;
+        media.alt = item.filename;
+        if (media.tagName === 'VIDEO') {
+          media.controls = true;
+          media.preload = 'metadata';
+        }
+        preview.replaceChildren(media);
+      }
+
+      function createMaterialCard(item) {
+        const card = document.createElement('article');
+        card.className = 'material-card';
+
+        const preview = document.createElement('div');
+        preview.className = 'material-preview';
+        preview.textContent = item.content_type.startsWith('video/') ? '▶' : '加载中...';
+
+        const info = document.createElement('div');
+        info.className = 'material-info';
+        const name = document.createElement('p');
+        name.className = 'material-name';
+        name.textContent = item.filename;
+        name.title = item.filename;
+        const meta = document.createElement('p');
+        meta.className = 'material-meta';
+        meta.textContent = `${formatSize(item.size)} · ${new Date(item.created_at).toLocaleString()}`;
+        info.append(name, meta);
+        card.append(preview, info);
+        loadPreview(item, preview).catch(error => {
+          preview.textContent = '预览失败';
+          showError(error.message);
+        });
+        return card;
+      }
+
+      async function loadMaterials() {
+        objectUrls.forEach(url => URL.revokeObjectURL(url));
+        objectUrls.clear();
+        const response = await authenticatedFetch(`${cloudApiBase}/media`);
+        if (!response.ok) throw new Error(await responseError(response));
+        materialGrid.querySelectorAll('.material-card, .material-error, .material-empty').forEach(element => element.remove());
+        const items = await response.json();
+        if (!items.length) {
+          const empty = document.createElement('div');
+          empty.className = 'material-empty';
+          empty.textContent = '云仓库暂无影像素材。';
+          materialGrid.append(empty);
+          return;
+        }
+        items.forEach(item => materialGrid.append(createMaterialCard(item)));
+      }
+
+      async function uploadMaterial(file) {
+        if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+          throw new Error('只支持图片或视频文件。');
+        }
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await authenticatedFetch(`${cloudApiBase}/media/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) throw new Error(await responseError(response));
+      }
+
+      materialFile.addEventListener('change', async () => {
+        const file = materialFile.files[0];
+        if (!file) return;
+        dropZone.firstElementChild.firstChild.textContent = '上传中...';
+        try {
+          await uploadMaterial(file);
+          uploadDialog.close();
+          await loadMaterials();
+        } catch (error) {
+          showError(error.message === 'Failed to fetch' ? '无法连接云端服务器，请稍后重试。' : error.message);
+        } finally {
+          dropZone.firstElementChild.firstChild.textContent = '拖拽文件到这里';
+          materialFile.value = '';
+        }
+      });
+
+      dropZone.addEventListener('dragover', event => {
+        event.preventDefault();
+        dropZone.style.borderColor = 'var(--home-accent)';
+      });
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.style.borderColor = '';
+      });
+      dropZone.addEventListener('drop', event => {
+        event.preventDefault();
+        dropZone.style.borderColor = '';
+        materialFile.files = event.dataTransfer.files;
+        materialFile.dispatchEvent(new Event('change'));
+      });
+
+      async function start() {
+        if (!localStorage.getItem('boldmaker_cloud_token')) return redirectToLogin();
+        try {
+          const profileResponse = await authenticatedFetch(`${cloudApiBase}/me`);
+          if (!profileResponse.ok) throw new Error(await responseError(profileResponse));
+          const profile = await profileResponse.json();
+          document.querySelector('.repository-caption').textContent = `${profile.username} 的云端图片与视频素材`;
+          await loadMaterials();
+        } catch (error) {
+          if (error.message !== '登录已失效') showError(error.message === 'Failed to fetch' ? '无法连接云端服务器，请稍后重试。' : error.message);
+        }
+      }
+
+      window.addEventListener('beforeunload', () => objectUrls.forEach(url => URL.revokeObjectURL(url)));
+      start();
+    </script>
   </body>
 </html>

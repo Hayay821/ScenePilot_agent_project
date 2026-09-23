@@ -17,6 +17,8 @@ class Settings:
     data_root: Path = Path(os.getenv("BOLDMAKER_DATA_ROOT", Path(__file__).parent / "data"))
     serve_frontend: bool = _env_bool("BOLDMAKER_SERVE_FRONTEND", True)
     cors_origins: str = os.getenv("BOLDMAKER_CORS_ORIGINS", "*")
+    cloud_api_base: str = os.getenv("BOLDMAKER_CLOUD_API_BASE", "http://120.26.152.99:8000")
+    cloud_timeout_seconds: float = float(os.getenv("BOLDMAKER_CLOUD_TIMEOUT_SECONDS", "10"))
     session_ttl_hours: int = int(os.getenv("BOLDMAKER_SESSION_TTL_HOURS", "168"))
     max_upload_mb: int = int(os.getenv("BOLDMAKER_MAX_UPLOAD_MB", "2048"))
     allow_uid_header: bool = _env_bool("BOLDMAKER_ALLOW_UID_HEADER", True)

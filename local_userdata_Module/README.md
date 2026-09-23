@@ -13,8 +13,8 @@ python -m uvicorn main:app --host 127.0.0.1 --port 8010
 ## 认证
 
 - `POST /api/auth/login`：开发期测试登录，JSON 为 `{"account":"test","password":"test"}`。
-- `POST /api/auth/cloud-login`：云端登录完成后传入 `{"uid":"云端uid"}`，用于联调。
-- 后续请求使用 `Authorization: Bearer <access_token>`。
+- `POST /api/auth/cloud-login`：云端登录完成后使用 `Authorization: Bearer <云端 access_token>`；本服务会向云端 `/me` 验证令牌，并创建对应用户目录。
+- 接口返回本地 `access_token`，后续本地请求使用 `Authorization: Bearer <本地 access_token>`。
 - 在 `BOLDMAKER_ALLOW_UID_HEADER=true` 时，也可用 `X-User-Id` 临时联调。生产环境应关闭该选项。
 
 ## 接口

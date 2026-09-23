@@ -387,14 +387,25 @@
     </main>
 
     <script>
-      const apiBase = window.location.protocol === 'file:' ? 'http://127.0.0.1:8010' : '';
-      const currentUid = localStorage.getItem('boldmaker_uid') || localStorage.getItem('boldmaker_account') || 'test';
+      const localApiBase = window.location.protocol === 'file:' ? 'http://127.0.0.1:8010' : '';
+      const cloudApiBase = localStorage.getItem('boldmaker_cloud_api') || 'http://120.26.152.99:8000';
       const materialGrid = document.querySelector('.material-grid');
       const uploadDialog = document.getElementById('upload-dialog');
       const materialFile = document.getElementById('material-file');
 
-      function apiHeaders(extra = {}) {
-        return { 'X-User-Id': currentUid, ...extra };
+      function localHeaders(extra = {}) {
+        return { Authorization: `Bearer ${localStorage.getItem('boldmaker_local_token')}`, ...extra };
+      }
+
+      function cloudHeaders(extra = {}) {
+        return { Authorization: `Bearer ${localStorage.getItem('boldmaker_cloud_token')}`, ...extra };
+      }
+
+      function redirectToLogin() {
+        localStorage.removeItem('boldmaker_cloud_token');
+        localStorage.removeItem('boldmaker_local_token');
+        localStorage.removeItem('boldmaker_uid');
+        window.location.replace('./index.html');
       }
 
       function showError(message) {
@@ -412,13 +423,50 @@
           const body = await response.json();
           if (body.detail) message = body.detail;
         } catch (_) {
-          // Keep the status message when the server response is not JSON.
+          return message;
         }
         return message;
       }
 
+      async function initializeUser() {
+        if (!localStorage.getItem('boldmaker_cloud_token')) {
+          redirectToLogin();
+          return false;
+        }
+
+        let profileResponse;
+        try {
+          profileResponse = await fetch(`${cloudApiBase}/me`, { headers: cloudHeaders() });
+        } catch (_) {
+          throw new Error('无法连接云端服务器，请稍后重试。');
+        }
+        if (profileResponse.status === 401 || profileResponse.status === 403) {
+          redirectToLogin();
+          return false;
+        }
+        if (!profileResponse.ok) throw new Error(await responseError(profileResponse));
+
+        const profile = await profileResponse.json();
+        localStorage.setItem('boldmaker_uid', String(profile.user_id));
+        localStorage.setItem('boldmaker_account', profile.username);
+        document.querySelector('.repository-caption').textContent = `${profile.username} 的本地图片与视频素材`;
+
+        const localResponse = await fetch(`${localApiBase}/api/auth/cloud-login`, {
+          method: 'POST',
+          headers: cloudHeaders(),
+        });
+        if (localResponse.status === 401) {
+          redirectToLogin();
+          return false;
+        }
+        if (!localResponse.ok) throw new Error(await responseError(localResponse));
+        const localSession = await localResponse.json();
+        localStorage.setItem('boldmaker_local_token', localSession.access_token);
+        return true;
+      }
+
       async function loadPreview(item, preview) {
-        const response = await fetch(`${apiBase}/api/resources/${item.id}/content`, { headers: apiHeaders() });
+        const response = await fetch(`${localApiBase}/api/resources/${item.id}/content`, { headers: localHeaders() });
         if (!response.ok) throw new Error(await responseError(response));
         const objectUrl = URL.createObjectURL(await response.blob());
         const media = document.createElement(item.kind === 'video' ? 'video' : 'img');
@@ -429,6 +477,29 @@
         }
         media.alt = item.original_name;
         preview.replaceChildren(media);
+      }
+
+      async function uploadLocalItem(item, button) {
+        button.disabled = true;
+        button.textContent = '上传中...';
+        try {
+          const content = await fetch(`${localApiBase}/api/resources/${item.id}/content`, { headers: localHeaders() });
+          if (!content.ok) throw new Error(await responseError(content));
+          const formData = new FormData();
+          formData.append('file', await content.blob(), item.original_name);
+          const response = await fetch(`${cloudApiBase}/media/upload`, {
+            method: 'POST',
+            headers: cloudHeaders(),
+            body: formData,
+          });
+          if (response.status === 401 || response.status === 403) return redirectToLogin();
+          if (!response.ok) throw new Error(await responseError(response));
+          button.textContent = '已上传';
+        } catch (error) {
+          button.disabled = false;
+          button.textContent = '上传到云端';
+          showError(error.message === 'Failed to fetch' ? '无法连接云端服务器，请稍后重试。' : error.message);
+        }
       }
 
       function createMaterialCard(item) {
@@ -457,9 +528,9 @@
             name.value = originalName;
             return;
           }
-          const response = await fetch(`${apiBase}/api/resources/${item.id}`, {
+          const response = await fetch(`${localApiBase}/api/resources/${item.id}`, {
             method: 'PUT',
-            headers: apiHeaders({ 'Content-Type': 'application/json' }),
+            headers: localHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({ original_name: nextName }),
           });
           if (!response.ok) {
@@ -487,7 +558,7 @@
         deleteButton.title = '删除本地文件';
         deleteButton.addEventListener('click', async () => {
           if (!window.confirm(`确定删除“${originalName}”吗？`)) return;
-          const response = await fetch(`${apiBase}/api/resources/${item.id}`, { method: 'DELETE', headers: apiHeaders() });
+          const response = await fetch(`${localApiBase}/api/resources/${item.id}`, { method: 'DELETE', headers: localHeaders() });
           if (!response.ok) {
             showError(await responseError(response));
             return;
@@ -499,8 +570,7 @@
         cloudButton.className = 'cloud-material';
         cloudButton.type = 'button';
         cloudButton.textContent = '上传到云端';
-        cloudButton.title = '云端服务尚未开放';
-        cloudButton.addEventListener('click', () => showError('云端服务尚未开放，暂不能上传。'));
+        cloudButton.addEventListener('click', () => uploadLocalItem(item, cloudButton));
 
         card.append(preview, name, deleteButton, cloudButton);
         loadPreview(item, preview).catch(error => showError(error.message));
@@ -508,11 +578,8 @@
       }
 
       async function loadMaterials() {
-        const response = await fetch(`${apiBase}/api/resources`, { headers: apiHeaders() });
-        if (!response.ok) {
-          showError(await responseError(response));
-          return;
-        }
+        const response = await fetch(`${localApiBase}/api/resources`, { headers: localHeaders() });
+        if (!response.ok) throw new Error(await responseError(response));
         materialGrid.querySelectorAll('.material-card, .material-error').forEach(element => element.remove());
         const items = (await response.json()).items;
         items.forEach(item => materialGrid.append(createMaterialCard(item)));
@@ -529,9 +596,9 @@
         }
         const formData = new FormData();
         formData.append('file', file);
-        const response = await fetch(`${apiBase}/api/resources?kind=${kind}`, {
+        const response = await fetch(`${localApiBase}/api/resources?kind=${kind}`, {
           method: 'POST',
-          headers: apiHeaders(),
+          headers: localHeaders(),
           body: formData,
         });
         if (!response.ok) showError(await responseError(response));
@@ -557,7 +624,15 @@
         materialFile.dispatchEvent(new Event('change'));
       });
 
-      loadMaterials().catch(error => showError(error.message));
+      async function start() {
+        try {
+          if (await initializeUser()) await loadMaterials();
+        } catch (error) {
+          showError(error.message);
+        }
+      }
+
+      start();
     </script>
   </body>
 </html>
